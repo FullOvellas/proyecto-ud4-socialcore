@@ -1,4 +1,8 @@
-# Aplicación inicial ToDoList
+# SocialCore
+
+## Página para configurar react
+
+- ![tutorial](https://carlosbf.medium.com/beginner-tutorial-how-to-setup-react-with-spring-boot-1e4385521e32)
 
 Aplicación ToDoList para la asignatura de Acceso a Datos usando Spring Boot y plantillas Thymeleaf. Este repositorio se ha creado gracias al template repository del excelente profesor Domingo Gallardo de la Universidad de Alicante para la asignatura de [MADS](https://github.com/domingogallardo/mads-todolist-inicial).
 
