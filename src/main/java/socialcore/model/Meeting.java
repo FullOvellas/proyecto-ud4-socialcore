@@ -16,4 +16,6 @@ public class Meeting {
     @OneToMany
     private List<User> attendants;
 
+    
+
 }

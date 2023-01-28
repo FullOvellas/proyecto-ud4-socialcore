@@ -1,9 +1,7 @@
 package socialcore.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.net.URI;
 
@@ -11,6 +9,7 @@ import java.net.URI;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -19,6 +18,7 @@ public class User {
     @Id
     private Long id;
     private String fullName;
+    @NonNull
     private String username;
     private URI profilePic;
 

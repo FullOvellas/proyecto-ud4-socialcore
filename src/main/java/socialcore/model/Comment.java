@@ -13,6 +13,7 @@ public class Comment {
     private Long id;
     private String text;
     @ManyToOne
+    @JoinColumn(name = "pointOfInterest")
     private PointOfInterest pointOfInterest;
 
 }
