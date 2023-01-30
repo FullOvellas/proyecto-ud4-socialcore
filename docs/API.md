@@ -20,9 +20,12 @@
 
 ## Autenticación de usuarios
 
-Para autenticar un usuario se realiza una petición POST
+Usando la configuración de seguridad de Spring se pueden bloquear ciertos endpoints a los usuarios que no poseen 
+determinado rol. Puede considerarse que existen tres roles para la API:
 
-Bastante WIP
+- **Sin rol**: usuario sin identificar
+- **Normal**: usuario que inició sesión
+- **Admin**: usuario administrador con capacidad de acceder al endpoint de `/admin` si se implementa
 
 ### Inicio de sesión
 
