@@ -30,8 +30,6 @@ public class Application implements AppShellConfigurator {
         Dotenv dotenv = Dotenv.configure().load();
         GeoApiContext.Builder builder = new GeoApiContext.Builder();
 
-        System.out.println(dotenv.get("MAPS_API_KEY"));
-
         return builder
                 .apiKey(dotenv.get("MAPS_API_KEY"))
                 .disableRetries()
