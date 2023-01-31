@@ -1,6 +1,7 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 import lombok.Data;
 
 import java.util.List;

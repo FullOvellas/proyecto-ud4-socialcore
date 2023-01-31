@@ -1,8 +1,12 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.GenerationType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.net.URI;
 
 @Data
