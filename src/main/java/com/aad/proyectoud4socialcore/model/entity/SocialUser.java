@@ -4,10 +4,10 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
@@ -24,7 +24,26 @@ public class SocialUser {
     private String password;
     private URI profilePic;
 
-    @ElementCollection
-    private List<String> roles;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = {
+                    @JoinColumn(
+                            name = "user_id", referencedColumnName = "id"
+                    ),
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(
+                            name = "role_id", referencedColumnName = "id"
+                    ),
+            }
+    )
+    private List<Role> roles;
+
+    public SocialUser() {
+
+        this.roles = new ArrayList<>();
+
+    }
 
 }
