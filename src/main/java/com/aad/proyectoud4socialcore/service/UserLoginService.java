@@ -1,6 +1,8 @@
 package com.aad.proyectoud4socialcore.service;
 
+import com.aad.proyectoud4socialcore.model.entity.Role;
 import com.aad.proyectoud4socialcore.model.entity.SocialUser;
+import com.aad.proyectoud4socialcore.model.repository.RoleRepository;
 import com.aad.proyectoud4socialcore.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,12 +15,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserLoginService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     private static List<GrantedAuthority> getAuthorities (List<String> roles) {
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -43,14 +49,33 @@ public class UserLoginService implements UserDetailsService {
 
         }
 
+        System.out.println("egojeo");
+
         boolean enabled = true;
         boolean accountNonExpired = true;
         boolean credentialsNonExpired = true;
         boolean accountNonLocked = true;
 
+        Role userRole = roleRepository.findByName("ROLE_USER");
+
+        final List<String> roles = new ArrayList<>();
+
+        if(user.getRoles() == null ) {
+
+            roles.add(userRole.getName());
+
+        } else {
+
+            roles.addAll(user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
+
+        }
+
+        System.out.println(user.getEmail());
+        System.out.println(user.getPassword());
+
         return new User(
-                user.getEmail(), user.getPassword().toLowerCase(), enabled, accountNonExpired,
-                credentialsNonExpired, accountNonLocked, getAuthorities(user.getRoles()));
+                user.getEmail(), user.getPassword(), enabled, accountNonExpired,
+                credentialsNonExpired, accountNonLocked, getAuthorities(roles));
     }
 
 }
