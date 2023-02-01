@@ -1,6 +1,6 @@
 package com.aad.proyectoud4socialcore;
 
-import com.aad.proyectoud4socialcore.model.entity.User;
+import com.aad.proyectoud4socialcore.model.entity.SocialUser;
 import com.aad.proyectoud4socialcore.model.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class Initializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         Stream.of("lucascabaleiro", "margb7", "FullOvellas")
-                .forEach(name -> userRepository.save(new User(name)));
+                .forEach(name -> userRepository.save(new SocialUser(name)));
 
         userRepository.findAll().forEach(System.out::println);
 

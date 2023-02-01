@@ -15,7 +15,7 @@ import java.net.URI;
 @RequiredArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
+public class SocialUser {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
