@@ -1,6 +1,8 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
 import lombok.*;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
