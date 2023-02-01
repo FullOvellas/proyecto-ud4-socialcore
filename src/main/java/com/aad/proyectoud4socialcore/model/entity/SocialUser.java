@@ -1,15 +1,10 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
 import lombok.*;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.GenerationType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.net.URI;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,7 +19,12 @@ public class SocialUser {
     private Long id;
     private String fullName;
     @NonNull
-    private String username;
+    private String email;
+
+    private String password;
     private URI profilePic;
+
+    @ElementCollection
+    private List<String> roles;
 
 }
