@@ -11,19 +11,37 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {useState} from "react";
 
 
 export default function RegisterView(){
 
     const theme = createTheme();
 
+    const [error, setError] = useState<String>("")
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         const data = new FormData(event.currentTarget);
 
+        const nombre = data.get('nombre')
         const email = data.get('email');
         const password = data.get('password');
+        const passwordRep = data.get('password_rep')
+
+        if(email == "" || nombre == "" || password == "" || passwordRep == "" ) {
+            setError("Los campos no pueden estar vacíos")
+            return
+        }
+
+        if(password != passwordRep) {
+            setError("Las contraseñas no coinciden");
+            return;
+        }
+
+        setError("")
+
     }
 
     return(
@@ -82,6 +100,9 @@ export default function RegisterView(){
                         id="password_rep"
                         autoComplete="current-password"
                     />
+                    {error != "" &&
+                        <Typography color={"#FF0000"}>{error}</Typography>
+                    }
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
                         label="Recordarme"
@@ -96,7 +117,7 @@ export default function RegisterView(){
                     </Button>
                     <Grid container>
                         <Grid item>
-                            <Link href="/loginview" variant="body2">
+                            <Link href="/login" variant="body2">
                                 {"¿Tienes cuenta? Inicia sesión"}
                             </Link>
                         </Grid>

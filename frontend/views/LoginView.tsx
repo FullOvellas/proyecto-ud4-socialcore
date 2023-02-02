@@ -11,19 +11,37 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {useState} from "react";
 
 
 export default function LoginView(){
 
     const theme = createTheme();
 
+    const [error, setError] = useState<String>("")
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         const data = new FormData(event.currentTarget);
 
-        const email = data.get('email');
+        const email = data.get('username');
         const password = data.get('password');
+
+        if(password == null || email == null ) {
+            setError("Error")
+            console.log("Error")
+
+            return
+        }
+
+        fetch("/login", {
+            method: "POST",
+            body: new URLSearchParams([["username", email!.toString()], ["password", password!.toString()]])
+        }).then(v => {
+            if(v.redirected) window.location.replace(v.url);
+        }).catch(e => console.log("Erro2r"))
+
     }
 
     return(
@@ -38,52 +56,50 @@ export default function LoginView(){
                         alignItems: 'center',
                     }}
                 >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Sign in
-                    </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Correo electrónico"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Contraseña"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                        />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Recordarme"
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Iniciar sesión
-                        </Button>
-                        <Grid container>
-                            <Grid item>
-                                <Link href="/registerview" variant="body2">
-                                    {"¿No tienes cuenta? Regístrate"}
-                                </Link>
-                            </Grid>
+                <Typography component="h1" variant="h5">
+                    Sign in
+                </Typography>
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="username"
+                        label="Correo electrónico"
+                        name="username"
+                        autoComplete="email"
+                        autoFocus
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Contraseña"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                    />
+                    <FormControlLabel
+                        control={<Checkbox value="remember" color="primary" />}
+                        label="Recordarme"
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                    >
+                        Iniciar sesión
+                    </Button>
+                    <Grid container>
+                        <Grid item>
+                            <Link href="/register" variant="body2">
+                                {"¿No tienes cuenta? Regístrate"}
+                            </Link>
                         </Grid>
-                    </Box>
+                    </Grid>
+                </Box>
                 </Box>
             </Container>
         </ThemeProvider>

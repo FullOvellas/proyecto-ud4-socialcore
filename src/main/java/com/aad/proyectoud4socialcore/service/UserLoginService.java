@@ -49,8 +49,6 @@ public class UserLoginService implements UserDetailsService {
 
         }
 
-        System.out.println("egojeo");
-
         boolean enabled = true;
         boolean accountNonExpired = true;
         boolean credentialsNonExpired = true;
@@ -69,9 +67,6 @@ public class UserLoginService implements UserDetailsService {
             roles.addAll(user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
 
         }
-
-        System.out.println(user.getEmail());
-        System.out.println(user.getPassword());
 
         return new User(
                 user.getEmail(), user.getPassword(), enabled, accountNonExpired,
