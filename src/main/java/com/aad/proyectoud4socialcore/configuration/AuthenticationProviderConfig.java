@@ -31,17 +31,29 @@ public class AuthenticationProviderConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable().authorizeRequests()
+                .antMatchers(HttpMethod.GET,
+                        "/index*", "/static/**", "/*.js", "/*.json", "/*.ico")
+                .permitAll()
+                .and()
+                .formLogin().loginPage("/")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/login?error=true").permitAll();
+        /*
+        http.csrf().disable().authorizeRequests()
                 .antMatchers(
                         HttpMethod.GET,
                         "/index*", "/static/**", "/*.js", "/*.json", "/*.ico")
                 .permitAll()
-                .anyRequest().authenticated()
                 .and()
-                .formLogin().loginPage("/index.html")
+                .formLogin().loginPage("/")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/",true)
                 .failureUrl("/index.html/login?error=true")
                 .and().authorizeRequests().antMatchers("/").authenticated();
+
+
+         */
 
     }
 

@@ -22,16 +22,6 @@ export default function LoginView(){
     const [error, setError] = useState<String>("")
     const [searchParams, setSearchParams] = useSearchParams();
 
-    useEffect(() => {
-
-        if(searchParams.get("error") != null ) {
-
-            setError("El usuario o contraseña no son correctos")
-
-        }
-
-    });
-
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -42,8 +32,11 @@ export default function LoginView(){
 
         if(password == null || email == null ) {
             setError("Error")
-            console.log("Error")
+            return
+        }
 
+        if(password == "" || email == "") {
+            setError("Los campos no pueden estar vacíos")
             return
         }
 
@@ -55,6 +48,16 @@ export default function LoginView(){
         }).catch(e => console.log("Erro2r"))
 
     }
+
+    useEffect(() => {
+
+        if(searchParams.get("error") != null ) {
+
+            setError("El usuario o contraseña no son correctos")
+
+        }
+
+    });
 
     return(
         <ThemeProvider theme={theme}>
