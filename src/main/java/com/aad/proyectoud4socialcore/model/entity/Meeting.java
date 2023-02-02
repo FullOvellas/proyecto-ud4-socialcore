@@ -15,6 +15,6 @@ public class Meeting {
     @Id
     private Long id;
     @OneToMany
-    private List<User> attendants;
+    private List<SocialUser> attendants;
 
 }

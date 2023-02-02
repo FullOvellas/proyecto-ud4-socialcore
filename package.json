@@ -2,6 +2,8 @@
   "name": "no-name",
   "license": "UNLICENSED",
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@hilla/form": "1.3.5",
     "@hilla/frontend": "1.3.5",
     "@hilla/generator-typescript-cli": "1.3.5",
@@ -13,6 +15,8 @@
     "@hilla/generator-typescript-plugin-push": "1.3.5",
     "@hilla/generator-typescript-utils": "1.3.5",
     "@hilla/react-components": "1.3.5",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.7",
     "@polymer/iron-icon": "3.0.1",
     "@polymer/polymer": "3.5.1",
     "@vaadin-component-factory/vcf-nav": "1.0.6",
@@ -88,7 +92,11 @@
     "@vaadin/vaadin-lumo-styles": "$@vaadin/vaadin-lumo-styles",
     "@hilla/generator-typescript-plugin-backbone": "$@hilla/generator-typescript-plugin-backbone",
     "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles",
-    "@hilla/generator-typescript-cli": "$@hilla/generator-typescript-cli"
+    "@hilla/generator-typescript-cli": "$@hilla/generator-typescript-cli",
+    "@emotion/react": "$@emotion/react",
+    "@emotion/styled": "$@emotion/styled",
+    "@mui/material": "$@mui/material",
+    "@mui/icons-material": "$@mui/icons-material"
   },
   "vaadin": {
     "dependencies": {
@@ -136,6 +144,6 @@
       "workbox-core": "6.5.4",
       "workbox-precaching": "6.5.4"
     },
-    "hash": "bd88bf2b58a22f818fac3794445e0e519fb67ac913c7bfa943f229d9fc59d331"
+    "hash": "c5de73954444a72d6b03355b3675b0511cc235f014ef81926aea2a97de5f0f6b"
   }
 }
