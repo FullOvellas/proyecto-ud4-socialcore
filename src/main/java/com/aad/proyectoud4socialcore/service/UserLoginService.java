@@ -68,6 +68,8 @@ public class UserLoginService implements UserDetailsService {
 
         }
 
+        System.out.println(user.getEmail());
+
         return new User(
                 user.getEmail(), user.getPassword(), enabled, accountNonExpired,
                 credentialsNonExpired, accountNonLocked, getAuthorities(roles));

@@ -2,8 +2,8 @@ import { lazy } from 'react';
 import { createBrowserRouter, IndexRouteObject, NonIndexRouteObject, useMatches } from 'react-router-dom';
 import LoginView from "Frontend/views/LoginView";
 import RegisterView from "Frontend/views/RegisterView";
+import EmptyView from "Frontend/views/empty/EmptyView";
 
-const EmptyView = lazy(async () => import('Frontend/views/empty/EmptyView.js'));
 export type MenuProps = Readonly<{
   icon?: string;
   title?: string;

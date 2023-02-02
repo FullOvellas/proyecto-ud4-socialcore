@@ -1,9 +1,35 @@
+import {useEffect, useLayoutEffect, useState} from "react";
+import {UserAuthEndpoint} from "Frontend/generated/endpoints";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+
 export default function EmptyView() {
+
+    const [user, setUser] = useState<String>("");
+
+    useLayoutEffect(() => {
+
+        const loadUser = async () => {
+
+            if(!await UserAuthEndpoint.isAnonymous() ) {
+
+                const userName = await UserAuthEndpoint.getUserName();
+
+                setUser(userName);
+
+            }
+
+        }
+
+        loadUser()
+
+    }, []);
+
+
   return (
-    <div className="flex flex-col h-full items-center justify-center p-l text-center box-border">
-      <img style={{ width: '200px' }} src="images/empty-plant.png" />
-      <h2>This place intentionally left empty</h2>
-      <p>It’s a place where you can grow your own UI 🤗</p>
-    </div>
+      <Box>
+          <Typography variant={"h2"} textAlign={"center"}>Home page</Typography>
+          <Typography variant={"h4"}>Usuario: {user}</Typography>
+      </Box>
   );
 }
