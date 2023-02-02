@@ -11,7 +11,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {useSearchParams} from "react-router-dom";
 
 
 export default function LoginView(){
@@ -19,6 +20,17 @@ export default function LoginView(){
     const theme = createTheme();
 
     const [error, setError] = useState<String>("")
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    useEffect(() => {
+
+        if(searchParams.get("error") != null ) {
+
+            setError("El usuario o contraseña no son correctos")
+
+        }
+
+    });
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -80,6 +92,9 @@ export default function LoginView(){
                         id="password"
                         autoComplete="current-password"
                     />
+                    { error != "" &&
+                        <Typography color={"#FF0000"}>{error}</Typography>
+                    }
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
                         label="Recordarme"

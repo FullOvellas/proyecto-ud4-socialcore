@@ -40,7 +40,8 @@ public class AuthenticationProviderConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().loginPage("/index.html")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/",true)
-                .failureUrl("/index.html?error=true");
+                .failureUrl("/index.html/login?error=true")
+                .and().authorizeRequests().antMatchers("/").authenticated();
 
     }
 
