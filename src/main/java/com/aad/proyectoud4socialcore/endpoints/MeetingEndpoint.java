@@ -24,7 +24,13 @@ public class MeetingEndpoint {
 
     public List<Meeting> findSocialUserMeetings(SocialUser user) {
 
-        return repository.findByParticipant(user);
+        return repository.findMeetingWithParticipant(user);
+
+    }
+
+    public List<Meeting> findSocialUsersMeetings(List<SocialUser> users) {
+
+        return repository.findMeetingWithParticipants(users);
 
     }
 

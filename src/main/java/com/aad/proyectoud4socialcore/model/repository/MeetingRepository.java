@@ -5,7 +5,24 @@ import com.aad.proyectoud4socialcore.model.entity.SocialUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
-    List<Meeting> findByParticipant(SocialUser user);
+    default List<Meeting> findMeetingWithParticipant(SocialUser user) {
+
+        return findAll()
+                .stream()
+                .filter(meeting -> meeting.getAttendants().contains(user))
+                .collect(Collectors.toList());
+
+    }
+
+    default List<Meeting> findMeetingWithParticipants(List<SocialUser> users) {
+
+        return findAll()
+                .stream()
+                .filter(meeting -> meeting.getAttendants().containsAll(users))
+                .collect(Collectors.toList());
+
+    }
 }
