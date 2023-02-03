@@ -1,4 +1,4 @@
-package com.aad.proyectoud4socialcore.endpoint;
+package com.aad.proyectoud4socialcore.endpoints;
 
 import com.aad.proyectoud4socialcore.model.entity.PointOfInterest;
 import com.aad.proyectoud4socialcore.model.entity.User;
@@ -12,7 +12,7 @@ import java.util.List;
 @AnonymousAllowed
 public class PointOfInterestEndpoint {
 
-    private PointOfInterestRepository repository;
+    private final PointOfInterestRepository repository;
 
     public PointOfInterestEndpoint(PointOfInterestRepository repository) {
         this.repository = repository;
