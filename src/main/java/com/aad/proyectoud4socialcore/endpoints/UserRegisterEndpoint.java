@@ -12,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 @AnonymousAllowed
 public class UserRegisterEndpoint {
 
-    @Autowired
-    private UserRegisterService userService;
+    private final UserRegisterService userService;
+
+    public UserRegisterEndpoint(UserRegisterService userService) {
+        this.userService = userService;
+    }
 
     public void registerUser(UserDTO userDTO ) {
 
