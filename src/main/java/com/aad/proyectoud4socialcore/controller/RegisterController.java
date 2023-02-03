@@ -4,6 +4,7 @@ import com.aad.proyectoud4socialcore.exception.UserAlreadyExistsException;
 import com.aad.proyectoud4socialcore.model.dto.UserDTO;
 import com.aad.proyectoud4socialcore.model.entity.SocialUser;
 import com.aad.proyectoud4socialcore.service.UserRegisterService;
+import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,11 +30,10 @@ public class RegisterController {
             request.login(email, password);
             return "redirect:/";
 
-        } catch (UserAlreadyExistsException | ServletException ex ) {
+        } catch (UserAlreadyExistsException | ServletException | InvalidCredentialsException ex ) {
 
             // Devolver error al cliente
             return "redirect:register?error=true";
-
         }
 
     }

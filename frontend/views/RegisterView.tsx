@@ -11,7 +11,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {useSearchParams} from "react-router-dom";
 
 
 export default function RegisterView(){
@@ -19,6 +20,7 @@ export default function RegisterView(){
     const theme = createTheme();
 
     const [error, setError] = useState<String>("")
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -45,9 +47,19 @@ export default function RegisterView(){
             body: new URLSearchParams([["email", email!.toString()], ["fullName", fullName!.toString()], ["password", password!.toString()]])
         }).then(v => {
             if(v.redirected) window.location.replace(v.url);
-        }).catch(e => console.log("Erro2r"))
+        }).catch(e => console.log("Error"))
 
     }
+
+    useEffect( () => {
+
+        if(searchParams.get("error") != null ) {
+
+            setError("Credenciales no válidas")
+
+        }
+
+    });
 
     return(
         <ThemeProvider theme={theme}>
