@@ -9,6 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class RegisterController {
 
@@ -16,22 +19,23 @@ public class RegisterController {
     private UserRegisterService registerService;
 
     @PostMapping("/register")
-    public String registerUser(@RequestParam(name = "email") String email, @RequestParam(name = "fullName") String fullName, @RequestParam(name = "password") String password ) {
+    public String registerUser(@RequestParam(name = "email") String email, @RequestParam(name = "fullName") String fullName, @RequestParam(name = "password") String password, HttpServletRequest request) {
 
         try {
 
             SocialUser user = registerService.registerNewUserAccount(new UserDTO(fullName, email, password));
 
             // Devolver usuario al cliente
+            request.login(email, password);
+            return "redirect:/";
 
-        } catch (UserAlreadyExistsException ex ) {
+        } catch (UserAlreadyExistsException | ServletException ex ) {
 
             // Devolver error al cliente
             return "redirect:register?error=true";
 
         }
 
-        return "redirect:/homepage";
     }
 
 }
