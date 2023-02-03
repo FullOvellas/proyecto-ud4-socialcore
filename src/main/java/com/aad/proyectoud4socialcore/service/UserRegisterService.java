@@ -54,7 +54,7 @@ public class UserRegisterService {
         return userRepository.save(user);
     }
 
-    private boolean isEmailValid(String email ) {
+    public boolean isEmailValid(String email ) {
 
         Pattern emailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
@@ -65,9 +65,13 @@ public class UserRegisterService {
         return emailPattern.matcher(email).find();
     }
 
-    private boolean isPasswordValid(String password ) {
+    public boolean isPasswordValid(String password ) {
 
         if(password == null || password.length() < 5 ) {
+            return false;
+        }
+
+        if(password.contains(" ")) {
             return false;
         }
 
