@@ -98,10 +98,6 @@ export default function LoginView(){
                     { error != "" &&
                         <Typography color={"#FF0000"}>{error}</Typography>
                     }
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Recordarme"
-                    />
                     <Button
                         type="submit"
                         fullWidth
