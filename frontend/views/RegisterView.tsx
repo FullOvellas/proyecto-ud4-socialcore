@@ -25,12 +25,12 @@ export default function RegisterView(){
 
         const data = new FormData(event.currentTarget);
 
-        const nombre = data.get('nombre')
+        const fullName = data.get('fullName')
         const email = data.get('email');
         const password = data.get('password');
         const passwordRep = data.get('password_rep')
 
-        if(email == "" || nombre == "" || password == "" || passwordRep == "" ) {
+        if(email == "" || fullName == "" || password == "" || passwordRep == "" ) {
             setError("Los campos no pueden estar vacíos")
             return
         }
@@ -40,7 +40,12 @@ export default function RegisterView(){
             return;
         }
 
-        setError("")
+        fetch("/register", {
+            method: "POST",
+            body: new URLSearchParams([["email", email!.toString()], ["fullName", fullName!.toString()], ["password", password!.toString()]])
+        }).then(v => {
+            if(v.redirected) window.location.replace(v.url);
+        }).catch(e => console.log("Erro2r"))
 
     }
 
@@ -64,9 +69,9 @@ export default function RegisterView(){
                         margin="normal"
                         required
                         fullWidth
-                        id="nombre"
+                        id="fullName"
                         label="Nombre"
-                        name="nombre"
+                        name="fullName"
                         autoComplete="name"
                         autoFocus
                     />

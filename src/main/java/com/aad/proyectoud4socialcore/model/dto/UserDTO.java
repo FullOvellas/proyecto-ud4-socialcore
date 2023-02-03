@@ -19,10 +19,19 @@ public class UserDTO {
     @NotEmpty
     private String password;
 
-    private String matchingPassword;
-
     @NotNull
     @NotEmpty
     private String email;
+
+    public UserDTO(String fullName, String email, String password ) {
+
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+
+    }
+    public UserDTO() {
+
+    }
 
 }
