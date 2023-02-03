@@ -74,7 +74,7 @@ export default function RegisterView(){
                     }}
                 >
                 <Typography component="h1" variant="h5">
-                    Registro
+                    Registrarse
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                     <TextField
@@ -117,20 +117,17 @@ export default function RegisterView(){
                         id="password_rep"
                         autoComplete="current-password"
                     />
+                    <Typography variant={"caption"} color={"rgb(155,155,155)"}>* La contraseña debe tener 5 caracteres como mínimo</Typography>
                     {error != "" &&
                         <Typography color={"#FF0000"}>{error}</Typography>
                     }
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Recordarme"
-                    />
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
                     >
-                        Iniciar sesión
+                        Registrarse
                     </Button>
                     <Grid container>
                         <Grid item>
