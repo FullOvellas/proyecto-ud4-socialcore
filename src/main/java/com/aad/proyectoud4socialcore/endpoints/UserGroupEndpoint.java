@@ -13,7 +13,7 @@ import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @Endpoint
-@RolesAllowed("ROLE_USER")
+@RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
 public class UserGroupEndpoint {
 
     @Autowired
@@ -22,11 +22,11 @@ public class UserGroupEndpoint {
     @Autowired
     private UserGroupRepository userGroupRepository;
 
-    public List<UserGroup> getUserGroups() {
+    public UserGroup[] getUserGroups() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SocialUser user = userRepository.findSocialUserByEmail(authentication.getName());
 
-        return userGroupRepository.findUserGroupByParticipantsContaining(user);
+        return userGroupRepository.findUserGroupByParticipantsContaining(user).toArray(UserGroup[]::new);
     }
 
 }

@@ -1,9 +1,13 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Data
 public class UserGroup {
 
     @Id
@@ -25,5 +29,11 @@ public class UserGroup {
             }
     )
     private List<SocialUser> participants;
+
+    public UserGroup() {
+
+        participants = new ArrayList<>();
+
+    }
 
 }
