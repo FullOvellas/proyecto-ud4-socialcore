@@ -41,6 +41,9 @@ public class PointOfInterestService {
 
         }
 
+
+        // TODO:
+        return pointsOfInterest;
     }
 
 }
