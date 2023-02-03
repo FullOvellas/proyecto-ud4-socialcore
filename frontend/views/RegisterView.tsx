@@ -37,10 +37,22 @@ export default function RegisterView(){
             return
         }
 
+        if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email!.toString()) ) {
+            setError("El correo no es válido")
+            return;
+        }
+
         if(password != passwordRep) {
             setError("Las contraseñas no coinciden");
             return;
         }
+
+        if(password!.length < 5 ) {
+            setError("La contraseña debe tener como mínimo 5 caracteres");
+            return;
+        }
+
+        setError("");
 
         fetch("/register", {
             method: "POST",
