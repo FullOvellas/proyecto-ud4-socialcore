@@ -40,6 +40,9 @@ public class SocialUser {
     )
     private List<Role> roles;
 
+    @ManyToMany(mappedBy = "participants")
+    private List<UserGroup> groups;
+
     public SocialUser() {
 
         this.roles = new ArrayList<>();
