@@ -22,6 +22,7 @@ public class SocialUser {
     @NonNull
     private String email;
 
+    @JsonIgnore
     private String password;
 
     @JsonIgnore // TODO: añadir valor por defecto porque puede ser un valor Null

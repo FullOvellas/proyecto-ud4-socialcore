@@ -1,8 +1,11 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
+import dev.hilla.Nonnull;
 import lombok.Data;
+import lombok.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,7 @@ public class UserGroup {
     private String name;
 
     @ManyToOne
+    @Nonnull
     private SocialUser creator;
 
     @ManyToMany()

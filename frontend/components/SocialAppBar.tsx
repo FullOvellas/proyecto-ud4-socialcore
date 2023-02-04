@@ -85,8 +85,7 @@ export default function SocialAppBar() {
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
                     >
-                        <MenuItem onClick={handleClose}>Profile</MenuItem>
-                        <MenuItem onClick={handleClose}>My account</MenuItem>
+                        <MenuItem onClick={event => navigate("/profile")}>Perfil</MenuItem>
                     </Menu>
                 </div>
             )}
