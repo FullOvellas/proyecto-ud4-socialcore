@@ -1,9 +1,9 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
 import com.google.maps.model.LatLng;
-import jakarta.persistence.*;
 import lombok.Data;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Data

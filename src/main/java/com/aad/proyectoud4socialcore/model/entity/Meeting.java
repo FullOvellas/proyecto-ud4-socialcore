@@ -1,6 +1,7 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 import lombok.Data;
 
 import java.util.List;
@@ -14,6 +15,6 @@ public class Meeting {
     @Id
     private Long id;
     @OneToMany
-    private List<User> attendants;
+    private List<SocialUser> attendants;
 
 }
