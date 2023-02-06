@@ -10,4 +10,6 @@ public interface UserGroupRepository extends JpaRepository<UserGroup, Long> {
 
     List<UserGroup> findUserGroupByParticipantsContaining(SocialUser user);
 
+    UserGroup findUserGroupByNameAndCreator(String name, SocialUser user);
+
 }
