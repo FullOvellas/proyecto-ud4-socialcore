@@ -24,19 +24,19 @@ export default function SocialAppBar() {
         setAnchorEl(null);
     };
 
-    useLayoutEffect(() => {
+    const loadUser = async () => {
 
-        const loadUser = async () => {
+        if(!await UserAuthEndpoint.isAnonymous() ) {
 
-            if(!await UserAuthEndpoint.isAnonymous() ) {
+            const userName = await UserAuthEndpoint.getUserName();
 
-                const userName = await UserAuthEndpoint.getUserName();
-
-                setUser(userName);
-
-            }
+            setUser(userName);
 
         }
+
+    };
+
+    useLayoutEffect(() => {
 
         loadUser()
 
@@ -85,18 +85,25 @@ export default function SocialAppBar() {
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
                     >
-                        <MenuItem onClick={event => navigate("/profile")}>Perfil</MenuItem>
+                        <MenuItem onClick={ _ => navigate("/profile")}>Perfil</MenuItem>
+                        <MenuItem onClick={ _ =>
+                            fetch("/logout", {
+                                method: "GET",
+                            }).then(v => {
+                                if(v.redirected) window.location.replace(v.url);
+                            }).catch( _ => console.log("Error"))
+                        }>Cerrar sesión</MenuItem>
                     </Menu>
                 </div>
             )}
             {user == "" && (
                 <div>
-                    <Button variant={"contained"} onClick={event => navigate("/login")} style={{backgroundColor: "#FFF"}}>
+                    <Button variant={"contained"} onClick={ _ => navigate("/login")} style={{backgroundColor: "#FFF"}}>
                         <Typography color={"primary"}>
                             Iniciar sesión
                         </Typography>
                     </Button>
-                    <Button variant={"contained"} onClick={event => navigate("/register")} style={{backgroundColor: "#FFF"}}>
+                    <Button variant={"contained"} onClick={ _ => navigate("/register")} style={{backgroundColor: "#FFF"}}>
                         <Typography color={"primary"}>
                             Registrarse
                         </Typography>
