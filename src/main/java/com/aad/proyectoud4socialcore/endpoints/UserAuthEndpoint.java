@@ -2,6 +2,7 @@ package com.aad.proyectoud4socialcore.endpoints;
 
 import com.aad.proyectoud4socialcore.model.entity.SocialUser;
 import com.aad.proyectoud4socialcore.model.repository.UserRepository;
+import com.aad.proyectoud4socialcore.service.UserAuthService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.hilla.Endpoint;
 import dev.hilla.Nonnull;
@@ -18,32 +19,22 @@ import javax.annotation.security.RolesAllowed;
 public class UserAuthEndpoint {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserAuthService userAuthService;
 
-    private Authentication getContextAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
-    }
 
     @AnonymousAllowed
     public String getUserName() {
-        Authentication auth = getContextAuthentication();
-
-        return auth.getName();
+        return userAuthService.getContextAuthentication().getName();
     }
 
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public SocialUser getUser() {
-
-        Authentication auth = getContextAuthentication();
-
-        return userRepository.findSocialUserByEmail(auth.getName());
+        return userAuthService.getContextUser();
     }
 
     @AnonymousAllowed
     public boolean isAnonymous() {
-        Authentication auth = getContextAuthentication();
-
-        return auth instanceof AnonymousAuthenticationToken;
+        return userAuthService.isAnonymous();
     }
 
 }
