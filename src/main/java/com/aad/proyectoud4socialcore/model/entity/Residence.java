@@ -1,11 +1,12 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
 import com.google.maps.model.LatLng;
+import com.google.maps.model.PlaceType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -18,6 +19,6 @@ public class Residence {
     private Long id;
     private LatLng coordinates;
     @ElementCollection
-    private List<String> requestedTypes;
+    private Set<PlaceType> requestedTypes;
 
 }
