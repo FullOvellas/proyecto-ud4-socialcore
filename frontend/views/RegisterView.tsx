@@ -11,7 +11,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {useSearchParams} from "react-router-dom";
 
 
 export default function RegisterView(){
@@ -19,20 +20,26 @@ export default function RegisterView(){
     const theme = createTheme();
 
     const [error, setError] = useState<String>("")
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         const data = new FormData(event.currentTarget);
 
-        const nombre = data.get('nombre')
+        const fullName = data.get('fullName')
         const email = data.get('email');
         const password = data.get('password');
         const passwordRep = data.get('password_rep')
 
-        if(email == "" || nombre == "" || password == "" || passwordRep == "" ) {
+        if(email == "" || fullName == "" || password == "" || passwordRep == "" ) {
             setError("Los campos no pueden estar vacíos")
             return
+        }
+
+        if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email!.toString()) ) {
+            setError("El correo no es válido")
+            return;
         }
 
         if(password != passwordRep) {
@@ -40,9 +47,31 @@ export default function RegisterView(){
             return;
         }
 
-        setError("")
+        if(password!.length < 5 ) {
+            setError("La contraseña debe tener como mínimo 5 caracteres");
+            return;
+        }
+
+        setError("");
+
+        fetch("/register", {
+            method: "POST",
+            body: new URLSearchParams([["email", email!.toString()], ["fullName", fullName!.toString()], ["password", password!.toString()]])
+        }).then(v => {
+            if(v.redirected) window.location.replace(v.url);
+        }).catch(e => console.log("Error"))
 
     }
+
+    useEffect( () => {
+
+        if(searchParams.get("error") != null ) {
+
+            setError("Credenciales no válidas")
+
+        }
+
+    });
 
     return(
         <ThemeProvider theme={theme}>
@@ -57,16 +86,16 @@ export default function RegisterView(){
                     }}
                 >
                 <Typography component="h1" variant="h5">
-                    Registro
+                    Registrarse
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
                         required
                         fullWidth
-                        id="nombre"
+                        id="fullName"
                         label="Nombre"
-                        name="nombre"
+                        name="fullName"
                         autoComplete="name"
                         autoFocus
                     />
@@ -100,20 +129,17 @@ export default function RegisterView(){
                         id="password_rep"
                         autoComplete="current-password"
                     />
+                    <Typography variant={"caption"} color={"rgb(155,155,155)"}>* La contraseña debe tener 5 caracteres como mínimo</Typography>
                     {error != "" &&
                         <Typography color={"#FF0000"}>{error}</Typography>
                     }
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Recordarme"
-                    />
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
                     >
-                        Iniciar sesión
+                        Registrarse
                     </Button>
                     <Grid container>
                         <Grid item>

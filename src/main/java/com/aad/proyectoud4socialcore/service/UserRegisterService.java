@@ -6,12 +6,14 @@ import com.aad.proyectoud4socialcore.model.entity.Role;
 import com.aad.proyectoud4socialcore.model.entity.SocialUser;
 import com.aad.proyectoud4socialcore.model.repository.RoleRepository;
 import com.aad.proyectoud4socialcore.model.repository.UserRepository;
+import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -26,12 +28,16 @@ public class UserRegisterService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public SocialUser registerNewUserAccount(UserDTO userDTO) throws UserAlreadyExistsException {
+    public SocialUser registerNewUserAccount(UserDTO userDTO) throws UserAlreadyExistsException, InvalidCredentialsException {
 
         if(userRepository.findSocialUserByEmail(userDTO.getEmail()) != null ) {
 
             throw new UserAlreadyExistsException("El usuario ya existe");
 
+        }
+
+        if(!isEmailValid(userDTO.getEmail()) || !isPasswordValid(userDTO.getPassword())) {
+            throw new InvalidCredentialsException("Credenciales incorrectas");
         }
 
         SocialUser user = new SocialUser();
@@ -46,6 +52,32 @@ public class UserRegisterService {
         user.setRoles(roles);
 
         return userRepository.save(user);
+    }
+
+    public boolean isEmailValid(String email ) {
+
+        Pattern emailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+        if(email == null) {
+            return false;
+        }
+
+        return emailPattern.matcher(email).find();
+    }
+
+    public boolean isPasswordValid(String password ) {
+
+        if(password == null || password.length() < 5 ) {
+            return false;
+        }
+
+        if(password.contains(" ")) {
+            return false;
+        }
+
+        // Más consideraciones para una contraseña segura
+
+        return true;
     }
 
 }

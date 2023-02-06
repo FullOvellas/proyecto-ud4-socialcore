@@ -3,6 +3,7 @@ import { createBrowserRouter, IndexRouteObject, NonIndexRouteObject, useMatches 
 import LoginView from "Frontend/views/LoginView";
 import RegisterView from "Frontend/views/RegisterView";
 import EmptyView from "Frontend/views/empty/EmptyView";
+import GroupView from "Frontend/views/GroupView";
 
 export type MenuProps = Readonly<{
   icon?: string;
@@ -29,9 +30,10 @@ export type ViewRouteMatch = Readonly<Override<RouteMatch, ViewMeta>>;
 export const useViewMatches = useMatches as () => readonly ViewRouteMatch[];
 
 export const routes: readonly ViewRouteObject[] = [
-  { path: '/', element: <EmptyView />, handle: { icon: 'la la-file', title: 'Empty' } },
-    { path: '/login', element: <LoginView />, handle: { icon: 'la la-file', title: 'Empty' } },
-  { path: '/register', element: <RegisterView />, handle: { icon: 'la la-file', title: 'Empty' } },
+  { path: '/', element: <EmptyView /> },
+  { path: '/login', element: <LoginView /> },
+  { path: '/register', element: <RegisterView />},
+  {path: '/groups', element: <GroupView/>}
 ];
 
 const router = createBrowserRouter([...routes]);
