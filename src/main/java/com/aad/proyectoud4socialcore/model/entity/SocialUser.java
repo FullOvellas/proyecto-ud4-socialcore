@@ -18,9 +18,11 @@ public class SocialUser {
     @Id
     private Long id;
     private String fullName;
+    @OneToOne
+    @JoinColumn(name = "residence_id")
+    private Residence residence;
     @NonNull
     private String email;
-
     private String password;
     private URI profilePic;
 
