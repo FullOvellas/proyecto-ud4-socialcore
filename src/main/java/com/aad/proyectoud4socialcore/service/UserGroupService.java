@@ -51,8 +51,11 @@ public class UserGroupService {
 
     public void removeUserFromGroup(UserGroup group, SocialUser user) {
 
-        group.getParticipants().remove(user);
+        if(group.getCreator().equals(user)) {
+            return;
+        }
 
+        group.getParticipants().remove(user);
         userGroupRepository.save(group);
     }
 
