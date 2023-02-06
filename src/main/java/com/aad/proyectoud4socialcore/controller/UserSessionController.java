@@ -8,13 +8,15 @@ import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Controller
-public class RegisterController {
+public class UserSessionController {
 
     @Autowired
     private UserRegisterService registerService;
@@ -36,6 +38,20 @@ public class RegisterController {
             return "redirect:register?error=true";
         }
 
+    }
+
+    @RequestMapping("/logout")
+    public String logout(HttpServletRequest request ) {
+
+        HttpSession session = request.getSession(false);
+
+        if(session != null) {
+
+            session.invalidate();
+
+        }
+
+        return "redirect:/";
     }
 
 }

@@ -24,88 +24,99 @@ export default function SocialAppBar() {
         setAnchorEl(null);
     };
 
-    useLayoutEffect(() => {
+    const loadUser = async () => {
 
-        const loadUser = async () => {
+        if(!await UserAuthEndpoint.isAnonymous() ) {
 
-            if(!await UserAuthEndpoint.isAnonymous() ) {
+            const userName = await UserAuthEndpoint.getUserName();
 
-                const userName = await UserAuthEndpoint.getUserName();
-
-                setUser(userName);
-
-            }
+            setUser(userName);
 
         }
+
+    };
+
+    useLayoutEffect(() => {
 
         loadUser()
 
     }, []);
 
     return (
-    <AppBar position="static">
-        <Toolbar>
-            <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ mr: 2 }}
-            >
-                <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                SocialCore
-            </Typography>
-            {user != "" && (
-                <div>
+
+        <div>
+
+            <AppBar position="static">
+                <Toolbar>
                     <IconButton
                         size="large"
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleMenu}
+                        edge="start"
                         color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 2 }}
                     >
-                        <Typography>{user}</Typography>
-                        <AccountCircle />
+                        <MenuIcon />
                     </IconButton>
-                    <Menu
-                        id="menu-appbar"
-                        anchorEl={anchorEl}
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                    >
-                        <MenuItem onClick={handleClose}>Profile</MenuItem>
-                        <MenuItem onClick={handleClose}>My account</MenuItem>
-                    </Menu>
-                </div>
-            )}
-            {user == "" && (
-                <div>
-                    <Button variant={"contained"} onClick={event => navigate("/login")} style={{backgroundColor: "#FFF"}}>
-                        <Typography color={"primary"}>
-                            Iniciar sesión
-                        </Typography>
-                    </Button>
-                    <Button variant={"contained"} onClick={event => navigate("/register")} style={{backgroundColor: "#FFF"}}>
-                        <Typography color={"primary"}>
-                            Registrarse
-                        </Typography>
-                    </Button>
-                </div>
-            )}
-        </Toolbar>
-    </AppBar>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                        SocialCore
+                    </Typography>
+                    {user != "" && (
+                        <div>
+                            <IconButton
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleMenu}
+                                color="inherit"
+                            >
+                                <Typography>{user}</Typography>
+                                <AccountCircle />
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                            >
+                                <MenuItem onClick={ _ => navigate("/profile")}>Perfil</MenuItem>
+                                <MenuItem onClick={ _ =>
+                                    fetch("/logout", {
+                                        method: "GET",
+                                    }).then(v => {
+                                        if(v.redirected) window.location.replace(v.url);
+                                    }).catch( _ => console.log("Error"))
+                                }>Cerrar sesión</MenuItem>
+                            </Menu>
+                        </div>
+                    )}
+                    {user == "" && (
+                        <div>
+                            <Button variant={"contained"} onClick={ _ => navigate("/login")} style={{backgroundColor: "#FFF"}}>
+                                <Typography color={"primary"}>
+                                    Iniciar sesión
+                                </Typography>
+                            </Button>
+                            <Button variant={"contained"} onClick={ _ => navigate("/register")} style={{backgroundColor: "#FFF"}}>
+                                <Typography color={"primary"}>
+                                    Registrarse
+                                </Typography>
+                            </Button>
+                        </div>
+                    )}
+                </Toolbar>
+            </AppBar>
+
+        </div>
 );
 
 }

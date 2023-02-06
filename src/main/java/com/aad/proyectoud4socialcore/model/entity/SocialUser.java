@@ -1,5 +1,6 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,9 +24,14 @@ public class SocialUser {
     private Residence residence;
     @NonNull
     private String email;
+
+    @JsonIgnore
     private String password;
+
+    @JsonIgnore // TODO: añadir valor por defecto porque puede ser un valor Null
     private URI profilePic;
 
+    @JsonIgnore     // Para evitar recursión infinita en endpoints
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
@@ -41,6 +47,10 @@ public class SocialUser {
             }
     )
     private List<Role> roles;
+
+    @JsonIgnore     // Para evitar recursión infinita en endpoints
+    @ManyToMany(mappedBy = "participants")
+    private List<UserGroup> groups;
 
     public SocialUser() {
 
