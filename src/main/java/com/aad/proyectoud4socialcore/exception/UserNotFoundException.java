@@ -1,6 +1,9 @@
 package com.aad.proyectoud4socialcore.exception;
 
-public class UserNotFoundException extends Exception {
+import com.vaadin.flow.server.auth.AnonymousAllowed;
+import dev.hilla.exception.EndpointException;
+
+public class UserNotFoundException extends EndpointException {
 
     public UserNotFoundException(String message) {
 

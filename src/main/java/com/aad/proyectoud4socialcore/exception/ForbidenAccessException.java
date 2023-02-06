@@ -1,4 +1,12 @@
 package com.aad.proyectoud4socialcore.exception;
 
-public class ForbidenAccessException extends Exception {
+import dev.hilla.exception.EndpointException;
+
+public class ForbidenAccessException extends EndpointException {
+
+    public ForbidenAccessException(String message) {
+
+        super(message);
+
+    }
 }
