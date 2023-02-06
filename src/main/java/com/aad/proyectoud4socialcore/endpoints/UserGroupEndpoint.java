@@ -34,6 +34,14 @@ public class UserGroupEndpoint {
     @Autowired
     private UserGroupRepository userGroupRepository;
 
+    public boolean isCreator(UserGroup group) {
+
+        SocialUser contextUser = userAuthService.getContextUser();
+
+        return group.getCreator().equals(contextUser);
+    }
+
+
     public UserGroup getGroupById(Long id) throws NullPointerException, UserNotFoundException, ForbidenAccessException {
 
         UserGroup group = userGroupRepository.findUserGroupById(id);
