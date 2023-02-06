@@ -7,7 +7,7 @@ import {Card, Divider, IconButton, ListItem, ListItemAvatar, ListItemButton, Lis
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import {useSearchParams} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {List} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import {AddCircleOutlined} from "@mui/icons-material";
@@ -19,11 +19,14 @@ import {EndpointError} from "@hilla/frontend";
 
 export default function GroupView() {
 
+    const navigate = useNavigate()
+
     const [userMail, setUserMail] = useState<string>("");
     const [searchParams, setSearchParams] = useSearchParams();
     const [showModal, setShowModal] = useState<boolean>(false);
     const [group, setGroup] = useState<UserGroup | null>(null);
     const [groupId, setGroupId] = useState<number>(-1);
+    const [isCreator, setIsCreator] = useState<boolean>(false);
     const [error, setError] = useState<String>("");
 
     const modalStyle = {
@@ -125,11 +128,24 @@ export default function GroupView() {
 
             setGroup(newGroup)
 
+            setIsCreator(await UserGroupEndpoint.isCreator(newGroup))
+
         } catch (error) {
 
             console.log(error)
 
         }
+
+    }
+
+    const deleteGroup = async () => {
+
+        // TODO: añadir confirmación de borrado
+
+        await UserGroupEndpoint.deleteGroup(group!);
+
+        navigate("/profile")
+
 
     }
 
@@ -143,6 +159,7 @@ export default function GroupView() {
             setGroupId(id)
 
             loadGroup(id)
+
 
         }
 
@@ -192,6 +209,7 @@ export default function GroupView() {
 
                             <Typography paddingBottom={"10px"} textAlign="center" variant={"h2"}>{(group)? group!.name : ""}</Typography>
 
+
                         </Grid>
 
                         <Grid item md={6} xs={12}>
@@ -212,6 +230,17 @@ export default function GroupView() {
                                 </ListItem>
 
                             </Card>
+
+                            {isCreator &&
+
+                                <List>
+
+                                    <ListItem><Typography variant="h5">Opciones de creador</Typography></ListItem>
+                                    <ListItem><Button onClick={ _ => deleteGroup()}>Delete group</Button></ListItem>
+
+                                </List>
+
+                            }
 
                         </Grid>
 

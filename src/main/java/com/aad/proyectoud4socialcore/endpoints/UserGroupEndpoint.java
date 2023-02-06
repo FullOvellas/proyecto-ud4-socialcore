@@ -132,4 +132,16 @@ public class UserGroupEndpoint {
 
     }
 
+    public void deleteGroup(UserGroup group ) {
+
+        SocialUser contextUser = userAuthService.getContextUser();
+
+        if(!group.getCreator().equals(contextUser)) {
+            return;
+        }
+
+        userGroupRepository.delete(group);
+
+    }
+
 }
