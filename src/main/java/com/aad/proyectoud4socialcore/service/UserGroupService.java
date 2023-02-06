@@ -1,6 +1,7 @@
 package com.aad.proyectoud4socialcore.service;
 
 import com.aad.proyectoud4socialcore.exception.GroupAlreadyExsistsException;
+import com.aad.proyectoud4socialcore.exception.UserNotFoundException;
 import com.aad.proyectoud4socialcore.model.entity.SocialUser;
 import com.aad.proyectoud4socialcore.model.entity.UserGroup;
 import com.aad.proyectoud4socialcore.model.repository.UserGroupRepository;
@@ -32,6 +33,16 @@ public class UserGroupService {
         userGroup.getParticipants().add(creator);
 
         userGroupRepository.save(userGroup);
+    }
+
+    public void addUserToGroup(SocialUser user, UserGroup group ) {
+
+        if(group.getParticipants().contains(user)) {
+            return;
+        }
+
+        group.getParticipants().add(user);
+
     }
 
 }

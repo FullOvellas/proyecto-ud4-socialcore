@@ -2,6 +2,7 @@ package com.aad.proyectoud4socialcore.endpoints;
 
 import com.aad.proyectoud4socialcore.exception.GroupAlreadyExsistsException;
 import com.aad.proyectoud4socialcore.exception.UserAlreadyExistsException;
+import com.aad.proyectoud4socialcore.exception.UserNotFoundException;
 import com.aad.proyectoud4socialcore.model.entity.SocialUser;
 import com.aad.proyectoud4socialcore.model.entity.UserGroup;
 import com.aad.proyectoud4socialcore.model.repository.UserGroupRepository;
@@ -30,6 +31,8 @@ public class UserGroupEndpoint {
     @Autowired
     private UserGroupRepository userGroupRepository;
 
+
+
     public UserGroup[] getUserGroups() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SocialUser user = userRepository.findSocialUserByEmail(authentication.getName());
@@ -52,7 +55,7 @@ public class UserGroupEndpoint {
      * @param name nombre del grupo a crear
      * @return true si se ha creado el grupo y false si no se pudo crear
      */
-    public boolean createUserGroup(String name) {
+    public boolean createUserGroup(String name) throws GroupAlreadyExsistsException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SocialUser user = userRepository.findSocialUserByEmail(authentication.getName());
 
@@ -60,16 +63,23 @@ public class UserGroupEndpoint {
             return false;
         }
 
-        try {
+        userGroupService.createUserGroup(user, name);
+        return true;
 
-            userGroupService.createUserGroup(user, name);
-            return true;
+    }
 
-        } catch (GroupAlreadyExsistsException ex ) {
+    public void addUserToGroup(String email, UserGroup group) throws UserNotFoundException {
+
+        SocialUser user = userRepository.findSocialUserByEmail(email);
+
+        if(user == null) {
+
+            throw new UserNotFoundException("Usuario no encontrado");
 
         }
 
-        return false;
+        userGroupService.addUserToGroup(user, group);
+
     }
 
 }
