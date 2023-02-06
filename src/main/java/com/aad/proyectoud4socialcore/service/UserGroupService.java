@@ -45,4 +45,17 @@ public class UserGroupService {
 
     }
 
+    public void removeUserFromGroup(UserGroup group, SocialUser user) {
+
+        // TODO: seguridad de usuarios
+
+        if(group.getParticipants().contains(user)) {
+
+            group.getParticipants().remove(user);
+
+        }
+
+        userGroupRepository.save(group);
+    }
+
 }

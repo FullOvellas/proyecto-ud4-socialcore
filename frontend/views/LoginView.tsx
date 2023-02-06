@@ -21,7 +21,6 @@ export default function LoginView(){
 
     const [error, setError] = useState<String>("")
     const [searchParams, setSearchParams] = useSearchParams();
-
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 

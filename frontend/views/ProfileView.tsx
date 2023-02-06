@@ -13,8 +13,11 @@ import Grid from "@mui/material/Grid";
 import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
 import {AddCard} from "@mui/icons-material";
 import TextField from "@mui/material/TextField";
+import {useNavigate} from "react-router-dom";
 
 export default function ProfileView() {
+
+    const navigate = useNavigate()
 
     const [groups, setGroups] = useState<UserGroup[]>([]);
     const [user, setUser] = useState<SocialUser>();
@@ -49,6 +52,7 @@ export default function ProfileView() {
     const openUserGroup= (group: UserGroup) => {
 
         // Abrir página de detalles de grupo de usuarios
+        navigate("/group?group_id=" + group.id)
 
     }
 
