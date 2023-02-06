@@ -15,6 +15,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import RemoveIcon from '@mui/icons-material/Remove';
 import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
+import {EndpointError} from "@hilla/frontend";
 
 export default function GroupView() {
 
@@ -22,7 +23,8 @@ export default function GroupView() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [showModal, setShowModal] = useState<boolean>(false);
     const [group, setGroup] = useState<UserGroup | null>(null);
-    const [groupId, setGroupId] = useState<number>(-1)
+    const [groupId, setGroupId] = useState<number>(-1);
+    const [error, setError] = useState<String>("");
 
     const modalStyle = {
         position: 'absolute' as 'absolute',
@@ -44,11 +46,36 @@ export default function GroupView() {
             return;
         }
 
-        await UserGroupEndpoint.addUserToGroup(userMail, group!)
-        setShowModal(false)
-        setUserMail("")
+        try {
 
-        loadGroup(groupId)
+            await UserGroupEndpoint.addUserToGroup(userMail, group!)
+            setShowModal(false)
+            setUserMail("")
+            setError("")
+
+            loadGroup(groupId)
+
+        } catch (e) {
+
+            if(e instanceof EndpointError ) {
+
+                if(e.type != undefined ) {
+
+                    if(e.type.endsWith("UserNotFoundException")) {
+
+                        setError("User not found")
+
+                    } else if(e.type.endsWith("ForbidenAccessException")) {
+
+                        setError("Forbiden access")
+
+                    }
+
+                }
+
+            }
+
+        }
 
     };
 
@@ -103,7 +130,9 @@ export default function GroupView() {
 
                         <ListItem><ListItemText><h3 id="child-modal-title">Add new user</h3></ListItemText></ListItem>
 
-                        <ListItem><TextField label="User email" autoFocus={true} onEnded={addUserToGroup} onSubmit={addUserToGroup} name="groupName" value={userMail} onChange={event => setUserMail(event.currentTarget.value)} /></ListItem>
+                        <ListItem><TextField label="User email" error={error != ""} autoFocus={true} onEnded={addUserToGroup} onSubmit={addUserToGroup} name="groupName" value={userMail} onChange={event => setUserMail(event.currentTarget.value)} /></ListItem>
+
+                        <ListItem><Typography variant={"body2"} color={"darkred"}>{error}</Typography></ListItem>
 
                         <ListItem secondaryAction={
                             <Button variant={"contained"} onClick={ _ => {addUserToGroup()}}>
@@ -170,7 +199,7 @@ export default function GroupView() {
                                                 <Avatar></Avatar>
                                             </ListItemAvatar>
                                             <ListItemText><Typography variant={"body2"}>{value!.fullName}</Typography></ListItemText>
-                                            <IconButton onClick={removeUserFromGroup}><RemoveIcon/></IconButton>
+                                            <IconButton onClick={ _ => removeUserFromGroup(value!)}><RemoveIcon/></IconButton>
                                         </ListItem>
 
                                     ) : <p>Not found</p>
