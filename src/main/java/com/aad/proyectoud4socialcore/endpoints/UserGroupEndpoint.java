@@ -26,7 +26,17 @@ public class UserGroupEndpoint {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SocialUser user = userRepository.findSocialUserByEmail(authentication.getName());
 
-        return userGroupRepository.findUserGroupByParticipantsContaining(user).toArray(UserGroup[]::new);
+        if(user == null) {
+            return new UserGroup[0];
+        }
+
+        List<UserGroup> groups = userGroupRepository.findUserGroupByParticipantsContaining(user);
+
+        if(groups == null) {
+            return new UserGroup[0];
+        }
+
+        return groups.toArray(UserGroup[]::new);
     }
 
 }

@@ -43,75 +43,80 @@ export default function SocialAppBar() {
     }, []);
 
     return (
-    <AppBar position="static">
-        <Toolbar>
-            <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ mr: 2 }}
-            >
-                <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                SocialCore
-            </Typography>
-            {user != "" && (
-                <div>
+
+        <div>
+
+            <AppBar position="static">
+                <Toolbar>
                     <IconButton
                         size="large"
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleMenu}
+                        edge="start"
                         color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 2 }}
                     >
-                        <Typography>{user}</Typography>
-                        <AccountCircle />
+                        <MenuIcon />
                     </IconButton>
-                    <Menu
-                        id="menu-appbar"
-                        anchorEl={anchorEl}
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                    >
-                        <MenuItem onClick={ _ => navigate("/profile")}>Perfil</MenuItem>
-                        <MenuItem onClick={ _ =>
-                            fetch("/logout", {
-                                method: "GET",
-                            }).then(v => {
-                                if(v.redirected) window.location.replace(v.url);
-                            }).catch( _ => console.log("Error"))
-                        }>Cerrar sesión</MenuItem>
-                    </Menu>
-                </div>
-            )}
-            {user == "" && (
-                <div>
-                    <Button variant={"contained"} onClick={ _ => navigate("/login")} style={{backgroundColor: "#FFF"}}>
-                        <Typography color={"primary"}>
-                            Iniciar sesión
-                        </Typography>
-                    </Button>
-                    <Button variant={"contained"} onClick={ _ => navigate("/register")} style={{backgroundColor: "#FFF"}}>
-                        <Typography color={"primary"}>
-                            Registrarse
-                        </Typography>
-                    </Button>
-                </div>
-            )}
-        </Toolbar>
-    </AppBar>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                        SocialCore
+                    </Typography>
+                    {user != "" && (
+                        <div>
+                            <IconButton
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleMenu}
+                                color="inherit"
+                            >
+                                <Typography>{user}</Typography>
+                                <AccountCircle />
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                            >
+                                <MenuItem onClick={ _ => navigate("/profile")}>Perfil</MenuItem>
+                                <MenuItem onClick={ _ =>
+                                    fetch("/logout", {
+                                        method: "GET",
+                                    }).then(v => {
+                                        if(v.redirected) window.location.replace(v.url);
+                                    }).catch( _ => console.log("Error"))
+                                }>Cerrar sesión</MenuItem>
+                            </Menu>
+                        </div>
+                    )}
+                    {user == "" && (
+                        <div>
+                            <Button variant={"contained"} onClick={ _ => navigate("/login")} style={{backgroundColor: "#FFF"}}>
+                                <Typography color={"primary"}>
+                                    Iniciar sesión
+                                </Typography>
+                            </Button>
+                            <Button variant={"contained"} onClick={ _ => navigate("/register")} style={{backgroundColor: "#FFF"}}>
+                                <Typography color={"primary"}>
+                                    Registrarse
+                                </Typography>
+                            </Button>
+                        </div>
+                    )}
+                </Toolbar>
+            </AppBar>
+
+        </div>
 );
 
 }
