@@ -55,4 +55,17 @@ public class SocialUser {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+
+        if(o instanceof SocialUser ) {
+
+            SocialUser user = (SocialUser) o;
+
+            return user.getId().equals(this.getId());
+        }
+
+        return false;
+    }
+
 }

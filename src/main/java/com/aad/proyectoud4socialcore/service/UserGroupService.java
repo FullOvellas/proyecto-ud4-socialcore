@@ -14,6 +14,9 @@ public class UserGroupService {
     @Autowired
     private UserGroupRepository userGroupRepository;
 
+    @Autowired
+    private UserAuthService userAuthService;
+
     public void createUserGroup(SocialUser creator, String name ) throws GroupAlreadyExsistsException {
 
         if(creator == null) {
@@ -42,18 +45,13 @@ public class UserGroupService {
         }
 
         group.getParticipants().add(user);
+        userGroupRepository.save(group);
 
     }
 
     public void removeUserFromGroup(UserGroup group, SocialUser user) {
 
-        // TODO: seguridad de usuarios
-
-        if(group.getParticipants().contains(user)) {
-
-            group.getParticipants().remove(user);
-
-        }
+        group.getParticipants().remove(user);
 
         userGroupRepository.save(group);
     }

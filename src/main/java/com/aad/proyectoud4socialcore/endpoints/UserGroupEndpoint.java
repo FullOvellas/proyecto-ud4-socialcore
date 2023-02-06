@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
+import java.util.Objects;
 
 @Endpoint
 @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
@@ -47,7 +48,7 @@ public class UserGroupEndpoint {
         }
 
         if(!group.getParticipants().contains(user)) {
-            throw new ForbidenAccessException();
+            throw new ForbidenAccessException("User can't access this group");
         }
 
         return group;
@@ -88,9 +89,10 @@ public class UserGroupEndpoint {
 
     }
 
-    public void addUserToGroup(String email, UserGroup group) throws UserNotFoundException {
+    public void addUserToGroup(String email, UserGroup group) throws UserNotFoundException, ForbidenAccessException {
 
         SocialUser user = userRepository.findSocialUserByEmail(email);
+        SocialUser contextUser = userAuthService.getContextUser();
 
         if(user == null) {
 
@@ -98,18 +100,27 @@ public class UserGroupEndpoint {
 
         }
 
+        if(!Objects.equals(group.getCreator().getId(), contextUser.getId())) {
+
+            throw new ForbidenAccessException("User isn't the creator of this group");
+
+        }
+
         userGroupService.addUserToGroup(user, group);
-        userGroupRepository.save(group);
 
     }
 
-    public void removeUserFromGroup(UserGroup group, SocialUser user) {
+    public void removeUserFromGroup(UserGroup group, SocialUser user) throws ForbidenAccessException {
 
-        if(group == null || user == null) {
-            return;
+        SocialUser contextUser = userAuthService.getContextUser();
+
+        if(!Objects.equals(group.getCreator().getId(), contextUser.getId())) {
+
+            throw new ForbidenAccessException("User isn't the creator of this group");
+
         }
 
-        userGroupService.removeUserFromGroup(UserGroup group, SocialUser user);
+        userGroupService.removeUserFromGroup(group, user);
 
     }
 
