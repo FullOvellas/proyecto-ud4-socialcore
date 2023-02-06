@@ -81,7 +81,39 @@ export default function GroupView() {
 
     const removeUserFromGroup = async (user: SocialUser) => {
 
+        if(group == null) {
+            return;
+        }
 
+        try {
+
+            if(user.id == group!.creator.id) {
+
+                // TODO: mostrar error
+                return;
+            }
+
+            await UserGroupEndpoint.removeUserFromGroup(group!, user)
+
+            loadGroup(groupId)
+
+        } catch (e) {
+
+            if(e instanceof EndpointError ) {
+
+                if(e.type != undefined ) {
+
+                    if(e.type.endsWith("ForbidenAccessException")) {
+
+                        // TODO: mostrar error ??
+
+                    }
+
+                }
+
+            }
+
+        }
 
     }
 
@@ -199,7 +231,9 @@ export default function GroupView() {
                                                 <Avatar></Avatar>
                                             </ListItemAvatar>
                                             <ListItemText><Typography variant={"body2"}>{value!.fullName}</Typography></ListItemText>
-                                            <IconButton onClick={ _ => removeUserFromGroup(value!)}><RemoveIcon/></IconButton>
+                                            { value!.id != group.creator.id &&
+                                                <IconButton onClick={ _ => removeUserFromGroup(value!)}><RemoveIcon/></IconButton>
+                                            }
                                         </ListItem>
 
                                     ) : <p>Not found</p>
