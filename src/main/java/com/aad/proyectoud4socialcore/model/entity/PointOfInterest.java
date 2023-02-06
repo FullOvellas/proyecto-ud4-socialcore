@@ -7,6 +7,9 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.OpeningHours;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,29 +18,23 @@ import java.util.List;
 
 @Data
 @Entity
+@RequiredArgsConstructor
+@NoArgsConstructor
 @Table(name = "points_of_interest")
 public class PointOfInterest {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-    @NotNull
-    private String name;
-    @NotNull
-    private String formattedAddress;
-    @NotNull
-    private LatLng coordinates;
-    @NotNull
-    private OpeningHours openingHours;
-    @NotNull
-    private String businessStatus;
-    @NotNull
+    @NonNull private String name;
+    @NonNull private String formattedAddress;
+    @NonNull private LatLng coordinates;
+    @NonNull private OpeningHours openingHours;
+    @NonNull private String businessStatus;
     @ElementCollection
-    private List<String> types;
-    @NotNull
-    private byte[] imageData;
-    @NotNull
-    private float rating;
+    @NonNull private List<String> types;
+    private byte @NonNull[] imageData;
+    @NonNull private Float rating;
     @OneToMany(mappedBy = "pointOfInterest")
     private List<Comment> comments;
 
