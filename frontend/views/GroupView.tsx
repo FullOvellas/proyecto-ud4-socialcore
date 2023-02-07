@@ -183,10 +183,11 @@ export default function GroupView() {
 
                         <ListItem><Typography variant={"body2"} color={"darkred"}>{error}</Typography></ListItem>
 
-                        <ListItem secondaryAction={
-                            <Button variant={"contained"} onClick={ _ => {addUserToGroup()}}>
+                        <ListItem secondaryAction={ isCreator &&
+                            <Button variant={"contained"} onClick={ _ => {addUserToGroup().then()}}>
                                 Add
                             </Button>
+
                         }>
 
                                 <Button onClick={ _ => setShowModal(false)}>Cancel</Button>
