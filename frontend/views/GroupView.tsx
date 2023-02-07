@@ -137,6 +137,17 @@ export default function GroupView() {
         }
 
     }
+
+    const exitGroup = () => {
+        UserGroupEndpoint.exitGroup(group!).then(v => {
+
+            if(v) {
+                navigate("/profile")
+            }
+
+        })
+    }
+
     const deleteGroup = async () => {
 
         // TODO: añadir confirmación de borrado
@@ -247,7 +258,7 @@ export default function GroupView() {
                                 <List>
 
                                     <ListItem><Typography variant="h5">Options</Typography></ListItem>
-                                    <ListItem><Button onClick={ _ => deleteGroup()}>Exit group</Button></ListItem>
+                                    <ListItem><Button onClick={ _ => exitGroup()}>Exit group</Button></ListItem>
 
                                 </List>
 

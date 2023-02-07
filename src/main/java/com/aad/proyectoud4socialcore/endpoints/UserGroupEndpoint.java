@@ -144,4 +144,21 @@ public class UserGroupEndpoint {
 
     }
 
+    public boolean exitGroup(UserGroup group) {
+
+        SocialUser user = userAuthService.getContextUser();
+
+        if(user == null) {
+            return false;
+        }
+
+        if(group.getCreator().equals(user)) {
+            return false;
+        }
+
+        userGroupService.removeUserFromGroup(group, user);
+
+        return true;
+    }
+
 }
