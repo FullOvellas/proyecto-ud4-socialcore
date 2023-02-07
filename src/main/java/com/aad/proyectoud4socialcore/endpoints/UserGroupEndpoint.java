@@ -18,6 +18,9 @@ import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Endpoint de operaciones con grupos de usuarios. Solo se permite acceso a los usuarios ADMIN o usuarios autentificados
+ */
 @Endpoint
 @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
 public class UserGroupEndpoint {
@@ -34,6 +37,11 @@ public class UserGroupEndpoint {
     @Autowired
     private UserGroupRepository userGroupRepository;
 
+    /**
+     * Comprueba si el usuario del contexto es el credor del grupo
+     * @param group el grupo para comprobar
+     * @return true si es el creador
+     */
     public boolean isCreator(UserGroup group) {
 
         SocialUser contextUser = userAuthService.getContextUser();
@@ -42,14 +50,17 @@ public class UserGroupEndpoint {
     }
 
 
-    public UserGroup getGroupById(Long id) throws NullPointerException, UserNotFoundException, ForbidenAccessException {
+    /**
+     * Obtiene un grupo de usuarios a partir del Id
+     * @param id el id del grupo
+     * @return el grupo
+     * @throws NullPointerException si no existe
+     * @throws ForbidenAccessException si el usuario no pertenece al grupo del cual pide los datos
+     */
+    public UserGroup getGroupById(Long id) throws NullPointerException, ForbidenAccessException {
 
         UserGroup group = userGroupRepository.findUserGroupById(id);
         SocialUser user = userAuthService.getContextUser();
-
-        if(user == null ) {
-            throw new UserNotFoundException("Usuario no encontrado");
-        }
 
         if(group == null) {
             throw new NullPointerException();
@@ -62,6 +73,10 @@ public class UserGroupEndpoint {
         return group;
     }
 
+    /**
+     * Obtiene todos los grupos del usuario del contexto
+     * @return los grupos
+     */
     public UserGroup[] getUserGroups() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SocialUser user = userRepository.findSocialUserByEmail(authentication.getName());
@@ -97,6 +112,13 @@ public class UserGroupEndpoint {
 
     }
 
+    /**
+     * Añade un usuario a un grupo a partir del email
+     * @param email el email del usuario para añadir
+     * @param group el grupo donde añadir el usuario
+     * @throws UserNotFoundException si el email no pertenece a ningún usuario
+     * @throws ForbidenAccessException si el usuario no es el creador del grupo
+     */
     public void addUserToGroup(String email, UserGroup group) throws UserNotFoundException, ForbidenAccessException {
 
         SocialUser user = userRepository.findSocialUserByEmail(email);
@@ -118,6 +140,12 @@ public class UserGroupEndpoint {
 
     }
 
+    /**
+     * Borra un usuario de un grupo
+     * @param group el grupo donde borrar el usuario
+     * @param user el usuario a borrar del grupo
+     * @throws ForbidenAccessException si el usuario del contexto no es el creador del grupo
+     */
     public void removeUserFromGroup(UserGroup group, SocialUser user) throws ForbidenAccessException {
 
         SocialUser contextUser = userAuthService.getContextUser();
@@ -132,7 +160,12 @@ public class UserGroupEndpoint {
 
     }
 
-    public void deleteGroup(UserGroup group ) {
+    /**
+     * Borra un grupo de usuarios
+     * @param group el grupo a borrar
+     * @throws ForbidenAccessException si el usuario que intenta borrar el grupo no es el creador del grupo
+     */
+    public void deleteGroup(UserGroup group ) throws ForbidenAccessException{
 
         SocialUser contextUser = userAuthService.getContextUser();
 
@@ -144,15 +177,16 @@ public class UserGroupEndpoint {
 
     }
 
+    /**
+     * Permite a un usuario salir de un grupo
+     * @param group el grupo de donde salir
+     * @return true si se pudo salir del grupo
+     */
     public boolean exitGroup(UserGroup group) {
 
         SocialUser user = userAuthService.getContextUser();
 
         if(user == null) {
-            return false;
-        }
-
-        if(group.getCreator().equals(user)) {
             return false;
         }
 
