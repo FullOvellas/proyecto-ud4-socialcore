@@ -14,6 +14,7 @@ public class Meeting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
+    private int maxRadiusMeters;
     @OneToMany
     private List<SocialUser> attendants;
 
