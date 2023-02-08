@@ -8,6 +8,9 @@ import com.aad.proyectoud4socialcore.model.repository.UserGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Servicio para gestionar la creación, modificación y borrado de los grupos de usuarios
+ */
 @Service
 public class UserGroupService {
 
@@ -17,6 +20,12 @@ public class UserGroupService {
     @Autowired
     private UserAuthService userAuthService;
 
+    /**
+     * Crea un grupo de usuarios
+     * @param creator el creador del grupo que hará de admin
+     * @param name el nombre del grupo
+     * @throws GroupAlreadyExsistsException en caso de que el usuario creador ya tenga un grupo con el mismo nombre
+     */
     public void createUserGroup(SocialUser creator, String name ) throws GroupAlreadyExsistsException {
 
         if(creator == null) {
@@ -38,6 +47,11 @@ public class UserGroupService {
         userGroupRepository.save(userGroup);
     }
 
+    /**
+     * Añade un usuario a un grupo. No permite que un usuario se encuentre varias veces en el mismo grupo
+     * @param user el usuario a añadir
+     * @param group el grupo donde añadir el usuario
+     */
     public void addUserToGroup(SocialUser user, UserGroup group ) {
 
         if(group.getParticipants().contains(user)) {
@@ -49,6 +63,11 @@ public class UserGroupService {
 
     }
 
+    /**
+     * Método para eliminar a un usuario de un grupo. En caso de que el usuario sea el creador no lo eliminará
+     * @param group el grupo del cual eliminar el usuario
+     * @param user el usuario a eliminar
+     */
     public void removeUserFromGroup(UserGroup group, SocialUser user) {
 
         if(group.getCreator().equals(user)) {
