@@ -19,6 +19,10 @@ public class SocialUser {
     @Id
     private Long id;
     private String fullName;
+    @OneToOne
+    @JsonIgnore
+    @JoinColumn(name = "residence_id")
+    private Residence residence;
     @NonNull
     private String email;
 

@@ -138,6 +138,16 @@ export default function GroupView() {
 
     }
 
+    const exitGroup = () => {
+        UserGroupEndpoint.exitGroup(group!).then(v => {
+
+            if(v) {
+                navigate("/profile")
+            }
+
+        })
+    }
+
     const deleteGroup = async () => {
 
         // TODO: añadir confirmación de borrado
@@ -184,9 +194,10 @@ export default function GroupView() {
                         <ListItem><Typography variant={"body2"} color={"darkred"}>{error}</Typography></ListItem>
 
                         <ListItem secondaryAction={
-                            <Button variant={"contained"} onClick={ _ => {addUserToGroup()}}>
+                            <Button variant={"contained"} onClick={ _ => {addUserToGroup().then()}}>
                                 Add
                             </Button>
+
                         }>
 
                                 <Button onClick={ _ => setShowModal(false)}>Cancel</Button>
@@ -235,8 +246,19 @@ export default function GroupView() {
 
                                 <List>
 
-                                    <ListItem><Typography variant="h5">Opciones de creador</Typography></ListItem>
+                                    <ListItem><Typography variant="h5">Creator options</Typography></ListItem>
                                     <ListItem><Button onClick={ _ => deleteGroup()}>Delete group</Button></ListItem>
+
+                                </List>
+
+                            }
+
+                            {!isCreator &&
+
+                                <List>
+
+                                    <ListItem><Typography variant="h5">Options</Typography></ListItem>
+                                    <ListItem><Button onClick={ _ => exitGroup()}>Exit group</Button></ListItem>
 
                                 </List>
 
@@ -246,7 +268,9 @@ export default function GroupView() {
 
                         <Grid item xs={12} md={6}>
 
-                            <ListItem secondaryAction={<IconButton onClick={ _ => setShowModal(true) }><AddCircleOutlined/></IconButton>}>
+                            <ListItem secondaryAction={ isCreator &&
+                                <IconButton onClick={ _ => setShowModal(true) }><AddCircleOutlined/></IconButton>}
+                            >
                                 <ListItemText><Typography paddingBottom={"10px"} variant={"h4"}>Participants</Typography></ListItemText>
                             </ListItem>
 
@@ -260,7 +284,7 @@ export default function GroupView() {
                                                 <Avatar></Avatar>
                                             </ListItemAvatar>
                                             <ListItemText><Typography variant={"body2"}>{value!.fullName}</Typography></ListItemText>
-                                            { value!.id != group.creator.id &&
+                                            { isCreator && value!.id != group.creator.id &&
                                                 <IconButton onClick={ _ => removeUserFromGroup(value!)}><RemoveIcon/></IconButton>
                                             }
                                         </ListItem>

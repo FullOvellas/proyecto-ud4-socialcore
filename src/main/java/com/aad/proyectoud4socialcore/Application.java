@@ -25,7 +25,7 @@ public class Application implements AppShellConfigurator {
         SpringApplication.run(Application.class, args);
     }
 
-    @Bean
+    @Bean(destroyMethod = "shutdown")
     public GeoApiContext geoApiContext() {
 
         Dotenv dotenv = Dotenv.configure().load();
