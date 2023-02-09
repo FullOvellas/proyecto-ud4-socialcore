@@ -40,7 +40,7 @@ export default function ProfileView() {
 
     let groupListItems = groups.map(value =>
         <ListItem key={"group_item_" + value.id} style={{cursor: "pointer"}} onClick={(_)=> openUserGroup(value)}>
-            <ListItemText primary={value.name} secondary={"Creador: " + value.creator.fullName}/>
+            <ListItemText primary={value.name} secondary={"Creator: " + value.creator.fullName}/>
         </ListItem>
     )
 
@@ -90,18 +90,18 @@ export default function ProfileView() {
 
                         <List>
 
-                            <ListItem><ListItemText><h4 id="child-modal-title">Crear nuevo grupo</h4></ListItemText></ListItem>
+                            <ListItem><ListItemText><h4 id="child-modal-title">Create a new group</h4></ListItemText></ListItem>
 
-                            <ListItem><TextField label="Nombre del grupo" autoFocus={true} onEnded={createUserGroup} onSubmit={createUserGroup} name="groupName" value={newGroupName} onChange={event => setNewGroupName(event.currentTarget.value)} /></ListItem>
+                            <ListItem><TextField label="Group name" autoFocus={true} onEnded={createUserGroup} onSubmit={createUserGroup} name="groupName" value={newGroupName} onChange={event => setNewGroupName(event.currentTarget.value)} /></ListItem>
 
                             <ListItem secondaryAction={<Button variant={"contained"} onClick={ _ => {
 
                                 createUserGroup()
 
                             }
-                            }>Crear</Button>}>
+                            }>Create</Button>}>
 
-                                <Button onClick={ _ => setCreateGroupModalShown(false)}>Cancelar</Button>
+                                <Button onClick={ _ => setCreateGroupModalShown(false)}>Cancel</Button>
 
                             </ListItem>
 
@@ -122,19 +122,13 @@ export default function ProfileView() {
 
                         </Grid>
 
-                        <Grid item xs={12}>
-
-                            <Typography paddingBottom={"10px"} variant={"h5"}>Lista de amigos</Typography>
-
-                        </Grid>
-
                         <Grid item xs={12} md={6}>
 
                             <Card elevation={3} style={{borderRadius: "15px"}}>
 
                                 <ListItem secondaryAction={<IconButton onClick={_ => setCreateGroupModalShown(true)}><AddCard/></IconButton>}>
 
-                                    <ListItemText><Typography variant={"h5"}>Grupos a los que perteneces:</Typography></ListItemText>
+                                    <ListItemText><Typography variant={"h5"}>Groups:</Typography></ListItemText>
 
                                 </ListItem>
 
@@ -157,7 +151,9 @@ export default function ProfileView() {
                                 <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
 
                                     <ListItem>
-                                        <ListItemText><Typography variant={"h5"}>Quedadas recientes:</Typography></ListItemText>
+
+                                        <ListItemText><Typography variant={"h5"}>Recent meetings:</Typography></ListItemText>
+
                                     </ListItem>
 
                                 </List>
