@@ -177,7 +177,13 @@ export default function GroupView() {
 
     return(
 
-        <Box>
+        <Box style={{
+            backgroundImage: "url(https://www.eea.europa.eu/highlights/eight-facts-about-europe2019s-forest-ecosystems/image_print)",
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'space',
+            height: "100%"
+        }}>
 
             <SocialAppBar/>
 
@@ -210,7 +216,7 @@ export default function GroupView() {
 
             </Modal>
 
-            <Container maxWidth={"md"}>
+            <Container>
 
                 <Card elevation={3}>
 
@@ -219,7 +225,6 @@ export default function GroupView() {
                         <Grid item xs={12}>
 
                             <Typography paddingBottom={"10px"} textAlign="center" variant={"h2"}>{(group)? group!.name : ""}</Typography>
-
 
                         </Grid>
 
