@@ -98,6 +98,24 @@ public class MeetingEndpoint {
         return meetingService.addPointToMeeting(meeting, poi);
     }
 
+    /**
+     * Devuelve un meeting a partir de su id
+     * @param id el id del meeting
+     * @return el meeting
+     * @throws ForbidenAccessException si el usuario no participa en el meeting
+     */
+    public Meeting getMeetingFromId(Long id) throws ForbidenAccessException {
+
+        SocialUser user = userAuthService.getContextUser();
+        Meeting meeting = repository.findMeetingById(id);
+
+        if(!meeting.getAttendants().contains(user)) {
+            throw new ForbidenAccessException("");
+        }
+
+        return meeting;
+    }
+
     public List<Meeting> findSocialUserMeetings(SocialUser user) {
 
         return repository.findMeetingWithParticipant(user);

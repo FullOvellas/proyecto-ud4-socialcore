@@ -6,6 +6,7 @@ import EmptyView from "Frontend/views/empty/EmptyView";
 import ProfileView from "Frontend/views/ProfileView";
 import GroupView from "Frontend/views/GroupView";
 import {render} from "lit";
+import MeetingView from "Frontend/views/MeetingView";
 
 export type MenuProps = Readonly<{
   icon?: string;
@@ -36,7 +37,8 @@ export const routes: readonly ViewRouteObject[] = [
   { path: '/login', element: <LoginView /> },
   { path: '/register', element: <RegisterView />},
   {path: '/profile', element: <ProfileView/>},
-  {path: '/group', element: <GroupView/>}
+  {path: '/group', element: <GroupView/>},
+  {path: '/meeting', element: <MeetingView/>}
 ];
 
 const router = createBrowserRouter([...routes]);
