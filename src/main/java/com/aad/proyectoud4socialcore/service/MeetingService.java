@@ -16,7 +16,6 @@ public class MeetingService {
 
     @Autowired
     private MeetingRepository meetingRepository;
-
     public Meeting createNewMeeting(@NotNull UserGroup group, DateTime dateTime) {
 
         Meeting meeting = new Meeting();
@@ -50,6 +49,10 @@ public class MeetingService {
         meetingRepository.save(meeting);
 
         return true;
+    }
+
+    public void removeMeeting(Meeting meeting) {
+        meetingRepository.delete(meeting);
     }
 
 }
