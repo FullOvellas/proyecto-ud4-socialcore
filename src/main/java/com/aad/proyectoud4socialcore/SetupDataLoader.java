@@ -19,16 +19,12 @@ import java.util.List;
 public class SetupDataLoader implements
         ApplicationListener<ContextRefreshedEvent> {
 
+    private static String[] APP_ROLES = new String[]{"ROLE_ADMIN", "ROLE_USER"};
+
     boolean alreadySetup = false;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private RoleRepository roleRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -37,41 +33,22 @@ public class SetupDataLoader implements
         if (alreadySetup)
             return;
 
+        for(String name : APP_ROLES) {
 
-        Role adminRole = createRoleIfNotFound("ROLE_ADMIN");
-        createRoleIfNotFound("ROLE_USER");
+            Role role = roleRepository.findByName(name);
 
-        SocialUser user = new SocialUser();
+            if (role == null) {
 
-        List<Role> adminRoles = new ArrayList<>();
+                role = new Role();
+                role.setName(name);
 
-        adminRoles.add(adminRole);
+                roleRepository.save(role);
 
-        user.setFullName("Test");
-        user.setPassword(passwordEncoder.encode("test"));
-        user.setEmail("test@test.com");
-        user.setRoles(adminRoles);
-
-        userRepository.save(user);
-
-        alreadySetup = true;
-    }
-
-    @Transactional
-    Role createRoleIfNotFound(String name) {
-
-        Role role = roleRepository.findByName(name);
-
-        if (role == null) {
-
-            role = new Role();
-            role.setName(name);
-
-            roleRepository.save(role);
+            }
 
         }
 
-        return role;
+        alreadySetup = true;
     }
 
 }

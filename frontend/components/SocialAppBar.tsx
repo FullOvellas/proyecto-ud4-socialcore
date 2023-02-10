@@ -48,15 +48,6 @@ export default function SocialAppBar() {
 
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 2 }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         SocialCore
                     </Typography>
@@ -88,14 +79,14 @@ export default function SocialAppBar() {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                <MenuItem onClick={ _ => navigate("/profile")}>Perfil</MenuItem>
+                                <MenuItem onClick={ _ => navigate("/profile")}>Profile</MenuItem>
                                 <MenuItem onClick={ _ =>
                                     fetch("/logout", {
                                         method: "GET",
                                     }).then(v => {
                                         if(v.redirected) window.location.replace(v.url);
                                     }).catch( _ => console.log("Error"))
-                                }>Cerrar sesión</MenuItem>
+                                }>Log out</MenuItem>
                             </Menu>
                         </div>
                     )}
@@ -103,12 +94,12 @@ export default function SocialAppBar() {
                         <div>
                             <Button variant={"contained"} onClick={ _ => navigate("/login")} style={{backgroundColor: "#FFF"}}>
                                 <Typography color={"primary"}>
-                                    Iniciar sesión
+                                    Login
                                 </Typography>
                             </Button>
                             <Button variant={"contained"} onClick={ _ => navigate("/register")} style={{backgroundColor: "#FFF"}}>
                                 <Typography color={"primary"}>
-                                    Registrarse
+                                    Sign up
                                 </Typography>
                             </Button>
                         </div>

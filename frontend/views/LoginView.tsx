@@ -35,7 +35,7 @@ export default function LoginView(){
         }
 
         if(password == "" || email == "") {
-            setError("Los campos no pueden estar vacíos")
+            setError("Fields cant' be empty")
             return
         }
 
@@ -52,7 +52,7 @@ export default function LoginView(){
 
         if(searchParams.get("error") != null ) {
 
-            setError("El usuario o contraseña no son correctos")
+            setError("Username or password are not correct")
 
         }
 
@@ -79,7 +79,7 @@ export default function LoginView(){
                         required
                         fullWidth
                         id="username"
-                        label="Correo electrónico"
+                        label="Email"
                         name="username"
                         autoComplete="email"
                         autoFocus
@@ -89,7 +89,7 @@ export default function LoginView(){
                         required
                         fullWidth
                         name="password"
-                        label="Contraseña"
+                        label="Password"
                         type="password"
                         id="password"
                         autoComplete="current-password"
@@ -103,12 +103,12 @@ export default function LoginView(){
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
                     >
-                        Iniciar sesión
+                        Log in
                     </Button>
                     <Grid container>
                         <Grid item>
                             <Link href="/register" variant="body2">
-                                {"¿No tienes cuenta? Regístrate"}
+                                {"Don't have an account? Sign up"}
                             </Link>
                         </Grid>
                     </Grid>
