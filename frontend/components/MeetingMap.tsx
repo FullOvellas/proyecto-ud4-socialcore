@@ -3,7 +3,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import {useMemo, useState} from "react";
 import Residence from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/Residence"
 import PointOfInterest from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/PointOfInterest";
-import MapProps from "Frontend/MapProps";
 
 export default function MeetingMap() {
 
