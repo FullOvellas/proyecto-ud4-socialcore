@@ -33,22 +33,22 @@ export default function RegisterView(){
         const passwordRep = data.get('password_rep')
 
         if(email == "" || fullName == "" || password == "" || passwordRep == "" ) {
-            setError("Los campos no pueden estar vacíos")
+            setError("Fields can't be empty")
             return
         }
 
         if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email!.toString()) ) {
-            setError("El correo no es válido")
+            setError("Email is not valid")
             return;
         }
 
         if(password != passwordRep) {
-            setError("Las contraseñas no coinciden");
+            setError("Passwords don't match");
             return;
         }
 
         if(password!.length < 5 ) {
-            setError("La contraseña debe tener como mínimo 5 caracteres");
+            setError("Password must have at least 5 characters");
             return;
         }
 
@@ -67,7 +67,7 @@ export default function RegisterView(){
 
         if(searchParams.get("error") != null ) {
 
-            setError("Credenciales no válidas")
+            setError("Invalid credentials")
 
         }
 
@@ -94,7 +94,7 @@ export default function RegisterView(){
                         required
                         fullWidth
                         id="fullName"
-                        label="Nombre"
+                        label="Name"
                         name="fullName"
                         autoComplete="name"
                         autoFocus
@@ -104,7 +104,7 @@ export default function RegisterView(){
                         required
                         fullWidth
                         id="email"
-                        label="Correo electrónico"
+                        label="Email"
                         name="email"
                         autoComplete="email"
                         autoFocus
@@ -114,7 +114,7 @@ export default function RegisterView(){
                         required
                         fullWidth
                         name="password"
-                        label="Contraseña"
+                        label="Password"
                         type="password"
                         id="password"
                         autoComplete="current-password"
@@ -124,12 +124,12 @@ export default function RegisterView(){
                         required
                         fullWidth
                         name="password_rep"
-                        label="Repite la contraseña"
+                        label="Repeat password"
                         type="password"
                         id="password_rep"
                         autoComplete="current-password"
                     />
-                    <Typography variant={"caption"} color={"rgb(155,155,155)"}>* La contraseña debe tener 5 caracteres como mínimo</Typography>
+                    <Typography variant={"caption"} color={"rgb(155,155,155)"}>* Password must have at least 5 characters</Typography>
                     {error != "" &&
                         <Typography color={"#FF0000"}>{error}</Typography>
                     }
@@ -139,12 +139,12 @@ export default function RegisterView(){
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
                     >
-                        Registrarse
+                        Sign up
                     </Button>
                     <Grid container>
                         <Grid item>
                             <Link href="/login" variant="body2">
-                                {"¿Tienes cuenta? Inicia sesión"}
+                                {"Already have an account? Login"}
                             </Link>
                         </Grid>
                     </Grid>
