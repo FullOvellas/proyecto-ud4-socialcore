@@ -19,6 +19,7 @@
     "@mui/material": "^5.11.7",
     "@polymer/iron-icon": "3.0.1",
     "@polymer/polymer": "3.5.1",
+    "@react-google-maps/api": "^2.18.1",
     "@vaadin-component-factory/vcf-nav": "1.0.6",
     "@vaadin/bundles": "23.3.5",
     "@vaadin/common-frontend": "0.0.17",
@@ -34,6 +35,7 @@
     "@vaadin/vaadin-themable-mixin": "23.3.5",
     "classnames": "^2.3.2",
     "construct-style-sheets-polyfill": "3.1.0",
+    "dotenv": "^16.0.3",
     "line-awesome": "1.3.0",
     "lit": "2.6.1",
     "react": "^18.2.0",
@@ -96,7 +98,9 @@
     "@emotion/react": "$@emotion/react",
     "@emotion/styled": "$@emotion/styled",
     "@mui/material": "$@mui/material",
-    "@mui/icons-material": "$@mui/icons-material"
+    "@mui/icons-material": "$@mui/icons-material",
+    "@react-google-maps/api": "$@react-google-maps/api",
+    "dotenv": "$dotenv"
   },
   "vaadin": {
     "dependencies": {
@@ -144,6 +148,6 @@
       "workbox-core": "6.5.4",
       "workbox-precaching": "6.5.4"
     },
-    "hash": "c5de73954444a72d6b03355b3675b0511cc235f014ef81926aea2a97de5f0f6b"
+    "hash": "902a76c33e54df242ef30272f1bfd76da9ddb27bc7f99a340370ceb1b7ebc7cf"
   }
 }
