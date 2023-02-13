@@ -1,6 +1,9 @@
 package com.aad.proyectoud4socialcore.service;
 
+import com.aad.proyectoud4socialcore.exception.PlaceTypeAlreadyRequestedException;
 import com.aad.proyectoud4socialcore.model.entity.PointOfInterest;
+import com.aad.proyectoud4socialcore.model.entity.Residence;
+import com.aad.proyectoud4socialcore.model.entity.SocialUser;
 import com.google.maps.GeoApiContext;
 import com.google.maps.ImageResult;
 import com.google.maps.NearbySearchRequest;
@@ -20,19 +23,35 @@ import java.util.List;
 @Service
 public class PointOfInterestService {
 
-    private GeoApiContext geoContext;
+    private final int DEFAULT_RADIUS = 50_000;
+    private final GeoApiContext geoContext;
 
     public PointOfInterestService(GeoApiContext geoContext) {
         this.geoContext = geoContext;
     }
 
-    public List<PointOfInterest> getNearbyPointsOfInterest(LatLng location, int radius, PlaceType type) throws IOException, InterruptedException, ApiException {
+
+    public List<PointOfInterest> getNearbyPointsOfInterestForUser(SocialUser user, String type) throws PlaceTypeAlreadyRequestedException, IOException, InterruptedException, ApiException {
+
+        PlaceType placeType = PlaceType.valueOf(type);
+        Residence userResidence = user.getResidence();
+
+        if (userResidence.getRequestedTypes().contains(placeType))
+            throw new PlaceTypeAlreadyRequestedException("This user has already requested nearby places of this type");
+
+        userResidence.getRequestedTypes().add(placeType);
+        return getNearbyPointsOfInterest(userResidence.getCoordinates(), placeType);
+
+    }
+
+
+    private List<PointOfInterest> getNearbyPointsOfInterest(LatLng location, PlaceType type) throws IOException, InterruptedException, ApiException {
 
         List<PointOfInterest> pointsOfInterest = new ArrayList<>();
         NearbySearchRequest nearbySearchRequest = new NearbySearchRequest(geoContext);
         nearbySearchRequest
                 .location(location)
-                .radius(radius)
+                .radius(DEFAULT_RADIUS)
                 .type(type);
 
         PlacesSearchResponse response = nearbySearchRequest.await();
@@ -56,8 +75,6 @@ public class PointOfInterestService {
 
         }
 
-
-        // TODO:
         return pointsOfInterest;
     }
 

@@ -9,6 +9,7 @@ import Grid from "@mui/material/Grid";
 import {Card, ListItem, ListItemSecondaryAction, ListItemText} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Meeting from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/Meeting";
+import MeetingMap from "Frontend/components/MeetingMap"
 
 export default function MeetingView() {
 
@@ -79,13 +80,9 @@ export default function MeetingView() {
 
                         <Grid item xs={12} md={6}>
 
-                            <Typography variant="h4" textAlign="center">
-                                Details
-                            </Typography>
-
-                            <ListItem>
-                                <ListItemText>Date: {}</ListItemText>
-                            </ListItem>
+                        { meeting != null &&
+                            <MeetingMap meeting={meeting} />
+                        }
 
                         </Grid>
 

@@ -24,6 +24,7 @@ import java.util.List;
 @Table(name = "points_of_interest")
 public class PointOfInterest {
 
+    private static final double EARTH_RADIUS = 6_371_000;
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -42,8 +43,23 @@ public class PointOfInterest {
     @OneToMany(mappedBy = "pointOfInterest")
     private List<Comment> comments;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "pointsOfInterest")
-    private List<Meeting> meetings;
+
+    // Poor man's distance matrix TODO implementar distance matrix se tiveramos cartos
+    public double calculateDistanceToPoint(LatLng originCoordinates) {
+
+        double originLongRadians = Math.toRadians(originCoordinates.lng);
+        double originLatRadians = Math.toRadians(originCoordinates.lat);
+        double pointOfInterestLongRadians = Math.toRadians(coordinates.lng);
+        double pointOfInterestLatRadians = Math.toRadians(coordinates.lat);
+
+        // Spherical law of cosines
+        return Math.acos(Math.sin(originLatRadians)
+                * Math.sin(pointOfInterestLatRadians)
+                + Math.cos(originLatRadians)
+                * Math.cos(pointOfInterestLatRadians)
+                * Math.cos(pointOfInterestLongRadians - originLongRadians))
+                * EARTH_RADIUS;
+
+    }
 
 }

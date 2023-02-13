@@ -2,7 +2,9 @@ package com.aad.proyectoud4socialcore.model.entity;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.NonNull;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -17,9 +19,16 @@ public class Meeting {
     @Id
     private Long id;
 
+    @OneToOne
+    @NonNull
+    @JsonIgnore // TODO: TODO TODO borrar
+    private PointOfInterest destination;
+    private int maxRadiusMeters;
+
     @OneToMany
     private List<SocialUser> attendants;
 
+    @JsonIgnore
     private DateTime plannedTime;
 
     @ManyToMany
@@ -39,6 +48,7 @@ public class Meeting {
 
     public Meeting() {
         this.pointsOfInterest = new ArrayList<>();
+        this.attendants = new ArrayList<>();
     }
 
 }
