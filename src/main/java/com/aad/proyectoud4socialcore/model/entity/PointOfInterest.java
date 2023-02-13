@@ -37,6 +37,7 @@ public class PointOfInterest {
 
     @ElementCollection
     @NonNull private List<String> types;
+    @JsonIgnore
     private byte @NonNull[] imageData;
 
     @NonNull private Float rating;

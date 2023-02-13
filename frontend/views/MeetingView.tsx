@@ -78,7 +78,7 @@ export default function MeetingView() {
 
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} md={12}>
 
                         { meeting != null &&
                             <MeetingMap meeting={meeting} />

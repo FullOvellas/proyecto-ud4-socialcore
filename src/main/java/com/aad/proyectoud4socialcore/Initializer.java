@@ -52,6 +52,11 @@ public class Initializer implements CommandLineRunner {
         List<Role> roles2 = new ArrayList<>();
         Meeting meeting1 = new Meeting();
 
+        PointOfInterest point1 = new PointOfInterest("a", "a", new LatLng(42.2513809, -8.6900709), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
+        PointOfInterest point2 = new PointOfInterest("a", "a", new LatLng(42.3407844, -8.6048713), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
+
+        meeting1.setDestination(point1);
+
         roles2.add(roleRepository.findByName("ROLE_ADMIN"));
 
         user1.setEmail("margb7");
@@ -83,9 +88,6 @@ public class Initializer implements CommandLineRunner {
                 });
 
         System.out.println("ID: " + meetingRepository.save(meeting1).getId());
-
-        PointOfInterest point1 = new PointOfInterest("a", "a", new LatLng(42.2513809, -8.6900709), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
-        PointOfInterest point2 = new PointOfInterest("a", "a", new LatLng(42.3407844, -8.6048713), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
 
         System.out.println(point1.calculateDistanceToPoint(point2.getCoordinates()));
 
