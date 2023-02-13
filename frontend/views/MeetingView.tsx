@@ -9,7 +9,7 @@ import Residence from "Frontend/generated/com/aad/proyectoud4socialcore/model/en
 import PointOfInterest from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/PointOfInterest"
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {useState} from "react";
-import UserGroup from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/UserGroup";
+import {MeetingEndpoint} from "Frontend/generated/endpoints";
 
 export default function MeetingView() {
 
@@ -18,12 +18,18 @@ export default function MeetingView() {
     const [userMail, setUserMail] = useState<string>("");
     const [searchParams, setSearchParams] = useSearchParams();
     const [showModal, setShowModal] = useState<boolean>(false);
-    const [group, setGroup] = useState<UserGroup | null>(null);
-    const [groupId, setGroupId] = useState<number>(-1);
     const [isCreator, setIsCreator] = useState<boolean>(false);
     const [error, setError] = useState<String>("");
+    const [meeting, setMeeting] = useState<Meeting>();
 
     const theme = createTheme();
+
+
+    if (searchParams.get("meeting_id") !== null) {
+
+        const meeting: Meeting = MeetingEndpoint.findById()
+
+    }
 
     return(
         <ThemeProvider theme={theme}>
@@ -37,7 +43,9 @@ export default function MeetingView() {
                         alignItems: 'center',
                     }}
                 >
-                   <MeetingMap />
+                    { meeting != null &&
+                        <MeetingMap meeting={meeting} />
+                    }
                 </Box>
             </Container>
         </ThemeProvider>
