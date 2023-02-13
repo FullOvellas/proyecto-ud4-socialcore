@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
+
+    Meeting findMeetingById(Long id);
+
     default List<Meeting> findMeetingWithParticipant(SocialUser user) {
 
         return findAll()

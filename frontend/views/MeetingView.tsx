@@ -1,53 +1,99 @@
-import * as React from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import MeetingMap from "Frontend/components/MeetingMap"
+import SocialAppBar from "Frontend/components/SocialAppBar";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import {useEffect, useState} from "react";
+import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
+import {MeetingEndpoint, UserAuthEndpoint, UserEndpoint} from "Frontend/generated/endpoints";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
+import Grid from "@mui/material/Grid";
+import {Card, ListItem, ListItemSecondaryAction, ListItemText} from "@mui/material";
+import Typography from "@mui/material/Typography";
 import Meeting from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/Meeting";
-import Residence from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/Residence";
-import PointOfInterest from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/PointOfInterest"
-import {useNavigate, useSearchParams} from "react-router-dom";
-import {useState} from "react";
-import {MeetingEndpoint} from "Frontend/generated/endpoints";
+import MeetingMap from "Frontend/components/MeetingMap"
 
 export default function MeetingView() {
 
     const navigate = useNavigate()
 
-    const [userMail, setUserMail] = useState<string>("");
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [showModal, setShowModal] = useState<boolean>(false);
-    const [isCreator, setIsCreator] = useState<boolean>(false);
-    const [error, setError] = useState<String>("");
+    const [user, setUser] = useState<SocialUser>();
     const [meeting, setMeeting] = useState<Meeting>();
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const theme = createTheme();
+    const loadMeeting = new Promise<Meeting>(async (resolve, reject) => {
 
 
-    if (searchParams.get("meeting_id") !== null) {
+        if(searchParams.get("meeting_id") != null ) {
 
-        const meeting: Meeting = MeetingEndpoint.findById()
+            let idString = searchParams.get("meeting_id")!.toString()
+            let id = parseInt(idString)
 
-    }
+            return resolve(MeetingEndpoint.getMeetingFromId(id))
+        }
 
-    return(
-        <ThemeProvider theme={theme}>
-            <Container component={"main"} maxWidth={"xs"}>
-                <CssBaseline/>
-                <Box
-                    sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    { meeting != null &&
-                        <MeetingMap meeting={meeting} />
-                    }
-                </Box>
+        return reject(new Error(""));
+    })
+
+    useEffect(() => {
+
+        UserAuthEndpoint.isAnonymous()
+            .then(v => {
+
+                if(v) {
+                    navigate("/")
+                    return
+                }
+
+                UserAuthEndpoint.getUser()
+                    .then(user => {
+
+                        setUser(user);
+
+                        loadMeeting
+                            .then(setMeeting)
+                            .catch(_ => navigate("/"))
+
+                    })
+
+            })
+
+    }, []);
+
+    return (
+
+        <Box>
+
+            <SocialAppBar/>
+
+            <Container maxWidth="md">
+
+                <Card elevation={3}>
+
+                    <Grid container spacing="12">
+
+                        <Grid xs={12} md={12} item>
+
+                            <Typography variant="h2" textAlign="center">
+                                Meeting
+                            </Typography>
+
+                        </Grid>
+
+                        <Grid item xs={12} md={6}>
+
+                        { meeting != null &&
+                            <MeetingMap meeting={meeting} />
+                        }
+
+                        </Grid>
+
+                    </Grid>
+
+                </Card>
+
             </Container>
-        </ThemeProvider>
+
+        </Box>
+
     );
+
 }

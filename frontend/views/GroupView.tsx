@@ -1,4 +1,4 @@
-import {UserGroupEndpoint} from "Frontend/generated/endpoints";
+import {MeetingEndpoint, UserGroupEndpoint} from "Frontend/generated/endpoints";
 import React, {useEffect, useState} from "react";
 import UserGroup from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/UserGroup";
 import SocialAppBar from "Frontend/components/SocialAppBar";
@@ -16,18 +16,23 @@ import Button from "@mui/material/Button";
 import RemoveIcon from '@mui/icons-material/Remove';
 import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
 import {EndpointError} from "@hilla/frontend";
+import DateTimeModel from "Frontend/generated/org/joda/time/DateTimeModel";
+import Meeting from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/Meeting";
 
 export default function GroupView() {
 
     const navigate = useNavigate()
 
     const [userMail, setUserMail] = useState<string>("");
+    const [meetingName, setMeetingName] = useState<string>("");
     const [searchParams, setSearchParams] = useSearchParams();
     const [showModal, setShowModal] = useState<boolean>(false);
+    const [showMeetingModel, setShowMeetingModal] = useState<boolean>(false);
     const [group, setGroup] = useState<UserGroup | null>(null);
     const [groupId, setGroupId] = useState<number>(-1);
     const [isCreator, setIsCreator] = useState<boolean>(false);
     const [error, setError] = useState<String>("");
+    const [groupMeetings, setGroupMeetings] = useState<Meeting[]>([]);
 
     const modalStyle = {
         position: 'absolute' as 'absolute',
@@ -159,6 +164,16 @@ export default function GroupView() {
 
     }
 
+    const createNewMeeting = async () => {
+
+        const created = await MeetingEndpoint.createNewMeeting(group!);
+
+
+
+        setMeetingName("")
+        setShowMeetingModal(false)
+    }
+
     useEffect( () => {
 
         if(searchParams.get("group_id") != null ) {
@@ -167,8 +182,22 @@ export default function GroupView() {
             let id = parseInt(idString)
 
             setGroupId(id)
-
             loadGroup(id)
+                .then(_=> {
+
+                    let notNullUsers: SocialUser[] = []
+
+                    let users = group!.participants?.forEach(u => {
+
+                        if(u != null) {
+                            notNullUsers.push(u)
+                        }
+
+                    })
+
+                    MeetingEndpoint.findSocialUsersMeetings(notNullUsers).then(setGroupMeetings)
+                })
+
 
 
         }
@@ -207,6 +236,39 @@ export default function GroupView() {
                         }>
 
                                 <Button onClick={ _ => setShowModal(false)}>Cancel</Button>
+
+                        </ListItem>
+
+                    </List>
+
+                </Box>
+
+            </Modal>
+
+            <Modal onClose={ _ => setShowMeetingModal(false)} open={showMeetingModel}>
+
+                <Box sx={{ ...modalStyle, width: 300 }}>
+
+                    <List>
+
+                        <ListItem><ListItemText><h3 id="child-modal-title">Add new meeting</h3></ListItemText></ListItem>
+
+                        <ListItem><TextField label="Name" error={error != ""} autoFocus={true} onEnded={createNewMeeting} onSubmit={createNewMeeting} name="meetingName" value={meetingName} onChange={event => setMeetingName(event.currentTarget.value)} /></ListItem>
+
+                        <ListItem><Typography variant={"body2"} color={"darkred"}>{error}</Typography></ListItem>
+
+                        <ListItem secondaryAction={
+                            <Button variant={"contained"} onClick={ _ => {createNewMeeting().then()}}>
+                                Add
+                            </Button>
+
+                        }>
+
+                            <Button onClick={ _ => {
+                                    setShowMeetingModal(false);
+                                    setMeetingName("")
+                            }
+                            }>Cancel</Button>
 
                         </ListItem>
 
@@ -303,7 +365,33 @@ export default function GroupView() {
 
                         <Grid item xs={12} md={12}>
 
-                            <Typography paddingBottom={"10px"} textAlign="center" variant={"h4"}>Meetings</Typography>
+                            <ListItem secondaryAction={
+                                <IconButton onClick={ _ => setShowMeetingModal(true) }>
+                                    <AddCircleOutlined/>
+                                </IconButton>
+                            }>
+                                <ListItemText><Typography textAlign="center" paddingBottom={"10px"} variant={"h4"}>Meetings</Typography></ListItemText>
+                            </ListItem>
+
+                            <List>
+
+                                {
+                                    (group!= null)? groupMeetings.map(value =>
+
+                                        <ListItem key={"participant_" + value!.id}>
+                                            <ListItemAvatar>
+                                                <Avatar></Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText><Typography variant={"body2"}>{value!.id}</Typography></ListItemText>
+                                            { isCreator && value!.id != group.creator.id &&
+                                                <IconButton><RemoveIcon/></IconButton>
+                                            }
+                                        </ListItem>
+
+                                    ) : <p>Not found</p>
+                                }
+
+                            </List>
 
                         </Grid>
 

@@ -1,5 +1,6 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.maps.GeoApiContext;
 import com.google.maps.ImageResult;
 import com.google.maps.PhotoRequest;
@@ -27,14 +28,17 @@ public class PointOfInterest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
+
     @NonNull private String name;
     @NonNull private String formattedAddress;
     @NonNull private LatLng coordinates;
     @NonNull private OpeningHours openingHours;
     @NonNull private String businessStatus;
+
     @ElementCollection
     @NonNull private List<String> types;
     private byte @NonNull[] imageData;
+
     @NonNull private Float rating;
     @OneToMany(mappedBy = "pointOfInterest")
     private List<Comment> comments;
