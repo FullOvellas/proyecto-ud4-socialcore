@@ -2,7 +2,7 @@
 
 ## Supuesto
 
-
+Se trata de una aplicación para crear quedadas de amigos en puntos de interés más o menos equidistantes para todos los integrantes. La aplicación también se encarga de encontrar puntos de interés cercanos. Se pueden además crear comentarios sobre un punto de interés para dar opiniones.
 
 ## Diagrama de BBDD y diagrama de clases
 
