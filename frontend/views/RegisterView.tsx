@@ -14,6 +14,7 @@ import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {Step, StepLabel, Stepper} from "@mui/material";
+import {GoogleMap} from "@react-google-maps/api";
 
 export default function RegisterView() {
 
@@ -73,6 +74,72 @@ export default function RegisterView() {
 
     });
 
+    function FormStep() {
+        return (
+            <Box>
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="fullName"
+                    label="Name"
+                    name="fullName"
+                    autoComplete="name"
+                    autoFocus
+                />
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email"
+                    name="email"
+                    autoComplete="email"
+                    autoFocus
+                />
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                />
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password_rep"
+                    label="Repeat password"
+                    type="password"
+                    id="password_rep"
+                    autoComplete="current-password"
+                />
+                <Typography variant={"caption"} color={"rgb(155,155,155)"}>* Password must have
+                    at least 5 characters</Typography>
+                {error != "" &&
+                    <Typography color={"#FF0000"}>{error}</Typography>
+                }
+
+            </Box>
+        );
+    }
+
+    function UserLocationStep() {
+        return (
+          <>
+
+              <GoogleMap/>
+
+          </>
+        );
+    }
+
+    const stepLabels = ["Credentials", "User location"];
+    const steps = [<FormStep/>, <UserLocationStep/>];
+
     return (
         <ThemeProvider theme={theme}>
             <Container component={"main"} maxWidth={"xs"}>
@@ -100,82 +167,50 @@ export default function RegisterView() {
 
                             <Grid item xs={12} md={12}>
 
-                                <Stepper activeStep={0}>
+                                <Box sx={{ width: '100%' }}>
 
-                                    <Step disabled={true}>
+                                    <Stepper orientation="horizontal" activeStep={0}>
 
-                                        <StepLabel>Credentials</StepLabel>
+                                        {steps.map((value, index) => {
 
-                                        <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
-                                            <TextField
-                                                margin="normal"
-                                                required
-                                                fullWidth
-                                                id="fullName"
-                                                label="Name"
-                                                name="fullName"
-                                                autoComplete="name"
-                                                autoFocus
-                                            />
-                                            <TextField
-                                                margin="normal"
-                                                required
-                                                fullWidth
-                                                id="email"
-                                                label="Email"
-                                                name="email"
-                                                autoComplete="email"
-                                                autoFocus
-                                            />
-                                            <TextField
-                                                margin="normal"
-                                                required
-                                                fullWidth
-                                                name="password"
-                                                label="Password"
-                                                type="password"
-                                                id="password"
-                                                autoComplete="current-password"
-                                            />
-                                            <TextField
-                                                margin="normal"
-                                                required
-                                                fullWidth
-                                                name="password_rep"
-                                                label="Repeat password"
-                                                type="password"
-                                                id="password_rep"
-                                                autoComplete="current-password"
-                                            />
-                                            <Typography variant={"caption"} color={"rgb(155,155,155)"}>* Password must have
-                                                at least 5 characters</Typography>
-                                            {error != "" &&
-                                                <Typography color={"#FF0000"}>{error}</Typography>
-                                            }
-                                            <Button
-                                                type="submit"
-                                                fullWidth
-                                                variant="contained"
-                                                sx={{mt: 3, mb: 2}}
-                                            >
-                                                Sign up
-                                            </Button>
-                                            <Grid container>
-                                                <Grid item>
-                                                    <Link href="/login" variant="body2">
-                                                        {"Already have an account? Login"}
-                                                    </Link>
-                                                </Grid>
-                                            </Grid>
-                                        </Box>
+                                                return (
+                                                    <Step key={"step_" + index} component="form" onSubmit={handleSubmit}>
 
-                                    </Step>
 
-                                    <Step>
-                                        <StepLabel>User location</StepLabel>
-                                    </Step>
+                                                        <StepLabel>{stepLabels[index]}</StepLabel>
 
-                                </Stepper>
+                                                        {value}
+
+                                                    </Step>
+                                                );
+
+                                            })
+                                        }
+
+                                    </Stepper>
+
+                                </Box>
+
+                            </Grid>
+
+                            <Grid item md={12} xs={12}>
+
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    sx={{mt: 3, mb: 2}}
+                                >
+                                    Sign up
+                                </Button>
+
+                            </Grid>
+
+                            <Grid item md={12} xs={12}>
+
+                                <Link href="/login" variant="body2">
+                                    {"Already have an account? Login"}
+                                </Link>
 
                             </Grid>
 
