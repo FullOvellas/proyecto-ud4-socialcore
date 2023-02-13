@@ -103,7 +103,9 @@
     "@mui/material": "$@mui/material",
     "@mui/icons-material": "$@mui/icons-material",
     "@react-google-maps/api": "$@react-google-maps/api",
-    "dotenv": "$dotenv"
+    "dotenv": "$dotenv",
+    "@googlemaps/react-wrapper": "$@googlemaps/react-wrapper",
+    "googlemaps": "$googlemaps"
   },
   "vaadin": {
     "dependencies": {
@@ -151,6 +153,6 @@
       "workbox-core": "6.5.4",
       "workbox-precaching": "6.5.4"
     },
-    "hash": "902a76c33e54df242ef30272f1bfd76da9ddb27bc7f99a340370ceb1b7ebc7cf"
+    "hash": "05f31c4097cf79bea156065eb75c61ce56b053b0d331dba557f6f35b55f6683b"
   }
 }
