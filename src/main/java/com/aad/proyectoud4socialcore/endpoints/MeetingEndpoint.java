@@ -60,11 +60,10 @@ public class MeetingEndpoint {
     /**
      * Permite crear una nueva quedada
      * @param group el grupo que crea la quedada
-     * @param dateTime la hora y fecha de la quedada
      * @return la nueva quedada
      * @throws ForbidenAccessException si el usuario no pertenece al grupo que crea la quedada
      */
-    public Meeting createNewMeeting(UserGroup group, DateTime dateTime ) throws ForbidenAccessException {
+    public Meeting createNewMeeting(UserGroup group ) throws ForbidenAccessException {
 
         SocialUser user = userAuthService.getContextUser();
 
@@ -72,7 +71,7 @@ public class MeetingEndpoint {
             throw new ForbidenAccessException("Forbbiden access");
         }
 
-        return meetingService.createNewMeeting(group, dateTime);
+        return meetingService.createNewMeeting(group, DateTime.now());
     }
 
     /**
