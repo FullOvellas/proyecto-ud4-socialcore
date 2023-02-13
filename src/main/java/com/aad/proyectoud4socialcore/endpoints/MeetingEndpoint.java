@@ -104,7 +104,7 @@ public class MeetingEndpoint {
      * @return el meeting
      * @throws ForbidenAccessException si el usuario no participa en el meeting
      */
-    public Meeting getMeetingFromId(Long id) throws ForbidenAccessException {
+    public Meeting getMeetingFromId(long id) throws ForbidenAccessException {
 
         SocialUser user = userAuthService.getContextUser();
         Meeting meeting = repository.findMeetingById(id);

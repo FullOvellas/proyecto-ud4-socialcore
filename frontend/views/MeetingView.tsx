@@ -26,9 +26,7 @@ export default function MeetingView() {
             let idString = searchParams.get("meeting_id")!.toString()
             let id = parseInt(idString)
 
-            const loadedMeeting = await MeetingEndpoint.getMeetingFromId(id);
-
-            return resolve(loadedMeeting)
+            return resolve(MeetingEndpoint.getMeetingFromId(id))
         }
 
         return reject(new Error(""));
@@ -49,7 +47,9 @@ export default function MeetingView() {
 
                         setUser(user);
 
-
+                        loadMeeting
+                            .then(setMeeting)
+                            .catch(_ => navigate("/"))
 
                     })
 
