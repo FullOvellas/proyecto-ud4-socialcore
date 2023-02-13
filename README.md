@@ -62,7 +62,9 @@ añadir usuarios a grupos, borrar usuarios de grupos o borrar grupos.
 
 ## Propuestas de mejora
 
-
+- Incluír un correo de verificación a la hora de registrarse
+- Permitir cambiar contraseña mediante un correo
+- Permitir varias sesiones de usuario para un navegador
 
 ## Conclusiones y opinión del trabajo realizado
 
