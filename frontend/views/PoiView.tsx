@@ -6,7 +6,7 @@
     import Box from "@mui/material/Box";
     import Container from "@mui/material/Container";
     import Placeholder from "Frontend/components/placeholder/Placeholder";
-    import {Card, ListItem, ListItemSecondaryAction, ListItemText} from "@mui/material";
+    import {Card, List, ListItem, ListItemSecondaryAction, ListItemText} from "@mui/material";
     import Grid from "@mui/material/Grid";
     import Typography from "@mui/material/Typography";
     import {GoogleMap, Marker, useLoadScript} from "@react-google-maps/api";
@@ -50,7 +50,7 @@
                 .then(setPoint)
                 .catch(_ => navigate("/"))
 
-        });
+        }, []);
 
         return (
             <Box style={{
@@ -87,6 +87,8 @@
 
                                 <Grid item xs={12} md={6}>
 
+                                    <Typography marginBottom="40px" variant="h4">Details</Typography>
+
                                     {isLoaded &&
 
                                         <GoogleMap options={{disableDefaultUI: true, zoomControl: true, gestureHandling: "greedy"}} mapContainerClassName="map-container" zoom={12} center={{lat: point.coordinates.lat, lng: point.coordinates.lng}}>
@@ -100,6 +102,16 @@
                                     <ListItem>
                                         <ListItemText primary="Coordinates" secondary={point.coordinates.lat.toString() + ", " + point.coordinates.lng.toString()}></ListItemText>
                                     </ListItem>
+
+                                </Grid>
+
+                                <Grid item md={6} xs={12}>
+
+                                    <List>
+
+
+
+                                    </List>
 
                                 </Grid>
 
