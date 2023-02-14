@@ -32,10 +32,6 @@ public class UserSessionController {
 
         try {
 
-            System.out.println("conexion");
-            System.out.println(lat);
-            System.out.println(lng);
-
             double latDouble = Double.parseDouble(lat);
             double lngDouble = Double.parseDouble(lng);
 
