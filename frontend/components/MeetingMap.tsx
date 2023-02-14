@@ -7,7 +7,7 @@ import Meeting from "Frontend/generated/com/aad/proyectoud4socialcore/model/enti
 import LatLng = google.maps.LatLng;
 import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
 
-export default function MeetingMap({meeting}: {meeting: Meeting}) {
+export default function MeetingMap({meeting}: {meeting: Meeting}, ) {
 
     const destinationLatLng = meeting.destination.coordinates;
 
@@ -19,11 +19,23 @@ export default function MeetingMap({meeting}: {meeting: Meeting}) {
     if (!isLoaded)
         return <CircularProgress />;
 
-    return <Map lat={destinationLatLng.lat} lng={destinationLatLng.lng} />;
+    let attendants: Array<SocialUser> = [];
+
+    meeting.attendants?.map(user => {
+        if (user!) {
+            attendants = [...attendants, user];
+        }
+    });
+
+    return <Map lat={destinationLatLng.lat} lng={destinationLatLng.lng} attendants={attendants} />;
 
 }
 
-function Map({lat, lng}: {lat: number, lng: number}, {attendants}: {attendants: Array<SocialUser>}) {
+function Map({lat, lng, attendants}: {lat: number, lng: number, attendants: Array<SocialUser>}) {
+
+    const residences: Array<{lat: number, lng: number}> = attendants.map(att => {
+        return {lat: att.residence!.coordinates!.lat, lng: att.residence!.coordinates!.lng};
+    });
 
     return (
         <>
@@ -32,7 +44,8 @@ function Map({lat, lng}: {lat: number, lng: number}, {attendants}: {attendants: 
                 center={{lat, lng}}
                 mapContainerClassName="map-container"
             >
-                meetin
+                <Marker position={{lat, lng}} />
+                {residences.map((res, index) => <Marker key={index} position={res} />)}
             </GoogleMap>
         </>
     );

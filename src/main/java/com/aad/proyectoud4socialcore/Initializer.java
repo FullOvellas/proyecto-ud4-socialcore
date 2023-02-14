@@ -1,9 +1,6 @@
 package com.aad.proyectoud4socialcore;
 
-import com.aad.proyectoud4socialcore.model.entity.Meeting;
-import com.aad.proyectoud4socialcore.model.entity.PointOfInterest;
-import com.aad.proyectoud4socialcore.model.entity.Role;
-import com.aad.proyectoud4socialcore.model.entity.SocialUser;
+import com.aad.proyectoud4socialcore.model.entity.*;
 import com.aad.proyectoud4socialcore.model.repository.*;
 import com.aad.proyectoud4socialcore.service.UserGroupService;
 import com.google.maps.model.LatLng;
@@ -63,6 +60,7 @@ public class Initializer implements CommandLineRunner {
         user1.setFullName("margb7");
         user1.setPassword(encoder.encode("1234"));
         user1.setRoles(roles2);
+        user1.setResidence(new Residence(new LatLng(42.2404590, -8.6932391)));
 
         meeting1.getAttendants().add(user1);
 
@@ -88,8 +86,6 @@ public class Initializer implements CommandLineRunner {
                 });
 
         System.out.println("ID: " + meetingRepository.save(meeting1).getId());
-
-        System.out.println(point1.calculateDistanceToPoint(point2.getCoordinates()));
 
     }
 }

@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -23,5 +22,9 @@ public class Residence {
     private Set<PlaceType> requestedTypes;
     @OneToMany(fetch = FetchType.LAZY)
     private List<PointOfInterest> nearbyPointsOfInterest;
+
+    public Residence(LatLng coordinates) {
+        this.coordinates = coordinates;
+    }
 
 }
