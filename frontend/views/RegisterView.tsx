@@ -14,7 +14,7 @@ import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {ListItem, Step, StepButton, StepContent, StepLabel, Stepper} from "@mui/material";
-import {GoogleMap, useLoadScript} from "@react-google-maps/api";
+import {GoogleMap, Marker, useLoadScript} from "@react-google-maps/api";
 import Placeholder from "Frontend/components/placeholder/Placeholder";
 import {List} from "@mui/icons-material";
 import LatLng = google.maps.LatLng;
@@ -39,27 +39,9 @@ export default function RegisterView() {
 
     function handleNext() {
 
-        if (email == "" || fullName == "" || password == "" || passwordMatch == "") {
-            setError("Fields can't be empty")
-            return
-        }
-
-        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email!.toString())) {
-            setError("Email is not valid")
+        if(!checkForm()) {
             return;
         }
-
-        if (password != passwordMatch) {
-            setError("Passwords don't match");
-            return;
-        }
-
-        if (password!.length < 5) {
-            setError("Password must have at least 5 characters");
-            return;
-        }
-
-        setError("");
 
         setActiveStep(1);
 
@@ -80,35 +62,17 @@ export default function RegisterView() {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const data = new FormData(event.currentTarget);
-
-        if (email == "" || fullName == "" || password == "" || passwordMatch == "") {
-            setError("Fields can't be empty")
-            return
-        }
-
-        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email!.toString())) {
-            setError("Email is not valid")
+        if (!checkForm()) {
             return;
         }
-
-        if (password != passwordMatch) {
-            setError("Passwords don't match");
-            return;
-        }
-
-        if (password!.length < 5) {
-            setError("Password must have at least 5 characters");
-            return;
-        }
-
-        setError("");
 
         fetch("/register", {
             method: "POST",
-            body: new URLSearchParams([["email", email!.toString()], ["fullName", fullName!.toString()], ["password", password!.toString()]])
+            body: new URLSearchParams([["email", email!.toString()], ["fullName", fullName!.toString()], ["password", password!.toString()], ["lat", latlng!.lat!.toString()], ["lng", latlng!.lng!.toString()]])
         }).then(v => {
+
             if (v.redirected) window.location.replace(v.url);
+
         }).catch(e => console.log("Error"))
 
     }
@@ -122,6 +86,33 @@ export default function RegisterView() {
         }
 
     });
+
+    function checkForm(): boolean {
+
+        if (email == "" || fullName == "" || password == "" || passwordMatch == "") {
+            setError("Fields can't be empty");
+            return false;
+        }
+
+        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email!.toString())) {
+            setError("Email is not valid");
+            return false;
+        }
+
+        if (password != passwordMatch) {
+            setError("Passwords don't match");
+            return false;
+        }
+
+        if (password!.length < 5) {
+            setError("Password must have at least 5 characters");
+            return false;
+        }
+
+        setError("");
+
+        return true;
+    }
 
     const stepLabels = ["Credentials", "User location"];
 
@@ -234,7 +225,15 @@ export default function RegisterView() {
                                                     }
 
                                                     {isLoaded &&
-                                                        <GoogleMap onClick={handleMapselect} mapContainerClassName="map-container" zoom={7} center={{lat: 42.715756, lng: -7.947729}}/>
+                                                        <GoogleMap onClick={handleMapselect} mapContainerClassName="map-container" zoom={7} center={(latlng != null)? latlng : {lat: 42.715756, lng: -7.947729}}>
+
+                                                            {latlng != null &&
+
+                                                                <Marker label={"Home"} position={latlng}></Marker>
+
+                                                            }
+
+                                                        </GoogleMap>
                                                     }
                                                 </StepContent>
 
