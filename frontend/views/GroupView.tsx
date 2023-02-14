@@ -16,7 +16,6 @@ import Button from "@mui/material/Button";
 import RemoveIcon from '@mui/icons-material/Remove';
 import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
 import {EndpointError} from "@hilla/frontend";
-import DateTimeModel from "Frontend/generated/org/joda/time/DateTimeModel";
 import Meeting from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/Meeting";
 
 export default function GroupView() {
