@@ -6,10 +6,11 @@
     import Box from "@mui/material/Box";
     import Container from "@mui/material/Container";
     import Placeholder from "Frontend/components/placeholder/Placeholder";
-    import {Card, List, ListItem, ListItemSecondaryAction, ListItemText} from "@mui/material";
+    import {Card, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText} from "@mui/material";
     import Grid from "@mui/material/Grid";
     import Typography from "@mui/material/Typography";
     import {GoogleMap, Marker, useLoadScript} from "@react-google-maps/api";
+    import Avatar from "@mui/material/Avatar";
 
 
     export default function PoiView() {
@@ -100,6 +101,10 @@
                                     }
 
                                     <ListItem>
+                                        <ListItemText primary="Current status" secondary={(point.openingHours.openNow)? "Open" : "Closed"}></ListItemText>
+                                    </ListItem>
+
+                                    <ListItem>
                                         <ListItemText primary="Coordinates" secondary={point.coordinates.lat.toString() + ", " + point.coordinates.lng.toString()}></ListItemText>
                                     </ListItem>
 
@@ -107,11 +112,23 @@
 
                                 <Grid item md={6} xs={12}>
 
-                                    <List>
+                                    <Typography variant="h4">Comments</Typography>
 
+                                   <List>
 
+                                       <ListItem>
 
-                                    </List>
+                                           <ListItemAvatar><Avatar/></ListItemAvatar>
+
+                                            <ListItemText primary="user_name_example" secondary="Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
+                                                                                                molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum"
+                                            >
+
+                                            </ListItemText>
+
+                                        </ListItem>
+
+                                   </List>
 
                                 </Grid>
 
