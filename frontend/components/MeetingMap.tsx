@@ -1,11 +1,8 @@
 import {GoogleMap, useLoadScript, Marker} from "@react-google-maps/api";
 import CircularProgress from "@mui/material/CircularProgress";
-import {useMemo, useState} from "react";
-import Residence from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/Residence"
-import PointOfInterest from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/PointOfInterest";
 import Meeting from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/Meeting";
-import LatLng = google.maps.LatLng;
 import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
+import {useState} from "react";
 
 export default function MeetingMap({meeting}: {meeting: Meeting}, ) {
 
@@ -45,7 +42,7 @@ function Map({lat, lng, attendants}: {lat: number, lng: number, attendants: Arra
                 mapContainerClassName="map-container"
             >
                 <Marker position={{lat, lng}} />
-                {residences.map((res, index) => <Marker key={index} position={res} />)}
+                {residences.map((res, index) => <Marker label={attendants[index].fullName} key={index} position={res} />)}
             </GoogleMap>
         </>
     );
