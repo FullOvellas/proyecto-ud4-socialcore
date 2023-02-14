@@ -17,6 +17,7 @@ import {ListItem, Step, StepButton, StepContent, StepLabel, Stepper} from "@mui/
 import {GoogleMap, useLoadScript} from "@react-google-maps/api";
 import Placeholder from "Frontend/components/placeholder/Placeholder";
 import {List} from "@mui/icons-material";
+import LatLng = google.maps.LatLng;
 
 export default function RegisterView() {
 
@@ -26,6 +27,7 @@ export default function RegisterView() {
     const [fullName, setFullName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [passwordMatch, setPasswordMatch] = useState<string>("");
+    const [latlng, setLatlng] = useState<LatLng | null>(null);
 
     const [activeStep, setActiveStep] = useState<number>(0);
     const [error, setError] = useState<string>("")
@@ -66,6 +68,12 @@ export default function RegisterView() {
     function handlePrevious() {
 
         setActiveStep(0);
+
+    }
+
+    function handleMapselect(event: google.maps.MapMouseEvent) {
+
+        setLatlng(event.latLng)
 
     }
 
@@ -115,22 +123,6 @@ export default function RegisterView() {
 
     });
 
-    function UserLocationStep() {
-        return (
-          <>
-
-              {!isLoaded &&
-                  <Placeholder/>
-              }
-
-              {isLoaded &&
-                  <GoogleMap/>
-              }
-
-          </>
-        );
-    }
-
     const stepLabels = ["Credentials", "User location"];
 
     return (
@@ -162,9 +154,9 @@ export default function RegisterView() {
 
                                 <form onSubmit={handleSubmit}>
 
-                                    <Box sx={{ width: "80%", margin: "auto" }}>
+                                    <Box sx={{ width: "100%", margin: "auto" }}>
 
-                                        <Stepper dir={"ltr"} activeStep={activeStep} orientation={"vertical"}>
+                                        <Stepper dir={"ltr"} activeStep={1} orientation={"vertical"}>
 
                                             <Step>
 
@@ -236,7 +228,15 @@ export default function RegisterView() {
 
                                                 <StepLabel>{stepLabels[1]}</StepLabel>
 
-                                                <UserLocationStep/>
+                                                <StepContent>
+                                                    {!isLoaded &&
+                                                        <Placeholder/>
+                                                    }
+
+                                                    {isLoaded &&
+                                                        <GoogleMap onClick={handleMapselect} mapContainerClassName="map-container" zoom={7} center={{lat: 42.715756, lng: -7.947729}}/>
+                                                    }
+                                                </StepContent>
 
                                             </Step>
 
@@ -251,7 +251,7 @@ export default function RegisterView() {
                             <Grid item md={12} xs={12}>
 
                                 <Button
-                                    disabled={true}
+                                    disabled={latlng == null}
                                     type="submit"
                                     fullWidth
                                     variant="contained"
