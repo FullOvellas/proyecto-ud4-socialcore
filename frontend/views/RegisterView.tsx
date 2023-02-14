@@ -147,7 +147,7 @@ export default function RegisterView() {
 
                                     <Box sx={{ width: "100%", margin: "auto" }}>
 
-                                        <Stepper dir={"ltr"} activeStep={1} orientation={"vertical"}>
+                                        <Stepper dir={"ltr"} activeStep={activeStep} orientation={"vertical"}>
 
                                             <Step>
 
