@@ -22,17 +22,30 @@ public class UserSessionController {
     private UserRegisterService registerService;
 
     @PostMapping("/register")
-    public String registerUser(@RequestParam(name = "email") String email, @RequestParam(name = "fullName") String fullName, @RequestParam(name = "password") String password, HttpServletRequest request) {
+    public String registerUser(@RequestParam(name = "email") String email,
+                               @RequestParam(name = "fullName") String fullName,
+                               @RequestParam(name = "password") String password,
+                               @RequestParam(name = "lat") String lat,
+                               @RequestParam(name = "lng") String lng,
+                               HttpServletRequest request)
+    {
 
         try {
 
-            SocialUser user = registerService.registerNewUserAccount(new UserDTO(fullName, email, password));
+            System.out.println("conexion");
+            System.out.println(lat);
+            System.out.println(lng);
+
+            double latDouble = Double.parseDouble(lat);
+            double lngDouble = Double.parseDouble(lng);
+
+            SocialUser user = registerService.registerNewUserAccount(new UserDTO(fullName, email, password, latDouble, lngDouble));
 
             // Devolver usuario al cliente
             request.login(email, password);
             return "redirect:/";
 
-        } catch (UserAlreadyExistsException | ServletException | InvalidCredentialsException ex ) {
+        } catch (UserAlreadyExistsException | ServletException | InvalidCredentialsException | NumberFormatException ex ) {
 
             // Devolver error al cliente
             return "redirect:register?error=true";

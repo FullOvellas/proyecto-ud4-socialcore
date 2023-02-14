@@ -60,20 +60,23 @@ export default function RegisterView() {
     }
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+
+        event.preventDefault()
 
         if (!checkForm()) {
             return;
         }
 
+        const data = new FormData(event.currentTarget);
+
         fetch("/register", {
             method: "POST",
-            body: new URLSearchParams([["email", email!.toString()], ["fullName", fullName!.toString()], ["password", password!.toString()], ["lat", latlng!.lat!.toString()], ["lng", latlng!.lng!.toString()]])
+            body: new URLSearchParams([["email", email!.toString()], ["fullName", fullName!.toString()], ["password", password!.toString()], ["lat", latlng!.lat()!.toString()], ["lng", latlng!.lng()!.toString()]])
         }).then(v => {
 
             if (v.redirected) window.location.replace(v.url);
 
-        }).catch(e => console.log("Error"))
+        }).catch(e => console.log("Register error"))
 
     }
 
@@ -129,7 +132,7 @@ export default function RegisterView() {
                     }}
                 >
 
-                    <Container>
+                    <Container component="form" onSubmit={handleSubmit}>
 
                         <Grid container>
 
@@ -143,107 +146,104 @@ export default function RegisterView() {
 
                             <Grid item xs={12} md={12}>
 
-                                <form onSubmit={handleSubmit}>
 
-                                    <Box sx={{ width: "100%", margin: "auto" }}>
+                                <Box sx={{ width: "100%", margin: "auto" }}>
 
-                                        <Stepper dir={"ltr"} activeStep={activeStep} orientation={"vertical"}>
+                                    <Stepper dir={"ltr"} activeStep={activeStep} orientation={"vertical"}>
 
-                                            <Step>
+                                        <Step>
 
-                                                <StepLabel>{stepLabels[0]}</StepLabel>
+                                            <StepLabel>{stepLabels[0]}</StepLabel>
 
-                                                <StepContent>
+                                            <StepContent>
 
-                                                    <ul>
-                                                        <TextField
-                                                            required
-                                                            value={fullName}
-                                                            onChange={event => setFullName(event.target.value)}
-                                                            id="fullName"
-                                                            label="Name"
-                                                            margin="normal"
-                                                            name="fullName"
-                                                            autoComplete="name"
-                                                        />
-                                                        <TextField
-                                                            required
-                                                            value={email}
-                                                            onChange={event => setEmail(event.target.value)}
-                                                            id="email"
-                                                            margin="normal"
-                                                            label="Email"
-                                                            name="email"
-                                                            autoComplete="email"
-                                                        />
-                                                        <TextField
-                                                            required
-                                                            value={password}
-                                                            onChange={event => setPassword(event.target.value)}
-                                                            name="password"
-                                                            margin="normal"
-                                                            label="Password"
-                                                            type="password"
-                                                            id="password"
-                                                            autoComplete="current-password"
-                                                        />
-                                                        <TextField
-                                                            margin="normal"
-                                                            required
-                                                            value={passwordMatch}
-                                                            onChange={event => setPasswordMatch(event.target.value)}
-                                                            name="password_rep"
-                                                            label="Repeat password"
-                                                            type="password"
-                                                            id="password_rep"
-                                                            autoComplete="current-password"
-                                                        />
+                                                <ul>
+                                                    <TextField
+                                                        required
+                                                        value={fullName}
+                                                        onChange={event => setFullName(event.target.value)}
+                                                        id="fullName"
+                                                        label="Name"
+                                                        margin="normal"
+                                                        name="fullName"
+                                                        autoComplete="name"
+                                                    />
+                                                    <TextField
+                                                        required
+                                                        value={email}
+                                                        onChange={event => setEmail(event.target.value)}
+                                                        id="email"
+                                                        margin="normal"
+                                                        label="Email"
+                                                        name="email"
+                                                        autoComplete="email"
+                                                    />
+                                                    <TextField
+                                                        required
+                                                        value={password}
+                                                        onChange={event => setPassword(event.target.value)}
+                                                        name="password"
+                                                        margin="normal"
+                                                        label="Password"
+                                                        type="password"
+                                                        id="password"
+                                                        autoComplete="current-password"
+                                                    />
+                                                    <TextField
+                                                        margin="normal"
+                                                        required
+                                                        value={passwordMatch}
+                                                        onChange={event => setPasswordMatch(event.target.value)}
+                                                        name="password_rep"
+                                                        label="Repeat password"
+                                                        type="password"
+                                                        id="password_rep"
+                                                        autoComplete="current-password"
+                                                    />
 
-                                                        <Typography variant={"caption"} color={"rgb(155,155,155)"}>* Password must have
-                                                            at least 5 characters
-                                                        </Typography>
+                                                    <Typography variant={"caption"} color={"rgb(155,155,155)"}>* Password must have
+                                                        at least 5 characters
+                                                    </Typography>
 
-                                                        {error != "" &&
-                                                            <Typography color={"#FF0000"}>{error}</Typography>
+                                                    {error != "" &&
+                                                        <Typography color={"#FF0000"}>{error}</Typography>
+                                                    }
+
+                                                    <Button fullWidth={true} onClick={handleNext} variant={"contained"}>Next</Button>
+
+                                                </ul>
+
+                                            </StepContent>
+
+                                        </Step>
+
+                                        <Step>
+
+                                            <StepLabel>{stepLabels[1]}</StepLabel>
+
+                                            <StepContent>
+                                                {!isLoaded &&
+                                                    <Placeholder/>
+                                                }
+
+                                                {isLoaded &&
+                                                    <GoogleMap onClick={handleMapselect} mapContainerClassName="map-container" zoom={7} center={(latlng != null)? latlng : {lat: 42.715756, lng: -7.947729}}>
+
+                                                        {latlng != null &&
+
+                                                            <Marker label={"Home"} position={latlng}></Marker>
+
                                                         }
 
-                                                        <Button fullWidth={true} onClick={handleNext} variant={"contained"}>Next</Button>
+                                                    </GoogleMap>
+                                                }
+                                            </StepContent>
 
-                                                    </ul>
+                                        </Step>
 
-                                                </StepContent>
+                                    </Stepper>
 
-                                            </Step>
-
-                                            <Step>
-
-                                                <StepLabel>{stepLabels[1]}</StepLabel>
-
-                                                <StepContent>
-                                                    {!isLoaded &&
-                                                        <Placeholder/>
-                                                    }
-
-                                                    {isLoaded &&
-                                                        <GoogleMap onClick={handleMapselect} mapContainerClassName="map-container" zoom={7} center={(latlng != null)? latlng : {lat: 42.715756, lng: -7.947729}}>
-
-                                                            {latlng != null &&
-
-                                                                <Marker label={"Home"} position={latlng}></Marker>
-
-                                                            }
-
-                                                        </GoogleMap>
-                                                    }
-                                                </StepContent>
-
-                                            </Step>
-
-                                        </Stepper>
-
-                                    </Box>
-
-                                </form>
+                                </Box>
 
                             </Grid>
 
