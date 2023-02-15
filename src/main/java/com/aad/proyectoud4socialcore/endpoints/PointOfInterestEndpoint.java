@@ -44,7 +44,10 @@ public class PointOfInterestEndpoint {
     }
 
     public Comment[] getCommentsFromPoint(PointOfInterest poi) {
-        return commentRepository.findCommentsByPointOfInterest(poi).toArray(Comment[]::new);
+
+        Comment[] comments = commentRepository.findCommentsByPointOfInterest(poi).toArray(Comment[]::new);
+
+        return comments;
     }
 
     public List<PointOfInterest> findAll() {

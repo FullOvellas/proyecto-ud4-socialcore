@@ -69,21 +69,16 @@
             })
         };
 
-        const createComment = new Promise<void>(async (resolve, reject) => {
+        async function createComment() {
 
-            try {
+            const com = await CommentEndpoint.createComment(point!, commentText)
 
-                const newComment = await CommentEndpoint.createComment(point!, commentText);
+            comments.push(com);
+            setComments(comments);
+            setCommentText("");
+            setCreatingComment(false);
 
-                return resolve();
-
-            } catch (_) {
-
-                return reject();
-
-            }
-
-        });
+        }
 
         const loadUser = new Promise<SocialUser>(async (resolve, reject) => {
 
@@ -171,12 +166,17 @@
 
                                     <ListItem>
 
-                                        <TextField></TextField>
+                                        <TextField multiline={true} onChange={event => setCommentText(event.target.value)}></TextField>
 
                                     </ListItem>
 
                                     <ListItem secondaryAction={
-                                        <Button variant={"contained"} onClick={ _ => {createComment.then(value => {console.log("Creado")})}}>
+                                        <Button variant={"contained"} onClick={ (event) => {
+
+                                            createComment()
+
+                                        }
+                                        }>
                                             Add
                                         </Button>
 
