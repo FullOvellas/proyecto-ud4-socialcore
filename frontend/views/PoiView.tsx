@@ -147,17 +147,23 @@
 
                                    <List>
 
-                                       <ListItem>
+                                       {point && point.comments?.map((value, index, array) =>
 
-                                           <ListItemAvatar><Avatar/></ListItemAvatar>
+                                           <Card elevation={3}>
 
-                                            <ListItemText primary="user_name_example" secondary="Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
-                                                                                                molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum"
-                                            >
+                                               <ListItem>
 
-                                            </ListItemText>
+                                                   <ListItemAvatar><Avatar/></ListItemAvatar>
 
-                                        </ListItem>
+                                                   <ListItemText primary={"User_name"} secondary={value?.text ?? ""}>
+
+                                                   </ListItemText>
+
+                                               </ListItem>
+
+                                           </Card>
+
+                                       )}
 
                                    </List>
 

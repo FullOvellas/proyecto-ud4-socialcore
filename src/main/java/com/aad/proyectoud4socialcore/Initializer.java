@@ -1,9 +1,6 @@
 package com.aad.proyectoud4socialcore;
 
-import com.aad.proyectoud4socialcore.model.entity.Meeting;
-import com.aad.proyectoud4socialcore.model.entity.PointOfInterest;
-import com.aad.proyectoud4socialcore.model.entity.Role;
-import com.aad.proyectoud4socialcore.model.entity.SocialUser;
+import com.aad.proyectoud4socialcore.model.entity.*;
 import com.aad.proyectoud4socialcore.model.repository.*;
 import com.aad.proyectoud4socialcore.service.UserGroupService;
 import com.google.maps.model.LatLng;
@@ -20,6 +17,9 @@ import java.util.stream.Stream;
 
 @Component
 public class Initializer implements CommandLineRunner {
+
+    @Autowired
+    CommentRepository commentRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -88,10 +88,26 @@ public class Initializer implements CommandLineRunner {
         PointOfInterest point1 = new PointOfInterest("a", "a", new LatLng(42.2513809, -8.6900709), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
         PointOfInterest point2 = new PointOfInterest("a", "a", new LatLng(42.3407844, -8.6048713), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
 
+        Comment comment = new Comment();
+        Comment comment1 = new Comment();
+        Comment comment2 = new Comment();
+
+        comment.setText("Comentario de ejemplo 1");
+        comment1.setText("Comentario de ejemplo 2");
+        comment2.setText("Comentario de ejemplo 3");
+
+        comment.setPointOfInterest(point1);
+        comment1.setPointOfInterest(point1);
+        comment2.setPointOfInterest(point1);
+
         System.out.println(point1.calculateDistanceToPoint(point2.getCoordinates()));
 
         System.out.println(pointOfInterestRepository.save(point1).getId());;
         pointOfInterestRepository.save(point2);
+
+        commentRepository.save(comment);
+        commentRepository.save(comment1);
+        commentRepository.save(comment2);
 
     }
 }
