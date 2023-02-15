@@ -43,6 +43,7 @@ public class PointOfInterest {
 
     @NonNull private Float rating;
     @OneToMany(mappedBy = "pointOfInterest")
+    @JsonIgnore
     private List<Comment> comments;
 
 
@@ -67,6 +68,18 @@ public class PointOfInterest {
                 * Math.cos(pointOfInterestLongRadians - originLongRadians))
                 * EARTH_RADIUS;
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if(!(o instanceof PointOfInterest)) {
+            return false;
+        }
+
+        PointOfInterest p = (PointOfInterest) o;
+
+        return p.getId().equals(getId());
     }
 
 }

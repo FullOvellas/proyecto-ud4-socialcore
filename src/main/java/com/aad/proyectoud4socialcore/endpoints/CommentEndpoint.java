@@ -45,9 +45,6 @@ public class CommentEndpoint {
         return true;
     }
 
-    public Comment[] getCommentsFromPoint(PointOfInterest poi) {
-        return repository.findCommentsByPointOfInterest(poi).toArray(Comment[]::new);
-    }
 
     public List<Comment> findAll() {
         return repository.findAll();

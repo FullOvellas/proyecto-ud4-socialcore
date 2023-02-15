@@ -20,6 +20,5 @@ public class Comment {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "point_of_interest_id")
     private PointOfInterest pointOfInterest;
 }

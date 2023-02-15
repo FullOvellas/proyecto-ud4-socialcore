@@ -46,8 +46,8 @@
         };
 
         const [searchParams, setSearchParams] = useSearchParams();
-        const [point, setPoint] = useState<PointOfInterest>();
-        const [user, setUser] = useState<SocialUser>();
+        const [point, setPoint] = useState<PointOfInterest | undefined>();
+        const [user, setUser] = useState<SocialUser | null>();
         const [creatingComment, setCreatingComment] = useState<boolean>(false);
         const [commentText, setCommentText] = useState<string>("");
         const [commentRating, setCommentRating] = useState<number>(1);
@@ -57,17 +57,19 @@
             googleMapsApiKey: "AIzaSyDenRxQ8_1INjqF9cvWTejzSrgo7lsHYtQ"
         })
 
-        const loadPointComments = new Promise<Comment[]>(async (resolve, reject) => {
+        const loadPointComments = (poi: PointOfInterest) => {
+            return new Promise<Comment[]>( (resolve, reject) => {
 
             try {
-                return resolve(CommentEndpoint.getCommentsFromPoint(point!));
+                return resolve(PointOfInterestEndpoint.getCommentsFromPoint(poi));
             } catch (_) {
                 return reject();
             }
 
-        });
+            })
+        };
 
-        const createComment = new Promise<void>( async (resolve, reject) => {
+        const createComment = new Promise<void>(async (resolve, reject) => {
 
             try {
 
@@ -118,22 +120,23 @@
             if(searchParams.get("point_id") == null) {
                 // TODO: enviar a página "acceso restringido"
                 navigate("/");
+                return;
             }
 
             let pointId = parseInt(searchParams.get("point_id")!);
 
             loadPointFromId(pointId)
                 .then(value => {
-                    setPoint(value)
-                    loadPointComments
+                    setPoint(value);
+                    loadPointComments(value)
                         .then(setComments)
-                        .catch()
+                        .catch();
                 })
                 .catch(_ => navigate("/"));
 
             loadUser
                 .then(setUser)
-                .catch();
+                .catch(_=> setUser(null));
 
         }, []);
 
@@ -173,7 +176,7 @@
                                     </ListItem>
 
                                     <ListItem secondaryAction={
-                                        <Button variant={"contained"} onClick={ _ => {createComment.then()}}>
+                                        <Button variant={"contained"} onClick={ _ => {createComment.then(value => {console.log("Creado")})}}>
                                             Add
                                         </Button>
 
@@ -228,18 +231,18 @@
                                 <Grid item md={6} xs={12}>
 
                                     <ListItem secondaryAction=
-                                                  {
-                                        
-                                                    user &&
-                                                      <IconButton onClick={event => setCreatingComment(true)}><Add/></IconButton>
+                                      {
 
-                                                  }>
+                                        user &&
+                                          <IconButton onClick={event => setCreatingComment(true)}><Add/></IconButton>
+
+                                      }>
                                         <ListItemText><Typography variant="h4">Comments</Typography></ListItemText>
                                     </ListItem>
 
                                    <List>
 
-                                       {point && comments.map((value, index, array) =>
+                                       {comments.map((value, index, array) =>
 
                                            <Card sx={{marginBottom: "10px"}} key={"comment_" + index} elevation={3}>
 
@@ -247,7 +250,7 @@
 
                                                    <ListItemAvatar><Avatar/></ListItemAvatar>
 
-                                                   <ListItemText primary={value?.user?.fullName ?? ""} secondary={value?.text ?? ""}>
+                                                   <ListItemText primary={(value.user)? value.user.fullName ?? "" : ""} secondary={value.text ?? ""}>
 
                                                    </ListItemText>
 
