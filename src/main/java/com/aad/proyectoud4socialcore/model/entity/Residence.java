@@ -3,8 +3,11 @@ import com.google.maps.model.LatLng;
 import com.google.maps.model.PlaceType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,9 +22,10 @@ public class Residence {
     private Long id;
     private LatLng coordinates;
     @ElementCollection
-    private Set<PlaceType> requestedTypes;
+    @NonNull
+    private Set<PlaceType> requestedTypes = new HashSet<>();
     @OneToMany(fetch = FetchType.LAZY)
-    private List<PointOfInterest> nearbyPointsOfInterest;
+    private List<PointOfInterest> nearbyPointsOfInterest = new ArrayList<>();
 
     public Residence(LatLng coordinates) {
         this.coordinates = coordinates;

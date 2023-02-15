@@ -3,8 +3,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Meeting from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/Meeting";
 import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
 import {useState} from "react";
-
-export default function MeetingMap({meeting}: {meeting: Meeting}, ) {
+import MarkerLabel = google.maps.MarkerLabel;
+export default function MeetingMap({meeting}: {meeting: Meeting} ) {
 
     const destinationLatLng = meeting.destination.coordinates;
 
@@ -42,7 +42,23 @@ function Map({lat, lng, attendants}: {lat: number, lng: number, attendants: Arra
                 mapContainerClassName="map-container"
             >
                 <Marker position={{lat, lng}} />
-                {residences.map((res, index) => <Marker label={attendants[index].fullName} key={index} position={res} />)}
+                {
+                    residences.map(
+                        (res, index) => {
+
+                            let markerLabel: MarkerLabel = {
+                                color: "#000",
+                                text: attendants[index].fullName!.slice(0, 2)
+                            }
+
+
+                            return (<Marker
+                                label={markerLabel}
+                                key={index} position={res}
+                            />);
+                        }
+                    )
+                }
             </GoogleMap>
         </>
     );
