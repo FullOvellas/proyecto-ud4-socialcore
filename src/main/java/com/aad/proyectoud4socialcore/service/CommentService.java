@@ -13,13 +13,14 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
-    public Comment createComment(SocialUser user, String message, PointOfInterest poi) {
+    public Comment createComment(SocialUser user, String message, PointOfInterest poi, Float rating) {
 
         Comment comment = new Comment();
 
         comment.setPointOfInterest(poi);
         comment.setUser(user);
         comment.setText(message);
+        comment.setRating(rating);
 
         return commentRepository.save(comment);
     }

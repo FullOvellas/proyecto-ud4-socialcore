@@ -85,6 +85,8 @@ public class Initializer implements CommandLineRunner {
                     userRepository.save(user);
                 });
 
+        OpeningHours openingHours = new OpeningHours();
+
         PointOfInterest point1 = new PointOfInterest("IES TEIS", "a ", new LatLng(42.2513809, -8.6900709), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
         PointOfInterest point2 = new PointOfInterest("a", "a", new LatLng(42.3407844, -8.6048713), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
 
@@ -100,13 +102,17 @@ public class Initializer implements CommandLineRunner {
         comment1.setUser(user1);
         comment2.setUser(user1);
 
+        comment.setRating(1f);
+
+        comment1.setRating(2f);
+
+        comment2.setRating(3f);
+
         comment.setPointOfInterest(point1);
         comment1.setPointOfInterest(point1);
         comment2.setPointOfInterest(point1);
 
-        System.out.println(point1.calculateDistanceToPoint(point2.getCoordinates()));
-
-        System.out.println(pointOfInterestRepository.save(point1).getId());;
+        pointOfInterestRepository.save(point1);
         pointOfInterestRepository.save(point2);
 
         commentRepository.save(comment);

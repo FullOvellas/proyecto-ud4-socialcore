@@ -14,8 +14,8 @@
     ListItemAvatar,
     ListItemSecondaryAction,
     ListItemText,
-        Modal
-    } from "@mui/material";
+    Modal, Rating
+} from "@mui/material";
     import Grid from "@mui/material/Grid";
     import Typography from "@mui/material/Typography";
     import {GoogleMap, Marker, useLoadScript} from "@react-google-maps/api";
@@ -71,7 +71,7 @@
 
         async function createComment() {
 
-            const com = await CommentEndpoint.createComment(point!, commentText)
+            const com = await CommentEndpoint.createComment(point!, commentText, commentRating)
 
             comments.push(com);
             setComments(comments);
@@ -166,8 +166,12 @@
 
                                     <ListItem>
 
-                                        <TextField multiline={true} onChange={event => setCommentText(event.target.value)}></TextField>
+                                        <TextField label="Text" multiline={true} onChange={event => setCommentText(event.target.value)}></TextField>
 
+                                    </ListItem>
+
+                                    <ListItem>
+                                        <Rating value={commentRating} onChange={(event, value) => (value)? setCommentRating(value) : null}></Rating>
                                     </ListItem>
 
                                     <ListItem secondaryAction={
@@ -210,7 +214,7 @@
 
                                     {isLoaded &&
 
-                                        <GoogleMap options={{disableDefaultUI: true, zoomControl: true, gestureHandling: "greedy"}} mapContainerClassName="map-container" zoom={12} center={{lat: point.coordinates.lat, lng: point.coordinates.lng}}>
+                                        <GoogleMap options={{disableDefaultUI: true, gestureHandling: "none"}} mapContainerClassName="map-container" zoom={12} center={{lat: point.coordinates.lat, lng: point.coordinates.lng}}>
 
                                             <Marker label={point.name} position={point.coordinates}></Marker>
 
@@ -226,14 +230,22 @@
                                         <ListItemText primary="Coordinates" secondary={point.coordinates.lat.toString() + ", " + point.coordinates.lng.toString()}></ListItemText>
                                     </ListItem>
 
+                                    <List>
+
+                                        {point.openingHours.weekdayText != null && point.openingHours.weekdayText?.map(openDay =>
+
+                                            <ListItem><ListItemText>{openDay}</ListItemText></ListItem>
+
+                                        )}
+
+                                    </List>
+
                                 </Grid>
 
                                 <Grid item md={6} xs={12}>
 
                                     <ListItem secondaryAction=
-                                      {
-
-                                        user &&
+                                      {user != null &&
                                           <IconButton onClick={event => setCreatingComment(true)}><Add/></IconButton>
 
                                       }>
@@ -242,17 +254,15 @@
 
                                    <List>
 
-                                       {comments.map((value, index, array) =>
+                                       {comments.map((element, index, array) =>
 
                                            <Card sx={{marginBottom: "10px"}} key={"comment_" + index} elevation={3}>
 
-                                               <ListItem>
+                                               <ListItem secondaryAction={<Rating readOnly={true} value={element.rating}></Rating>}>
 
                                                    <ListItemAvatar><Avatar/></ListItemAvatar>
 
-                                                   <ListItemText primary={(value.user)? value.user.fullName ?? "" : ""} secondary={value.text ?? ""}>
-
-                                                   </ListItemText>
+                                                   <ListItemText primary={(element.user)? element.user.fullName ?? "" : ""} secondary={element.text ?? ""}/>
 
                                                </ListItem>
 

@@ -18,7 +18,16 @@ public class Comment {
     @ManyToOne
     private SocialUser user;
 
+    private Float rating;
+
     @ManyToOne
     @JsonIgnore
     private PointOfInterest pointOfInterest;
+
+    public Comment() {
+
+        rating = 0f;
+
+    }
+
 }

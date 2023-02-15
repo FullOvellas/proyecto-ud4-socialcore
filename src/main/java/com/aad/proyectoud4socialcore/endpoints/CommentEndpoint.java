@@ -26,11 +26,11 @@ public class CommentEndpoint {
         this.commentService = commentService;
     }
 
-    public Comment createComment(PointOfInterest poi, String message ) {
+    public Comment createComment(PointOfInterest poi, String message, Float rating ) {
 
         SocialUser user = userAuthService.getContextUser();
 
-        return commentService.createComment(user, message, poi);
+        return commentService.createComment(user, message, poi, rating);
     }
 
     public boolean deleteComment(Comment comment ) {
