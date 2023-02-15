@@ -1,16 +1,18 @@
     import {useNavigate, useSearchParams} from "react-router-dom";
     import React, {useEffect, useState} from "react";
     import PointOfInterest from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/PointOfInterest";
-    import {PointOfInterestEndpoint} from "Frontend/generated/endpoints";
+    import {PointOfInterestEndpoint, UserAuthEndpoint} from "Frontend/generated/endpoints";
     import SocialAppBar from "Frontend/components/SocialAppBar";
     import Box from "@mui/material/Box";
     import Container from "@mui/material/Container";
     import Placeholder from "Frontend/components/placeholder/Placeholder";
-    import {Card, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText} from "@mui/material";
+    import {Card, IconButton, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText} from "@mui/material";
     import Grid from "@mui/material/Grid";
     import Typography from "@mui/material/Typography";
     import {GoogleMap, Marker, useLoadScript} from "@react-google-maps/api";
     import Avatar from "@mui/material/Avatar";
+    import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
+    import {Add} from "@mui/icons-material";
 
 
     export default function PoiView() {
@@ -19,9 +21,26 @@
 
         const [searchParams, setSearchParams] = useSearchParams();
         const [point, setPoint] = useState<PointOfInterest>();
+        const [user, setUser] = useState<SocialUser>();
 
         const {isLoaded} = useLoadScript({
             googleMapsApiKey: "AIzaSyDenRxQ8_1INjqF9cvWTejzSrgo7lsHYtQ"
+        })
+
+        const loadUser = new Promise<SocialUser>(async (resolve, reject) => {
+
+            try {
+
+                if((await UserAuthEndpoint.isAnonymous())) {
+                    return reject();
+                }
+
+                return resolve(UserAuthEndpoint.getUser());
+
+            } catch ( _ ) {
+                return reject(new Error("Error loading context user"));
+            }
+
         })
 
         const loadPointFromId = (pointId: number) => {
@@ -50,6 +69,10 @@
             loadPointFromId(pointId)
                 .then(setPoint)
                 .catch(_ => navigate("/"))
+
+            loadUser
+                .then(setUser)
+                .catch();
 
         }, []);
 
@@ -112,7 +135,15 @@
 
                                 <Grid item md={6} xs={12}>
 
-                                    <Typography variant="h4">Comments</Typography>
+                                    <ListItem secondaryAction=
+                                                  {
+                                        
+                                                    user &&
+                                                      <IconButton><Add/></IconButton>
+
+                                                  }>
+                                        <ListItemText><Typography variant="h4">Comments</Typography></ListItemText>
+                                    </ListItem>
 
                                    <List>
 
