@@ -15,12 +15,12 @@ import lombok.RequiredArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Entity
 @RequiredArgsConstructor
-@NoArgsConstructor
 @Table(name = "points_of_interest")
 public class PointOfInterest {
 
@@ -45,6 +45,11 @@ public class PointOfInterest {
     @OneToMany(mappedBy = "pointOfInterest")
     private List<Comment> comments;
 
+
+    public PointOfInterest() {
+        this.comments = new ArrayList<>();
+        this.types = new ArrayList<>();
+    }
 
     // Poor man's distance matrix TODO implementar distance matrix se tiveramos cartos
     public double calculateDistanceToPoint(LatLng originCoordinates) {
