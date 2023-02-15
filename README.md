@@ -44,17 +44,18 @@ añadir usuarios a grupos, borrar usuarios de grupos o borrar grupos.
 
 #### Autenticación de usuarios
 
-#### Grupos de usuarios
+La autenticación de usuarios se realiza mediante dos endpoints:
 
-#### Meetings
+- **/login**: se envía al servidor el email y la contraseña y se devuelve al cliente la sesión de usuario a la que pertenece
+- **/register**: se envía al servidor tanto el correo como el nombre del usuario, contraseña y ubicación
 
-#### Login
+Ambos puntos tienen comprobación de campos tanto en frontend como en el backend antes de realizar ninguna operación
 
-#### Registro
+El servicio permite obtener el usuario de la sesión actual empleando el método *getContextUser*. Permite saber también si un usuario es anónimo. Estos son los métodos que son llamados desde el endpoint para dar servicio al frontend.
 
-## Manual de usuario
+#### Resto de servicios
 
-
+Los servicios sobre grupos de usuarios, meetings, comentarios y puntos de interés permiten realizar las operaciones CRUD básicas en su totalidad o parcialmente.
 
 ## Explicaciones de GitProject y reparto de trabajo
 
