@@ -6,10 +6,13 @@ import com.aad.proyectoud4socialcore.model.entity.PointOfInterest;
 import com.aad.proyectoud4socialcore.model.entity.SocialUser;
 import com.aad.proyectoud4socialcore.model.repository.CommentRepository;
 import com.aad.proyectoud4socialcore.model.repository.PointOfInterestRepository;
+import com.aad.proyectoud4socialcore.service.PointOfInterestService;
 import com.aad.proyectoud4socialcore.service.UserAuthService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.hilla.Endpoint;
+import org.aspectj.lang.reflect.PointcutBasedPerClause;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Endpoint
@@ -17,13 +20,15 @@ import java.util.List;
 public class PointOfInterestEndpoint {
 
     private final PointOfInterestRepository repository;
+    private final PointOfInterestService service;
     private final CommentRepository commentRepository;
     private final UserAuthService userAuthService;
 
-    public PointOfInterestEndpoint(PointOfInterestRepository repository, UserAuthService userAuthService, CommentRepository commentRepository) {
+    public PointOfInterestEndpoint(PointOfInterestRepository repository, UserAuthService userAuthService, CommentRepository commentRepository, PointOfInterestService service) {
         this.repository = repository;
         this.userAuthService = userAuthService;
         this.commentRepository = commentRepository;
+        this.service = service;
     }
 
     /**
@@ -48,6 +53,10 @@ public class PointOfInterestEndpoint {
         Comment[] comments = commentRepository.findCommentsByPointOfInterest(poi).toArray(Comment[]::new);
 
         return comments;
+    }
+
+    public PointOfInterest[] findClosePointsOfInterest(SocialUser[] users) {
+        return service.findClosePoiToUsers(users);
     }
 
     public List<PointOfInterest> findAll() {

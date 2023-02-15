@@ -78,4 +78,49 @@ public class PointOfInterestService {
         return pointsOfInterest;
     }
 
+    public PointOfInterest[] findClosePoiToUsers(SocialUser[] users) {
+
+        ArrayList<PointOfInterest> commonPointsOfInterest = new ArrayList<>();
+        ArrayList<PointOfInterest> allPoints = new ArrayList<>();
+        ArrayList<PointOfInterest> out = new ArrayList<>();
+
+        double centroidX = 0;
+        double centroidY = 0;
+
+        for (SocialUser user: users) {
+
+            centroidX += user.getResidence().getCoordinates().lat / users.length;
+            centroidY += user.getResidence().getCoordinates().lng / users.length;
+
+            user.getResidence().getNearbyPointsOfInterest().forEach(el ->  {
+
+                if(allPoints.contains(el)) {
+
+                    commonPointsOfInterest.add(el);
+
+                } else {
+
+                    allPoints.add(el);
+
+                }
+
+            });
+
+        }
+
+        LatLng centroid = new LatLng(centroidX, centroidY);
+
+        for(PointOfInterest poi : commonPointsOfInterest) {
+
+            if(poi.calculateDistanceToPoint(centroid) < 50 ) {
+
+                out.add(poi);
+
+            }
+
+        }
+
+        return out.toArray(PointOfInterest[]::new);
+    }
+
 }
