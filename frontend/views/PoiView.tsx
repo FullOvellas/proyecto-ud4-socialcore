@@ -149,7 +149,7 @@
 
                                        {point && point.comments?.map((value, index, array) =>
 
-                                           <Card elevation={3}>
+                                           <Card sx={{marginBottom: "10px"}} elevation={3}>
 
                                                <ListItem>
 
