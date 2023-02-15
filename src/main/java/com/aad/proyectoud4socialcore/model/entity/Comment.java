@@ -16,6 +16,9 @@ public class Comment {
     private String text;
 
     @ManyToOne
+    private SocialUser user;
+
+    @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "point_of_interest_id")
     private PointOfInterest pointOfInterest;

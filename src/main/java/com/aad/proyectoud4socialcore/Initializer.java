@@ -96,6 +96,10 @@ public class Initializer implements CommandLineRunner {
         comment1.setText("Comentario de ejemplo 2");
         comment2.setText("Comentario de ejemplo 3");
 
+        comment.setUser(user1);
+        comment1.setUser(user1);
+        comment2.setUser(user1);
+
         comment.setPointOfInterest(point1);
         comment1.setPointOfInterest(point1);
         comment2.setPointOfInterest(point1);

@@ -155,7 +155,7 @@
 
                                                    <ListItemAvatar><Avatar/></ListItemAvatar>
 
-                                                   <ListItemText primary={"User_name"} secondary={value?.text ?? ""}>
+                                                   <ListItemText primary={value?.user?.fullName ?? ""} secondary={value?.text ?? ""}>
 
                                                    </ListItemText>
 
