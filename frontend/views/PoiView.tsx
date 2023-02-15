@@ -1,31 +1,87 @@
     import {useNavigate, useSearchParams} from "react-router-dom";
     import React, {useEffect, useState} from "react";
     import PointOfInterest from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/PointOfInterest";
-    import {PointOfInterestEndpoint, UserAuthEndpoint} from "Frontend/generated/endpoints";
+    import {CommentEndpoint, PointOfInterestEndpoint, UserAuthEndpoint} from "Frontend/generated/endpoints";
     import SocialAppBar from "Frontend/components/SocialAppBar";
     import Box from "@mui/material/Box";
     import Container from "@mui/material/Container";
     import Placeholder from "Frontend/components/placeholder/Placeholder";
-    import {Card, IconButton, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText} from "@mui/material";
+    import {
+    Card,
+    IconButton,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemSecondaryAction,
+    ListItemText,
+        Modal
+    } from "@mui/material";
     import Grid from "@mui/material/Grid";
     import Typography from "@mui/material/Typography";
     import {GoogleMap, Marker, useLoadScript} from "@react-google-maps/api";
     import Avatar from "@mui/material/Avatar";
     import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
     import {Add} from "@mui/icons-material";
+    import TextField from "@mui/material/TextField";
+    import Button from "@mui/material/Button";
+    import Comment from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/Comment";
 
 
     export default function PoiView() {
 
         const navigate = useNavigate();
 
+        const modalStyle = {
+            position: 'absolute' as 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            borderRadius: "30px",
+            boxShadow: 24,
+            pt: 2,
+            px: 4,
+            pb: 3,
+        };
+
         const [searchParams, setSearchParams] = useSearchParams();
         const [point, setPoint] = useState<PointOfInterest>();
         const [user, setUser] = useState<SocialUser>();
+        const [creatingComment, setCreatingComment] = useState<boolean>(false);
+        const [commentText, setCommentText] = useState<string>("");
+        const [commentRating, setCommentRating] = useState<number>(1);
+        const [comments, setComments] = useState<Comment[]>([]);
 
         const {isLoaded} = useLoadScript({
             googleMapsApiKey: "AIzaSyDenRxQ8_1INjqF9cvWTejzSrgo7lsHYtQ"
         })
+
+        const loadPointComments = new Promise<Comment[]>(async (resolve, reject) => {
+
+            try {
+                return resolve(CommentEndpoint.getCommentsFromPoint(point!));
+            } catch (_) {
+                return reject();
+            }
+
+        });
+
+        const createComment = new Promise<void>( async (resolve, reject) => {
+
+            try {
+
+                const newComment = await CommentEndpoint.createComment(point!, commentText);
+
+                return resolve();
+
+            } catch (_) {
+
+                return reject();
+
+            }
+
+        });
 
         const loadUser = new Promise<SocialUser>(async (resolve, reject) => {
 
@@ -54,8 +110,8 @@
 
                     return reject(new Error("Point not found"));
                 }
-            })
-        }
+            });
+        };
 
         useEffect(() => {
 
@@ -67,8 +123,13 @@
             let pointId = parseInt(searchParams.get("point_id")!);
 
             loadPointFromId(pointId)
-                .then(setPoint)
-                .catch(_ => navigate("/"))
+                .then(value => {
+                    setPoint(value)
+                    loadPointComments
+                        .then(setComments)
+                        .catch()
+                })
+                .catch(_ => navigate("/"));
 
             loadUser
                 .then(setUser)
@@ -96,6 +157,37 @@
                 {point != null &&
 
                     <Container>
+
+                        <Modal onClose={ _ => setCreatingComment(false)} open={creatingComment}>
+
+                            <Box sx={{ ...modalStyle, width: 300 }}>
+
+                                <List>
+
+                                    <ListItem><ListItemText><h3 id="child-modal-title">Create new comment</h3></ListItemText></ListItem>
+
+                                    <ListItem>
+
+                                        <TextField></TextField>
+
+                                    </ListItem>
+
+                                    <ListItem secondaryAction={
+                                        <Button variant={"contained"} onClick={ _ => {createComment.then()}}>
+                                            Add
+                                        </Button>
+
+                                    }>
+
+                                        <Button onClick={ _ => setCreatingComment(false)}>Cancel</Button>
+
+                                    </ListItem>
+
+                                </List>
+
+                            </Box>
+
+                        </Modal>
 
                         <Card elevation={3}>
 
@@ -139,7 +231,7 @@
                                                   {
                                         
                                                     user &&
-                                                      <IconButton><Add/></IconButton>
+                                                      <IconButton onClick={event => setCreatingComment(true)}><Add/></IconButton>
 
                                                   }>
                                         <ListItemText><Typography variant="h4">Comments</Typography></ListItemText>
@@ -147,9 +239,9 @@
 
                                    <List>
 
-                                       {point && point.comments?.map((value, index, array) =>
+                                       {point && comments.map((value, index, array) =>
 
-                                           <Card sx={{marginBottom: "10px"}} elevation={3}>
+                                           <Card sx={{marginBottom: "10px"}} key={"comment_" + index} elevation={3}>
 
                                                <ListItem>
 
