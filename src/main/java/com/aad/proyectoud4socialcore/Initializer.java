@@ -85,7 +85,7 @@ public class Initializer implements CommandLineRunner {
                     userRepository.save(user);
                 });
 
-        PointOfInterest point1 = new PointOfInterest("a", "a", new LatLng(42.2513809, -8.6900709), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
+        PointOfInterest point1 = new PointOfInterest("IES TEIS", "a ", new LatLng(42.2513809, -8.6900709), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
         PointOfInterest point2 = new PointOfInterest("a", "a", new LatLng(42.3407844, -8.6048713), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
 
         Comment comment = new Comment();
