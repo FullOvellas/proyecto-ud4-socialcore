@@ -1,5 +1,6 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ public class Comment {
     private String text;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "point_of_interest_id")
     private PointOfInterest pointOfInterest;
 }
