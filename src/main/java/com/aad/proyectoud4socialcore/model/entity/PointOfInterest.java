@@ -19,7 +19,6 @@ import java.util.List;
 @Data
 @Entity
 @RequiredArgsConstructor
-@NoArgsConstructor
 @Table(name = "points_of_interest")
 public class PointOfInterest {
 
@@ -39,8 +38,13 @@ public class PointOfInterest {
 
     @NonNull private Float rating;
     @ElementCollection
-    @NonNull private List<String> placeTypes;
 
+    @NonNull private List<String> placeTypes;
+    
+    @OneToMany(mappedBy = "pointOfInterest")
+    @JsonIgnore
+    private List<Comment> comments;
+    
     public PointOfInterest(@NonNull String name, @NonNull String formattedAddress, @NonNull LatLng coordinates, @NonNull OpeningHours openingHours, @NonNull String businessStatus, @NonNull List<String> placeTypes, byte @NonNull [] imageData, @NonNull Float rating) {
         this.name = name;
         this.formattedAddress = formattedAddress;
@@ -52,9 +56,11 @@ public class PointOfInterest {
         this.rating = rating;
     }
 
-    @OneToMany(mappedBy = "pointOfInterest")
-    private List<Comment> comments;
 
+    public PointOfInterest() {
+        this.comments = new ArrayList<>();
+        this.types = new ArrayList<>();
+    }
 
     // Poor man's distance matrix TODO implementar distance matrix se tiveramos cartos
     public double calculateDistanceToPoint(LatLng originCoordinates) {
@@ -72,6 +78,18 @@ public class PointOfInterest {
                 * Math.cos(pointOfInterestLongRadians - originLongRadians))
                 * EARTH_RADIUS;
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if(!(o instanceof PointOfInterest)) {
+            return false;
+        }
+
+        PointOfInterest p = (PointOfInterest) o;
+
+        return p.getId().equals(getId());
     }
 
 }

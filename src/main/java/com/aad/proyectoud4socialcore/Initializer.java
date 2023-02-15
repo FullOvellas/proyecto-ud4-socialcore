@@ -22,6 +22,9 @@ public class Initializer implements CommandLineRunner {
 
     PointOfInterestService pointOfInterestService;
     @Autowired
+    CommentRepository commentRepository;
+
+    @Autowired
     UserRepository userRepository;
 
     @Autowired
@@ -36,15 +39,16 @@ public class Initializer implements CommandLineRunner {
     @Autowired
     PasswordEncoder encoder;
     private final UserGroupRepository userGroupRepository;
+    private final PointOfInterestRepository pointOfInterestRepository;
 
     public Initializer(UserRepository userRepository,
                        UserGroupRepository userGroupRepository,
                        PointOfInterestService pointOfInterestService
-                       ) {
-
+                       PointOfInterestRepository pointOfInterestRepository) {
         this.userRepository = userRepository;
         this.pointOfInterestService = pointOfInterestService;
         this.userGroupRepository = userGroupRepository;
+        this.pointOfInterestRepository = pointOfInterestRepository;
     }
 
     @Override
@@ -103,6 +107,39 @@ public class Initializer implements CommandLineRunner {
         // ===============================================
         meeting1.setDestination(user1.getResidence().getNearbyPointsOfInterest().get(0));
         System.out.println("ID: " + meetingRepository.save(meeting1).getId());
+
+
+        PointOfInterest point1 = new PointOfInterest("IES TEIS", "a ", new LatLng(42.2513809, -8.6900709), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
+        PointOfInterest point2 = new PointOfInterest("a", "a", new LatLng(42.3407844, -8.6048713), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
+
+        Comment comment = new Comment();
+        Comment comment1 = new Comment();
+        Comment comment2 = new Comment();
+
+        comment.setText("Comentario de ejemplo 1");
+        comment1.setText("Comentario de ejemplo 2");
+        comment2.setText("Comentario de ejemplo 3");
+
+        comment.setUser(user1);
+        comment1.setUser(user1);
+        comment2.setUser(user1);
+
+        comment.setRating(1f);
+
+        comment1.setRating(2f);
+
+        comment2.setRating(3f);
+
+        comment.setPointOfInterest(point1);
+        comment1.setPointOfInterest(point1);
+        comment2.setPointOfInterest(point1);
+
+        pointOfInterestRepository.save(point1);
+        pointOfInterestRepository.save(point2);
+
+        commentRepository.save(comment);
+        commentRepository.save(comment1);
+        commentRepository.save(comment2);
 
     }
 }
