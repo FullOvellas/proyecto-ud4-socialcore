@@ -1,6 +1,7 @@
 package com.aad.proyectoud4socialcore;
 
 import com.aad.proyectoud4socialcore.model.entity.*;
+import com.aad.proyectoud4socialcore.model.enums.SocialPlaceType;
 import com.aad.proyectoud4socialcore.model.repository.*;
 import com.aad.proyectoud4socialcore.service.PointOfInterestService;
 import com.aad.proyectoud4socialcore.service.UserGroupService;
@@ -14,7 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 @Component
@@ -109,8 +112,13 @@ public class Initializer implements CommandLineRunner {
         System.out.println("ID: " + meetingRepository.save(meeting1).getId());
 
 
-        PointOfInterest point1 = new PointOfInterest("IES TEIS", "a ", new LatLng(42.2513809, -8.6900709), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
-        PointOfInterest point2 = new PointOfInterest("a", "a", new LatLng(42.3407844, -8.6048713), new OpeningHours(), "a", new ArrayList<>(), 1.0f);
+        Set<SocialPlaceType> types= new HashSet<>();
+
+        types.add(SocialPlaceType.CAFE);
+        types.add(SocialPlaceType.SCHOOL);
+
+        PointOfInterest point1 = new PointOfInterest("IES TEIS", "a ", new LatLng(42.2513809, -8.6900709), new OpeningHours(), "a", types, 1.0f);
+        PointOfInterest point2 = new PointOfInterest("a", "a", new LatLng(42.3407844, -8.6048713), new OpeningHours(), "a", types, 1.0f);
 
         Comment comment = new Comment();
         Comment comment1 = new Comment();

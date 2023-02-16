@@ -1,4 +1,4 @@
-import {MeetingEndpoint, UserGroupEndpoint} from "Frontend/generated/endpoints";
+import {MeetingEndpoint, PointOfInterestEndpoint, UserGroupEndpoint} from "Frontend/generated/endpoints";
 import React, {useEffect, useState} from "react";
 import UserGroup from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/UserGroup";
 import SocialAppBar from "Frontend/components/SocialAppBar";
@@ -17,6 +17,10 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
 import {EndpointError} from "@hilla/frontend";
 import Meeting from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/Meeting";
+import PointOfInterest from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/PointOfInterest";
+import Placeholder from "Frontend/components/placeholder/Placeholder";
+import {elGR} from "@mui/material/locale";
+import SocialPlaceType from "Frontend/generated/com/aad/proyectoud4socialcore/model/enums/SocialPlaceType";
 
 export default function GroupView() {
 
@@ -32,6 +36,8 @@ export default function GroupView() {
     const [isCreator, setIsCreator] = useState<boolean>(false);
     const [error, setError] = useState<String>("");
     const [groupMeetings, setGroupMeetings] = useState<Meeting[]>([]);
+
+    const [nearbyPoints, setNearbyPoints] = useState<PointOfInterest[] | null>(null);
 
     const modalStyle = {
         position: 'absolute' as 'absolute',
@@ -173,6 +179,32 @@ export default function GroupView() {
         setShowMeetingModal(false)
     }
 
+    async function loadNearbyPoints() {
+
+        if(group == null || group.participants == null){
+            return
+        }
+
+        try {
+
+            const participants: SocialUser[] = []
+
+            group.participants.forEach(value => {
+                if(value != null) {
+                    participants.push(value);
+                }
+            })
+
+            const points = await PointOfInterestEndpoint.findClosePointsOfInterest(participants, SocialPlaceType.SCHOOL);
+
+            setNearbyPoints(points)
+
+        } catch (_) {
+
+        }
+
+    }
+
     useEffect( () => {
 
         if(searchParams.get("group_id") != null ) {
@@ -246,32 +278,86 @@ export default function GroupView() {
 
             <Modal onClose={ _ => setShowMeetingModal(false)} open={showMeetingModel}>
 
-                <Box sx={{ ...modalStyle, width: 300 }}>
+                <Box sx={{ ...modalStyle, width: "50%", height: "auto"}}>
 
-                    <List>
+                    <Grid container spacing={12}>
 
-                        <ListItem><ListItemText><h3 id="child-modal-title">Add new meeting</h3></ListItemText></ListItem>
+                        <Grid item xs={12} md={12}>
 
-                        <ListItem><TextField label="Name" error={error != ""} autoFocus={true} onEnded={createNewMeeting} onSubmit={createNewMeeting} name="meetingName" value={meetingName} onChange={event => setMeetingName(event.currentTarget.value)} /></ListItem>
+                            <Typography variant="h4" textAlign="center">Add a new meeting</Typography>
 
-                        <ListItem><Typography variant={"body2"} color={"darkred"}>{error}</Typography></ListItem>
+                        </Grid>
 
-                        <ListItem secondaryAction={
-                            <Button variant={"contained"} onClick={ _ => {createNewMeeting().then()}}>
-                                Add
-                            </Button>
+                        <Grid item xs={12} md={6}>
 
-                        }>
+                            <Typography variant="h5">Nearby points of interest</Typography>
 
-                            <Button onClick={ _ => {
+                            {nearbyPoints == null &&
+
+                                <Placeholder/>
+
+                            }
+
+                            {nearbyPoints != null &&
+
+                                <List>
+
+                                    {nearbyPoints.map(poi =>
+
+                                            <ListItem>
+
+                                                <ListItemText>{poi.name}</ListItemText>
+
+                                            </ListItem>
+
+                                        )
+
+                                    }
+
+                                </List>
+
+                            }
+
+                        </Grid>
+
+                        <Grid item xs={12} md={6}>
+
+                            <Typography variant="h5">Meeting points of interest</Typography>
+
+                            <List>
+
+                                <ListItem>
+
+                                    <ListItemText>Item 1</ListItemText>
+
+                                </ListItem>
+
+                            </List>
+
+                        </Grid>
+
+                        <Grid item xs={12} md={12}>
+
+                            <ListItem><Typography variant={"body2"} color={"darkred"}>{error}</Typography></ListItem>
+
+                            <ListItem secondaryAction={
+                                <Button variant={"contained"} onClick={ _ => {createNewMeeting().then()}}>
+                                    Add
+                                </Button>
+
+                            }>
+
+                                <Button onClick={ _ => {
                                     setShowMeetingModal(false);
                                     setMeetingName("")
-                            }
-                            }>Cancel</Button>
+                                }
+                                }>Cancel</Button>
 
-                        </ListItem>
+                            </ListItem>
 
-                    </List>
+                        </Grid>
+
+                    </Grid>
 
                 </Box>
 
@@ -285,7 +371,7 @@ export default function GroupView() {
 
                         <Grid item xs={12}>
 
-                            <Typography paddingBottom={"10px"} textAlign="center" variant={"h2"}>{(group)? group!.name : ""}</Typography>
+                            <Typography paddingBottom={"10px"} textAlign="center" variant={"h2"}>{(group != null)? group!.name : ""}</Typography>
 
                         </Grid>
 
@@ -365,7 +451,11 @@ export default function GroupView() {
                         <Grid item xs={12} md={12}>
 
                             <ListItem secondaryAction={
-                                <IconButton onClick={ _ => setShowMeetingModal(true) }>
+                                <IconButton onClick={ _ => {
+                                        setShowMeetingModal(true);
+                                        loadNearbyPoints()
+                                    }
+                                }>
                                     <AddCircleOutlined/>
                                 </IconButton>
                             }>
