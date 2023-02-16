@@ -56,6 +56,13 @@ export default function ProfileView() {
 
     }
 
+    const goToNearbyPoiList = (user: SocialUser) => {
+
+        // Abrir la página de vista de puntos de interés cercanos
+        navigate("/nearby?user=" + user.id);
+
+    }
+
     const createUserGroup = async () =>  {
 
         let created = await UserGroupEndpoint.createUserGroup(newGroupName)
@@ -121,11 +128,15 @@ export default function ProfileView() {
 
                     <Grid container spacing={12} padding={"20px"}>
 
-                        <Grid item xs={12}>
+                        <Grid item xs={8}>
 
                             <Typography paddingBottom={"10px"} variant={"h2"}>{(user)? user!.fullName : ""}</Typography>
                             <Typography paddingBottom={"10px"} variant={"h5"} color={"rgb(155,155,155)"}>{(user)? user!.email : ""}</Typography>
 
+                        </Grid>
+
+                        <Grid item xs={4} alignSelf="center">
+                            <Button onClick={_ => goToNearbyPoiList(user!)} variant="outlined">Find meeting spots</Button>
                         </Grid>
 
                         <Grid item xs={12} md={6}>

@@ -1,4 +1,3 @@
-import { lazy } from 'react';
 import { createBrowserRouter, IndexRouteObject, NonIndexRouteObject, useMatches } from 'react-router-dom';
 import LoginView from "Frontend/views/LoginView";
 import RegisterView from "Frontend/views/RegisterView";
@@ -6,8 +5,8 @@ import EmptyView from "Frontend/views/empty/EmptyView";
 import ProfileView from "Frontend/views/ProfileView";
 import GroupView from "Frontend/views/GroupView";
 import MeetingView from "Frontend/views/MeetingView";
-import {render} from "lit";
 import PoiView from "Frontend/views/PoiView";
+import NearbyPoiView from "Frontend/views/NearbyPoiView";
 
 export type MenuProps = Readonly<{
   icon?: string;
@@ -40,7 +39,8 @@ export const routes: readonly ViewRouteObject[] = [
   {path: '/profile', element: <ProfileView/>},
   {path: '/group', element: <GroupView/>},
   {path: '/meeting', element: <MeetingView/>},
-  {path: '/point', element: <PoiView/>}
+  {path: '/point', element: <PoiView/>},
+  {path: '/nearby', element: <NearbyPoiView />}
 ];
 
 const router = createBrowserRouter([...routes]);

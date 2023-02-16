@@ -28,7 +28,7 @@ public class Residence {
 
     private Set<SocialPlaceType> requestedTypes;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PointOfInterest> nearbyPointsOfInterest = new ArrayList<>();
 
     public Residence(LatLng coordinates) {
