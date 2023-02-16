@@ -4,6 +4,7 @@ import com.aad.proyectoud4socialcore.exception.PlaceTypeAlreadyRequestedExceptio
 import com.aad.proyectoud4socialcore.model.entity.PointOfInterest;
 import com.aad.proyectoud4socialcore.model.entity.Residence;
 import com.aad.proyectoud4socialcore.model.entity.SocialUser;
+import com.aad.proyectoud4socialcore.model.enums.SocialPlaceType;
 import com.google.maps.GeoApiContext;
 import com.google.maps.ImageResult;
 import com.google.maps.NearbySearchRequest;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PointOfInterestService {
@@ -31,28 +33,33 @@ public class PointOfInterestService {
     }
 
 
-    public List<PointOfInterest> getNearbyPointsOfInterestForUser(SocialUser user, String type) throws PlaceTypeAlreadyRequestedException, IOException, InterruptedException, ApiException {
+    public List<PointOfInterest> getNearbyPointsOfInterestForUser(SocialUser user, SocialPlaceType type) throws IOException, InterruptedException, ApiException {
 
-        PlaceType placeType = PlaceType.valueOf(type);
         Residence userResidence = user.getResidence();
+        List<PointOfInterest> points;
 
-        if (userResidence.getRequestedTypes().contains(placeType))
-            throw new PlaceTypeAlreadyRequestedException("This user has already requested nearby places of this type");
+        if (userResidence.getRequestedTypes().contains(type))
+            return user.getResidence().getNearbyPointsOfInterest().stream().filter(pointOfInterest -> pointOfInterest.getTypes().contains(type)).collect(Collectors.toList());
 
-        userResidence.getRequestedTypes().add(placeType);
-        return getNearbyPointsOfInterest(userResidence.getCoordinates(), placeType);
+        userResidence.getRequestedTypes().add(type);
+
+        points = getNearbyPointsOfInterest(userResidence.getCoordinates(), type);
+
+        userResidence.getNearbyPointsOfInterest().addAll(points);
+
+        return points;
 
     }
 
 
-    private List<PointOfInterest> getNearbyPointsOfInterest(LatLng location, PlaceType type) throws IOException, InterruptedException, ApiException {
+    private List<PointOfInterest> getNearbyPointsOfInterest(LatLng location, SocialPlaceType type) throws IOException, InterruptedException, ApiException {
 
         List<PointOfInterest> pointsOfInterest = new ArrayList<>();
         NearbySearchRequest nearbySearchRequest = new NearbySearchRequest(geoContext);
         nearbySearchRequest
                 .location(location)
                 .radius(DEFAULT_RADIUS)
-                .type(type);
+                .type(type.getType());
 
         PlacesSearchResponse response = nearbySearchRequest.await();
 
@@ -61,7 +68,22 @@ public class PointOfInterestService {
             if (place.permanentlyClosed)
                 continue;
 
-            byte[] photo = new PhotoRequest(geoContext).await().imageData;
+            byte[] photo = new PhotoRequest(geoContext).photoReference(place.photos[0].photoReference).maxWidth(1920).await().imageData;
+
+            String[] placeTypes = place.types;
+
+            placeTypes = Arrays.stream(placeTypes).filter(p -> {
+
+                for(int i = 0; i < SocialPlaceType.values().length; i++ ){
+
+                    if(SocialPlaceType.values()[i].name().equals(p)) {
+                        return true;
+                    }
+
+                }
+
+                return false;
+            }).toArray(String[]::new);
 
             pointsOfInterest.add(new PointOfInterest(
                     place.name,
@@ -69,7 +91,7 @@ public class PointOfInterestService {
                     place.geometry.location,
                     place.openingHours,
                     place.businessStatus,
-                    Arrays.asList(place.types),
+                    Arrays.stream(placeTypes).map(SocialPlaceType::valueOf).collect(Collectors.toSet()),
                     place.rating
             ));
 
@@ -78,7 +100,7 @@ public class PointOfInterestService {
         return pointsOfInterest;
     }
 
-    public PointOfInterest[] findClosePoiToUsers(SocialUser[] users) {
+    public PointOfInterest[] findClosePoiToUsers(SocialUser[] users, SocialPlaceType type) {
 
         ArrayList<PointOfInterest> commonPointsOfInterest = new ArrayList<>();
         ArrayList<PointOfInterest> allPoints = new ArrayList<>();
@@ -92,19 +114,25 @@ public class PointOfInterestService {
             centroidX += user.getResidence().getCoordinates().lat / users.length;
             centroidY += user.getResidence().getCoordinates().lng / users.length;
 
-            user.getResidence().getNearbyPointsOfInterest().forEach(el ->  {
+            try {
 
-                if(allPoints.contains(el)) {
+                getNearbyPointsOfInterestForUser(user, type).forEach(el ->  {
 
-                    commonPointsOfInterest.add(el);
+                    if(allPoints.contains(el)) {
 
-                } else {
+                        commonPointsOfInterest.add(el);
 
-                    allPoints.add(el);
+                    } else {
 
-                }
+                        allPoints.add(el);
 
-            });
+                    }
+
+                });
+
+            } catch (IOException | InterruptedException | ApiException ex) {
+
+            }
 
         }
 
@@ -112,7 +140,7 @@ public class PointOfInterestService {
 
         for(PointOfInterest poi : commonPointsOfInterest) {
 
-            if(poi.calculateDistanceToPoint(centroid) < 50 ) {
+            if(poi.calculateDistanceToPoint(centroid) < 50_000 ) {
 
                 out.add(poi);
 

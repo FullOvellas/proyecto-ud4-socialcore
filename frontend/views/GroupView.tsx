@@ -19,6 +19,8 @@ import {EndpointError} from "@hilla/frontend";
 import Meeting from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/Meeting";
 import PointOfInterest from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/PointOfInterest";
 import Placeholder from "Frontend/components/placeholder/Placeholder";
+import {elGR} from "@mui/material/locale";
+import SocialPlaceType from "Frontend/generated/com/aad/proyectoud4socialcore/model/enums/SocialPlaceType";
 
 export default function GroupView() {
 
@@ -179,7 +181,27 @@ export default function GroupView() {
 
     async function loadNearbyPoints() {
 
+        if(group == null || group.participants == null){
+            return
+        }
 
+        try {
+
+            const participants: SocialUser[] = []
+
+            group.participants.forEach(value => {
+                if(value != null) {
+                    participants.push(value);
+                }
+            })
+
+            const points = await PointOfInterestEndpoint.findClosePointsOfInterest(participants, SocialPlaceType.SCHOOL);
+
+            setNearbyPoints(points)
+
+        } catch (_) {
+
+        }
 
     }
 

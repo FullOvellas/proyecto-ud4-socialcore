@@ -1,5 +1,6 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
+import com.aad.proyectoud4socialcore.model.enums.SocialPlaceType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.maps.GeoApiContext;
 import com.google.maps.ImageResult;
@@ -7,6 +8,7 @@ import com.google.maps.PhotoRequest;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.OpeningHours;
+import com.google.maps.model.PlaceType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -16,7 +18,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -30,13 +34,14 @@ public class PointOfInterest {
     private Long id;
 
     @NonNull private String name;
+    @JsonIgnore // TODO: valor null
     @NonNull private String formattedAddress;
     @NonNull private LatLng coordinates;
     @NonNull private OpeningHours openingHours;
     @NonNull private String businessStatus;
 
     @ElementCollection
-    @NonNull private List<String> types;
+    @NonNull private Set<SocialPlaceType> types;
 
     @JsonIgnore
     private byte @NonNull[] imageData;
@@ -49,7 +54,7 @@ public class PointOfInterest {
 
     public PointOfInterest() {
         this.comments = new ArrayList<>();
-        this.types = new ArrayList<>();
+        this.types = new HashSet<>();
     }
 
     // Poor man's distance matrix TODO implementar distance matrix se tiveramos cartos
