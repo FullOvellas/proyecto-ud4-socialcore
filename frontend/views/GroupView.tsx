@@ -395,6 +395,8 @@ export default function GroupView() {
                                 <Button onClick={ _ => {
                                     setShowMeetingModal(false);
                                     setMeetingName("")
+                                    setSelectedPoints([])
+                                    setNearbyPoints([])
                                 }
                                 }>Cancel</Button>
 
