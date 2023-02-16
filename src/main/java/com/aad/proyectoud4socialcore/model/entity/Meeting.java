@@ -20,12 +20,23 @@ public class Meeting {
     @Id
     private Long id;
 
+    private String name;
+
     @OneToOne(cascade = CascadeType.MERGE)
     @NonNull
     private PointOfInterest destination;
     private int maxRadiusMeters;
 
-    @OneToMany
+    @ManyToMany
+    @JoinTable(
+            name = "meetings_attendants",
+            joinColumns = {
+                    @JoinColumn(name = "meeting_id", referencedColumnName = "id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "attendant_id", referencedColumnName = "id")
+            }
+    )
     private List<SocialUser> attendants;
 
     @JsonIgnore

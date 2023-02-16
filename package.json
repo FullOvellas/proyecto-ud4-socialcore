@@ -18,6 +18,7 @@
     "@hilla/react-components": "1.3.5",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.7",
+    "@mui/x-date-pickers": "^5.0.19",
     "@polymer/iron-icon": "3.0.1",
     "@polymer/polymer": "3.5.1",
     "@react-google-maps/api": "^2.18.1",
@@ -40,6 +41,7 @@
     "googlemaps": "^1.12.0",
     "line-awesome": "1.3.0",
     "lit": "2.6.1",
+    "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.2"
@@ -105,7 +107,9 @@
     "@react-google-maps/api": "$@react-google-maps/api",
     "dotenv": "$dotenv",
     "@googlemaps/react-wrapper": "$@googlemaps/react-wrapper",
-    "googlemaps": "$googlemaps"
+    "googlemaps": "$googlemaps",
+    "@mui/x-date-pickers": "$@mui/x-date-pickers",
+    "moment": "$moment"
   },
   "vaadin": {
     "dependencies": {
@@ -153,6 +157,6 @@
       "workbox-core": "6.5.4",
       "workbox-precaching": "6.5.4"
     },
-    "hash": "05f31c4097cf79bea156065eb75c61ce56b053b0d331dba557f6f35b55f6683b"
+    "hash": "fa2621731a351fcf433c8cb6bc90c7c7f733f60abe7574e12c7429ec6f1e7e19"
   }
 }

@@ -16,13 +16,14 @@ public class MeetingService {
 
     @Autowired
     private MeetingRepository meetingRepository;
-    public Meeting createNewMeeting(@NotNull UserGroup group, PointOfInterest destination ,Date dateTime) {
+    public Meeting createNewMeeting(@NotNull UserGroup group, PointOfInterest destination, String name, Date dateTime) {
 
         Meeting meeting = new Meeting();
 
         meeting.setAttendants(group.getParticipants());
         meeting.setPlannedTime(dateTime);
         meeting.setDestination(destination);
+        meeting.setName(name);
 
         return meetingRepository.save(meeting);
     }

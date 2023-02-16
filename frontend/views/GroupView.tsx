@@ -5,8 +5,9 @@ import SocialAppBar from "Frontend/components/SocialAppBar";
 import Container from "@mui/material/Container";
 import {
     Card,
-    Divider,
+    Chip,
     IconButton,
+    List,
     ListItem,
     ListItemAvatar,
     ListItemButton,
@@ -18,10 +19,9 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {List} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import {AddCircleOutlined} from "@mui/icons-material";
-import TextField from "@mui/material/TextField";
+import TextField, {TextFieldProps} from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import RemoveIcon from '@mui/icons-material/Remove';
 import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
@@ -29,8 +29,12 @@ import {EndpointError} from "@hilla/frontend";
 import Meeting from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/Meeting";
 import PointOfInterest from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/PointOfInterest";
 import Placeholder from "Frontend/components/placeholder/Placeholder";
-import {elGR} from "@mui/material/locale";
 import SocialPlaceType from "Frontend/generated/com/aad/proyectoud4socialcore/model/enums/SocialPlaceType";
+import {DateTimePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
+import moment, {Moment} from "moment";
+import {GoogleMap, Marker, useLoadScript} from "@react-google-maps/api";
+import LatLng from "Frontend/generated/com/google/maps/model/LatLng";
 
 export default function GroupView() {
 
@@ -49,6 +53,8 @@ export default function GroupView() {
 
     const [nearbyPoints, setNearbyPoints] = useState<PointOfInterest[] | null>(null);
     const [selectedPoint, setSelectedPoint] = useState<PointOfInterest | null>(null);
+    const [dateTimeValue, setDateTimeValue] = useState<Moment>(moment(moment.now()));
+    const [centroid, setCentroid] = useState<LatLng | null>();
 
     const modalStyle = {
         position: 'absolute' as 'absolute',
@@ -66,7 +72,7 @@ export default function GroupView() {
 
     const addUserToGroup = async () => {
 
-        if(group == null) {
+        if (group == null) {
             return;
         }
 
@@ -81,15 +87,15 @@ export default function GroupView() {
 
         } catch (e) {
 
-            if(e instanceof EndpointError ) {
+            if (e instanceof EndpointError) {
 
-                if(e.type != undefined ) {
+                if (e.type != undefined) {
 
-                    if(e.type.endsWith("UserNotFoundException")) {
+                    if (e.type.endsWith("UserNotFoundException")) {
 
                         setError("User not found")
 
-                    } else if(e.type.endsWith("ForbidenAccessException")) {
+                    } else if (e.type.endsWith("ForbidenAccessException")) {
 
                         setError("Forbiden access")
 
@@ -105,13 +111,13 @@ export default function GroupView() {
 
     const removeUserFromGroup = async (user: SocialUser) => {
 
-        if(group == null) {
+        if (group == null) {
             return;
         }
 
         try {
 
-            if(user.id == group!.creator.id) {
+            if (user.id == group!.creator.id) {
 
                 // TODO: mostrar error
                 return;
@@ -123,11 +129,11 @@ export default function GroupView() {
 
         } catch (e) {
 
-            if(e instanceof EndpointError ) {
+            if (e instanceof EndpointError) {
 
-                if(e.type != undefined ) {
+                if (e.type != undefined) {
 
-                    if(e.type.endsWith("ForbidenAccessException")) {
+                    if (e.type.endsWith("ForbidenAccessException")) {
 
                         // TODO: mostrar error ??
 
@@ -162,7 +168,7 @@ export default function GroupView() {
     const exitGroup = () => {
         UserGroupEndpoint.exitGroup(group!).then(v => {
 
-            if(v) {
+            if (v) {
                 navigate("/profile")
             }
 
@@ -182,11 +188,11 @@ export default function GroupView() {
 
     const createNewMeeting = async () => {
 
-        if(selectedPoint == null) {
+        if (selectedPoint == null) {
             return;
         }
 
-        const created = await MeetingEndpoint.createNewMeeting(group!, selectedPoint);
+        const created = await MeetingEndpoint.createNewMeeting(group!, selectedPoint, meetingName);
 
         setGroupMeetings(prevState => [...prevState, created])
 
@@ -194,9 +200,13 @@ export default function GroupView() {
         setShowMeetingModal(false)
     }
 
-    async function loadNearbyPoints() {
+    const {isLoaded} = useLoadScript({
+        googleMapsApiKey: "AIzaSyDenRxQ8_1INjqF9cvWTejzSrgo7lsHYtQ"
+    })
 
-        if(group == null || group.participants == null){
+    async function loadNearbyPoints(type: SocialPlaceType ) {
+
+        if (group == null || group.participants == null) {
             return
         }
 
@@ -205,12 +215,14 @@ export default function GroupView() {
             const participants: SocialUser[] = []
 
             group.participants.forEach(value => {
-                if(value != null) {
+                if (value != null) {
                     participants.push(value);
                 }
             })
 
-            const points = await PointOfInterestEndpoint.findClosePointsOfInterest(participants, SocialPlaceType.SCHOOL);
+            MeetingEndpoint.calculateCentroid(participants).then(setCentroid)
+
+            const points = await PointOfInterestEndpoint.findClosePointsOfInterest(participants, type);
 
             setNearbyPoints(points)
 
@@ -220,22 +232,22 @@ export default function GroupView() {
 
     }
 
-    useEffect( () => {
+    useEffect(() => {
 
-        if(searchParams.get("group_id") != null ) {
+        if (searchParams.get("group_id") != null) {
 
             let idString = searchParams.get("group_id")!.toString()
             let id = parseInt(idString)
 
             setGroupId(id)
             loadGroup(id)
-                .then(_=> {
+                .then(_ => {
 
                     let notNullUsers: SocialUser[] = []
 
                     let users = group!.participants?.forEach(u => {
 
-                        if(u != null) {
+                        if (u != null) {
                             notNullUsers.push(u)
                         }
 
@@ -245,12 +257,11 @@ export default function GroupView() {
                 })
 
 
-
         }
 
     }, []);
 
-    return(
+    return (
 
         <Box style={{
             backgroundImage: "url(https://www.eea.europa.eu/highlights/eight-facts-about-europe2019s-forest-ecosystems/image_print)",
@@ -262,26 +273,31 @@ export default function GroupView() {
 
             <SocialAppBar/>
 
-            <Modal onClose={ _ => setShowModal(false)} open={showModal}>
+            <Modal onClose={_ => setShowModal(false)} open={showModal}>
 
-                <Box sx={{ ...modalStyle, width: 300 }}>
+                <Box sx={{...modalStyle, width: 300}}>
 
                     <List>
 
                         <ListItem><ListItemText><h3 id="child-modal-title">Add new user</h3></ListItemText></ListItem>
 
-                        <ListItem><TextField label="User email" error={error != ""} autoFocus={true} onEnded={addUserToGroup} onSubmit={addUserToGroup} name="groupName" value={userMail} onChange={event => setUserMail(event.currentTarget.value)} /></ListItem>
+                        <ListItem><TextField label="User email" error={error != ""} autoFocus={true}
+                                             onEnded={addUserToGroup} onSubmit={addUserToGroup} name="groupName"
+                                             value={userMail}
+                                             onChange={event => setUserMail(event.currentTarget.value)}/></ListItem>
 
                         <ListItem><Typography variant={"body2"} color={"darkred"}>{error}</Typography></ListItem>
 
                         <ListItem secondaryAction={
-                            <Button variant={"contained"} onClick={ _ => {addUserToGroup().then()}}>
+                            <Button variant={"contained"} onClick={_ => {
+                                addUserToGroup().then()
+                            }}>
                                 Add
                             </Button>
 
                         }>
 
-                                <Button onClick={ _ => setShowModal(false)}>Cancel</Button>
+                            <Button onClick={_ => setShowModal(false)}>Cancel</Button>
 
                         </ListItem>
 
@@ -291,9 +307,9 @@ export default function GroupView() {
 
             </Modal>
 
-            <Modal onClose={ _ => setShowMeetingModal(false)} open={showMeetingModel}>
+            <Modal onClose={_ => setShowMeetingModal(false)} open={showMeetingModel}>
 
-                <Box sx={{ ...modalStyle, width: "50%", height: "auto"}}>
+                <Box sx={{...modalStyle, overflow: "auto", maxHeight: "70%", width: "50%",  height: "auto"}}>
 
                     <Grid container spacing={12}>
 
@@ -305,7 +321,66 @@ export default function GroupView() {
 
                         <Grid item xs={12} md={6}>
 
+                            <TextField label="Name" value={meetingName} onChange={event => setMeetingName(event.target.value)}/>
+
+                        </Grid>
+
+                        <Grid item xs={12} md={6    }>
+
+                            <LocalizationProvider dateAdapter={AdapterMoment}>
+
+                                <DateTimePicker
+                                    label="Date and time"
+                                    value={dateTimeValue}
+                                    onChange={(value, keyboardInputValue) => {
+
+                                        setDateTimeValue(moment(value))
+
+                                    }
+                                    }
+                                    renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => <TextField {...params} />}
+                                />
+
+                            </LocalizationProvider>
+
+                        </Grid>
+
+                        <Grid item xs={12} md={6}>
+
                             <Typography variant="h5">Nearby points of interest</Typography>
+
+                            <List>
+
+                                <Chip label={"Cafe"} sx={{marginRight: "10px"}} onClick={_ => {
+
+                                    setNearbyPoints([])
+                                    setCentroid(null)
+                                    loadNearbyPoints(SocialPlaceType.CAFE)
+
+                                }
+                                }/>
+                                <Chip label={"Park"} sx={{marginRight: "10px"}} onClick={_ => {
+                                    setNearbyPoints(null)
+                                    setCentroid(null)
+                                    loadNearbyPoints(SocialPlaceType.PARK)
+                                }}/>
+                                <Chip label={"Restaurant"} sx={{marginRight: "10px"}} onClick={_ => {
+                                    setNearbyPoints(null)
+                                    setCentroid(null)
+                                    loadNearbyPoints(SocialPlaceType.RESTAURANT)
+                                }}/>
+                                <Chip label={"Florist"} sx={{marginRight: "10px"}} onClick={_ => {
+                                    setNearbyPoints(null)
+                                    setCentroid(null)
+                                    loadNearbyPoints(SocialPlaceType.FLORIST)
+                                }}/>
+                                <Chip label={"Night club"} sx={{marginRight: "10px"}} onClick={_ => {
+                                    setNearbyPoints(null)
+                                    setCentroid(null)
+                                    loadNearbyPoints(SocialPlaceType.NIGHT_CLUB)
+                                }}/>
+
+                            </List>
 
                             {nearbyPoints == null &&
 
@@ -348,6 +423,30 @@ export default function GroupView() {
 
                         <Grid item xs={12} md={6}>
 
+                            {!isLoaded || centroid == null &&
+
+                                <Placeholder/>
+
+                            }
+
+                            {isLoaded && centroid != null &&
+
+                                <GoogleMap options={{disableDefaultUI: true, gestureHandling: "none"}} mapContainerClassName="map-container" zoom={12} center={{lat: centroid.lat, lng: centroid.lng}}>
+
+                                    {nearbyPoints != null && nearbyPoints.filter(p => p != null).map((value, index, array) =>
+
+                                        <Marker position={value.coordinates} label={(selectedPoint != null && selectedPoint == value)? selectedPoint.name : ""}/>
+
+                                    )}
+
+                                </GoogleMap>
+
+                            }
+
+                        </Grid>
+
+                        <Grid item xs={12} md={6}>
+
                             <Typography variant="h5">Point of interest:</Typography>
 
                             {selectedPoint != null &&
@@ -380,7 +479,23 @@ export default function GroupView() {
                             <ListItem><Typography variant={"body2"} color={"darkred"}>{error}</Typography></ListItem>
 
                             <ListItem secondaryAction={
-                                <Button variant={"contained"} onClick={ _ => {createNewMeeting().then()}}>
+                                <Button variant={"contained"} onClick={ _ => {
+
+                                    if(meetingName == "") {
+                                        setError("Give a name to the meeting first");
+                                        return;
+                                    }
+
+                                    if(selectedPoint == null) {
+                                        setError("Select a point of interest first");
+                                        return;
+                                    }
+
+                                    setError("");
+
+                                    createNewMeeting().then()
+
+                                }}>
                                     Add
                                 </Button>
 
@@ -391,6 +506,9 @@ export default function GroupView() {
                                     setMeetingName("");
                                     setSelectedPoint(null);
                                     setNearbyPoints(null)
+                                    setError("");
+                                    setCentroid(null);
+                                    setDateTimeValue(moment(moment.now()));
                                 }
                                 }>Cancel</Button>
 
@@ -494,7 +612,6 @@ export default function GroupView() {
                             <ListItem secondaryAction={
                                 <IconButton onClick={ _ => {
                                         setShowMeetingModal(true);
-                                        loadNearbyPoints()
                                     }
                                 }>
                                     <AddCircleOutlined/>
@@ -508,17 +625,20 @@ export default function GroupView() {
                                 {
                                     (group!= null)? groupMeetings.map(value =>
 
-                                        <ListItem key={"gmeet_" + value!.id}>
-                                            <ListItemAvatar>
-                                                <Avatar></Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText>
-                                                <Typography variant={"body2"}>{value!.id}</Typography>
-                                            </ListItemText>
-                                            { isCreator && value!.id != group.creator.id &&
-                                                <IconButton><RemoveIcon/></IconButton>
-                                            }
-                                        </ListItem>
+                                        <Paper elevation={3}>
+
+                                            <ListItemButton>
+
+                                                <ListItem key={"gmeet_" + value!.id} secondaryAction={"20/10/2023"}>
+
+                                                    <ListItemText primary={value!.name} secondary={value.destination.name}>s
+                                                    </ListItemText>
+
+                                                </ListItem>
+
+                                            </ListItemButton>
+
+                                        </Paper>
 
                                     ) : <p>Not found</p>
                                 }

@@ -7,7 +7,9 @@ import com.aad.proyectoud4socialcore.model.entity.SocialUser;
 import com.aad.proyectoud4socialcore.model.entity.UserGroup;
 import com.aad.proyectoud4socialcore.model.repository.MeetingRepository;
 import com.aad.proyectoud4socialcore.service.MeetingService;
+import com.aad.proyectoud4socialcore.service.PointOfInterestService;
 import com.aad.proyectoud4socialcore.service.UserAuthService;
+import com.google.maps.model.LatLng;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.hilla.Endpoint;
 import org.joda.time.DateTime;
@@ -23,13 +25,15 @@ public class MeetingEndpoint {
 
     private final MeetingRepository repository;
     private final MeetingService meetingService;
+    private final PointOfInterestService pointOfInterestService;
     private final UserAuthService userAuthService;
 
 
-    public MeetingEndpoint(MeetingRepository repository, UserAuthService userAuthService, MeetingService meetingService) {
+    public MeetingEndpoint(MeetingRepository repository, UserAuthService userAuthService, MeetingService meetingService, PointOfInterestService pointOfInterestService) {
         this.repository = repository;
         this.userAuthService = userAuthService;
         this.meetingService = meetingService;
+        this.pointOfInterestService = pointOfInterestService;
     }
 
     public List<Meeting> findAll() {
@@ -42,7 +46,7 @@ public class MeetingEndpoint {
      * @return la nueva quedada
      * @throws ForbidenAccessException si el usuario no pertenece al grupo que crea la quedada
      */
-    public Meeting createNewMeeting(UserGroup group, PointOfInterest destination ) throws ForbidenAccessException {
+    public Meeting createNewMeeting(UserGroup group, PointOfInterest destination, String name ) throws ForbidenAccessException {
 
         SocialUser user = userAuthService.getContextUser();
         Meeting meeting;
@@ -51,7 +55,7 @@ public class MeetingEndpoint {
             throw new ForbidenAccessException("Forbbiden access");
         }
 
-        return meetingService.createNewMeeting(group, destination, Date.from(Instant.now()));
+        return meetingService.createNewMeeting(group, destination, name, Date.from(Instant.now()));
     }
 
     /**
@@ -70,6 +74,10 @@ public class MeetingEndpoint {
         }
 
         return meeting;
+    }
+
+    public LatLng calculateCentroid(SocialUser[] users) {
+        return pointOfInterestService.calculateCentroid(users);
     }
 
     public List<Meeting> findSocialUserMeetings(SocialUser user) {
