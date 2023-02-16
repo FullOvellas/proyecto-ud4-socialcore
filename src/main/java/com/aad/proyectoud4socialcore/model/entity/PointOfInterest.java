@@ -44,7 +44,6 @@ public class PointOfInterest {
 
     @NonNull private Float rating;
     @ElementCollection
-
     @NonNull private Set<SocialPlaceType> types;
 
     
