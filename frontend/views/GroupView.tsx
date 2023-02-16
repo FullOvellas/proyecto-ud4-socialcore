@@ -3,7 +3,17 @@ import React, {useEffect, useState} from "react";
 import UserGroup from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/UserGroup";
 import SocialAppBar from "Frontend/components/SocialAppBar";
 import Container from "@mui/material/Container";
-import {Card, Divider, IconButton, ListItem, ListItemAvatar, ListItemButton, ListItemText, Modal} from "@mui/material";
+import {
+    Card,
+    Divider,
+    IconButton,
+    ListItem,
+    ListItemAvatar,
+    ListItemButton,
+    ListItemText,
+    Modal,
+    Paper
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -38,7 +48,7 @@ export default function GroupView() {
     const [groupMeetings, setGroupMeetings] = useState<Meeting[]>([]);
 
     const [nearbyPoints, setNearbyPoints] = useState<PointOfInterest[] | null>(null);
-
+    
     const modalStyle = {
         position: 'absolute' as 'absolute',
         top: '50%',
@@ -300,15 +310,19 @@ export default function GroupView() {
 
                             {nearbyPoints != null &&
 
-                                <List>
+                                <List sx={{ overflow: "auto", maxWidth: 360, maxHeight: 300}}>
 
                                     {nearbyPoints.map(poi =>
 
-                                            <ListItem>
+                                            <Paper sx={{marginBottom: "10px", padding: "10px"}} elevation={1}>
 
-                                                <ListItemText>{poi.name}</ListItemText>
+                                                <ListItem>
 
-                                            </ListItem>
+                                                    <ListItemText>{poi.name}</ListItemText>
+
+                                                </ListItem>
+
+                                            </Paper>
 
                                         )
 

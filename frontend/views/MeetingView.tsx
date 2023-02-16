@@ -140,7 +140,7 @@ export default function MeetingView() {
                                 <ListItem>
                                     <ListItemText>
                                         <Typography variant={"h6"}>Address:</Typography>
-                                        {meeting?.destination.formattedAddress}
+                                        {meeting?.destination.businessStatus}
                                     </ListItemText>
                                 </ListItem>
                                 {
