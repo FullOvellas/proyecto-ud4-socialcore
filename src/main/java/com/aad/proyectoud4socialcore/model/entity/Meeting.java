@@ -45,9 +45,6 @@ public class Meeting {
 
     @JsonGetter("plannedTime")
     public String plannedTimeString() {
-
-        System.out.println("YESSS");
-
         return plannedTime.toString();
     }
 
