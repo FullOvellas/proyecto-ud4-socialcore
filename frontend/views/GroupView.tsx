@@ -48,7 +48,8 @@ export default function GroupView() {
     const [groupMeetings, setGroupMeetings] = useState<Meeting[]>([]);
 
     const [nearbyPoints, setNearbyPoints] = useState<PointOfInterest[] | null>(null);
-    
+    const [selectedPoints, setSelectedPoints] = useState<PointOfInterest[]>([]);
+
     const modalStyle = {
         position: 'absolute' as 'absolute',
         top: '50%',
@@ -314,13 +315,24 @@ export default function GroupView() {
 
                                     {nearbyPoints.map(poi =>
 
-                                            <Paper sx={{marginBottom: "10px", padding: "10px"}} elevation={1}>
+                                            <Paper key={"nearby_poi" + poi.id} sx={{marginBottom: "10px", padding: "10px"}} elevation={1}>
 
-                                                <ListItem>
+                                                <ListItemButton onClick={event => {
 
-                                                    <ListItemText>{poi.name}</ListItemText>
+                                                    console.log("Selected item")
 
-                                                </ListItem>
+                                                    setSelectedPoints(prevState =>  [...prevState, poi]);
+
+                                                }
+                                                }>
+
+                                                    <ListItem>
+
+                                                        <ListItemText>{poi.name}</ListItemText>
+
+                                                    </ListItem>
+
+                                                </ListItemButton>
 
                                             </Paper>
 
@@ -340,11 +352,30 @@ export default function GroupView() {
 
                             <List>
 
-                                <ListItem>
+                                {selectedPoints.map(poi =>
 
-                                    <ListItemText>Item 1</ListItemText>
+                                    <Paper key={"selected_poi" + poi.id} sx={{marginBottom: "10px", padding: "10px"}} elevation={1}>
 
-                                </ListItem>
+                                        <ListItemButton onClick={event => {
+
+                                            setSelectedPoints(prevState => prevState.filter(el => el !== poi))
+
+                                        }
+                                        }>
+
+                                            <ListItem>
+
+                                                <ListItemText>{poi.name}</ListItemText>
+
+                                            </ListItem>
+
+                                        </ListItemButton>
+
+                                    </Paper>
+
+                                )
+
+                                }
 
                             </List>
 
