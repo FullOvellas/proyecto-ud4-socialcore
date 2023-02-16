@@ -192,7 +192,7 @@ export default function GroupView() {
             return;
         }
 
-        const created = await MeetingEndpoint.createNewMeeting(group!, selectedPoint, meetingName);
+        const created = await MeetingEndpoint.createNewMeeting(group!, selectedPoint, meetingName, dateTimeValue.valueOf());
 
         setGroupMeetings(prevState => [...prevState, created])
 
@@ -629,7 +629,7 @@ export default function GroupView() {
 
                                             <ListItemButton>
 
-                                                <ListItem key={"gmeet_" + value!.id} secondaryAction={"20/10/2023"}>
+                                                <ListItem key={"gmeet_" + value!.id} secondaryAction={value!.plannedTime}>
 
                                                     <ListItemText primary={value!.name} secondary={value.destination.name}>s
                                                     </ListItemText>

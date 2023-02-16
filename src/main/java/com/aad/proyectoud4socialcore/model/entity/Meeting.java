@@ -2,11 +2,15 @@ package com.aad.proyectoud4socialcore.model.entity;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NonNull;
 import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,8 +43,15 @@ public class Meeting {
     )
     private List<SocialUser> attendants;
 
-    @JsonIgnore
-    private Date plannedTime;
+    @JsonGetter("plannedTime")
+    public String plannedTimeString() {
+
+        System.out.println("YESSS");
+
+        return plannedTime.toString();
+    }
+
+    private Timestamp plannedTime;
 
     public Meeting() {
         this.attendants = new ArrayList<>();

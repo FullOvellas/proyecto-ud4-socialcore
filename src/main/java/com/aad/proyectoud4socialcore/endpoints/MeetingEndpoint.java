@@ -16,6 +16,9 @@ import org.joda.time.DateTime;
 
 import javax.annotation.security.RolesAllowed;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -46,16 +49,20 @@ public class MeetingEndpoint {
      * @return la nueva quedada
      * @throws ForbidenAccessException si el usuario no pertenece al grupo que crea la quedada
      */
-    public Meeting createNewMeeting(UserGroup group, PointOfInterest destination, String name ) throws ForbidenAccessException {
+    public Meeting createNewMeeting(UserGroup group, PointOfInterest destination, String name, long milliseconds ) throws ForbidenAccessException {
 
         SocialUser user = userAuthService.getContextUser();
         Meeting meeting;
+
+        System.out.println(milliseconds);
+
+        LocalDateTime dateTime = Instant.ofEpochMilli(milliseconds).atZone(ZoneId.systemDefault()).toLocalDateTime();
 
         if(!group.getParticipants().contains(user)) {
             throw new ForbidenAccessException("Forbbiden access");
         }
 
-        return meetingService.createNewMeeting(group, destination, name, Date.from(Instant.now()));
+        return meetingService.createNewMeeting(group, destination, name, dateTime);
     }
 
     /**
