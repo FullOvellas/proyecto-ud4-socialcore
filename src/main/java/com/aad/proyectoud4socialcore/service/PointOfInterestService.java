@@ -5,6 +5,7 @@ import com.aad.proyectoud4socialcore.model.entity.PointOfInterest;
 import com.aad.proyectoud4socialcore.model.entity.Residence;
 import com.aad.proyectoud4socialcore.model.entity.SocialUser;
 import com.aad.proyectoud4socialcore.model.enums.SocialPlaceType;
+import com.aad.proyectoud4socialcore.model.repository.PointOfInterestRepository;
 import com.google.maps.GeoApiContext;
 import com.google.maps.ImageResult;
 import com.google.maps.NearbySearchRequest;
@@ -26,9 +27,11 @@ public class PointOfInterestService {
     private final int DEFAULT_RADIUS = 50_000;
     private final int PHOTO_WIDTH = 400;
     private final GeoApiContext geoContext;
+    private final PointOfInterestRepository pointOfInterestRepository;
 
-    public PointOfInterestService(GeoApiContext geoContext) {
+    public PointOfInterestService(GeoApiContext geoContext, PointOfInterestRepository pointOfInterestRepository) {
         this.geoContext = geoContext;
+        this.pointOfInterestRepository = pointOfInterestRepository;
     }
 
 
@@ -77,9 +80,20 @@ public class PointOfInterestService {
                 photo = new byte[0];
             }
 
-            ArrayList<String> placeTypes = new ArrayList<>();
-            placeTypes.addAll(Arrays.asList(place.types));
+            String[] placeTypes = place.types;
 
+            placeTypes = Arrays.stream(placeTypes).filter(s -> {
+
+                for(int i = 0; i < SocialPlaceType.values().length; i++ ) {
+
+                    if(SocialPlaceType.values()[i].name().equals(s) ) {
+                        return true;
+                    }
+
+                }
+
+                return false;
+            }).toArray(String[]::new);
 
             pointsOfInterest.add(new PointOfInterest(
                     place.name,
@@ -94,7 +108,9 @@ public class PointOfInterestService {
 
         }
 
-        return pointsOfInterest;
+
+
+        return pointOfInterestRepository.saveAll(pointsOfInterest);
     }
 
     public PointOfInterest[] findClosePoiToUsers(SocialUser[] users, SocialPlaceType type) {
@@ -144,6 +160,20 @@ public class PointOfInterestService {
             }
 
         }
+
+        // TODO: limpiar código
+
+        try {
+
+            out = new ArrayList<>(getNearbyPointsOfInterest(centroid, type));
+
+        } catch (Exception ex ) {
+
+            ex.printStackTrace();
+
+        }
+
+        System.out.println("FOUND: " + out.size());
 
         return out.toArray(PointOfInterest[]::new);
     }

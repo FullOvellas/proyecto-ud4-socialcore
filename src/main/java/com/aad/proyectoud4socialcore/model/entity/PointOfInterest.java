@@ -52,13 +52,13 @@ public class PointOfInterest {
     @JsonIgnore
     private List<Comment> comments;
     
-    public PointOfInterest(@NonNull String name, @NonNull String formattedAddress, @NonNull LatLng coordinates, @NonNull OpeningHours openingHours, @NonNull String businessStatus, @NonNull List<String> placeTypes, byte @NonNull [] imageData, @NonNull Float rating) {
+    public PointOfInterest(@NonNull String name, @NonNull String formattedAddress, @NonNull LatLng coordinates, @NonNull OpeningHours openingHours, @NonNull String businessStatus, @NonNull Set<SocialPlaceType> placeTypes, byte @NonNull [] imageData, @NonNull Float rating) {
         this.name = name;
         this.formattedAddress = formattedAddress;
         this.coordinates = coordinates;
         this.openingHours = openingHours;
         this.businessStatus = businessStatus;
-        this.placeTypes = placeTypes;
+        this.types = placeTypes;
         this.imageData = imageData;
         this.rating = rating;
     }
