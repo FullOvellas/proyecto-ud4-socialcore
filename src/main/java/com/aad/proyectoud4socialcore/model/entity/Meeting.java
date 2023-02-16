@@ -8,6 +8,7 @@ import lombok.NonNull;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -19,7 +20,7 @@ public class Meeting {
     @Id
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @NonNull
     private PointOfInterest destination;
     private int maxRadiusMeters;
@@ -28,10 +29,9 @@ public class Meeting {
     private List<SocialUser> attendants;
 
     @JsonIgnore
-    private DateTime plannedTime;
+    private Date plannedTime;
 
     public Meeting() {
-        this.destination = new PointOfInterest();
         this.attendants = new ArrayList<>();
     }
 

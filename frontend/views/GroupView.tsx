@@ -48,7 +48,7 @@ export default function GroupView() {
     const [groupMeetings, setGroupMeetings] = useState<Meeting[]>([]);
 
     const [nearbyPoints, setNearbyPoints] = useState<PointOfInterest[] | null>(null);
-    const [selectedPoints, setSelectedPoints] = useState<PointOfInterest[]>([]);
+    const [selectedPoint, setSelectedPoint] = useState<PointOfInterest | null>(null);
 
     const modalStyle = {
         position: 'absolute' as 'absolute',
@@ -182,9 +182,13 @@ export default function GroupView() {
 
     const createNewMeeting = async () => {
 
-        const created = await MeetingEndpoint.createNewMeeting(group!);
+        if(selectedPoint == null) {
+            return;
+        }
 
+        const created = await MeetingEndpoint.createNewMeeting(group!, selectedPoint);
 
+        setGroupMeetings(prevState => [...prevState, created])
 
         setMeetingName("")
         setShowMeetingModal(false)
@@ -318,11 +322,7 @@ export default function GroupView() {
                                             <Paper key={"nearby_poi" + poi.id} sx={{marginBottom: "10px", padding: "10px"}} elevation={1}>
 
                                                 <ListItemButton onClick={event => {
-
-                                                    console.log("Selected item")
-
-                                                    setSelectedPoints(prevState =>  [...prevState, poi]);
-
+                                                    setSelectedPoint(poi);
                                                 }
                                                 }>
 
@@ -348,36 +348,30 @@ export default function GroupView() {
 
                         <Grid item xs={12} md={6}>
 
-                            <Typography variant="h5">Meeting points of interest</Typography>
+                            <Typography variant="h5">Point of interest:</Typography>
 
-                            <List>
+                            {selectedPoint != null &&
 
-                                {selectedPoints.map(poi =>
+                                <Paper sx={{marginBottom: "10px", padding: "10px"}} elevation={1}>
 
-                                    <Paper key={"selected_poi" + poi.id} sx={{marginBottom: "10px", padding: "10px"}} elevation={1}>
+                                    <ListItemButton onClick={event => {
 
-                                        <ListItemButton onClick={event => {
+                                        setSelectedPoint(null);
 
-                                            setSelectedPoints(prevState => prevState.filter(el => el !== poi))
+                                    }
+                                    }>
 
-                                        }
-                                        }>
+                                        <ListItem>
 
-                                            <ListItem>
+                                            <ListItemText>{selectedPoint.name}</ListItemText>
 
-                                                <ListItemText>{poi.name}</ListItemText>
+                                        </ListItem>
 
-                                            </ListItem>
+                                    </ListItemButton>
 
-                                        </ListItemButton>
+                                </Paper>
 
-                                    </Paper>
-
-                                )
-
-                                }
-
-                            </List>
+                            }
 
                         </Grid>
 
@@ -394,9 +388,9 @@ export default function GroupView() {
 
                                 <Button onClick={ _ => {
                                     setShowMeetingModal(false);
-                                    setMeetingName("")
-                                    setSelectedPoints([])
-                                    setNearbyPoints([])
+                                    setMeetingName("");
+                                    setSelectedPoint(null);
+                                    setNearbyPoints(null)
                                 }
                                 }>Cancel</Button>
 
@@ -514,11 +508,13 @@ export default function GroupView() {
                                 {
                                     (group!= null)? groupMeetings.map(value =>
 
-                                        <ListItem key={"participant_" + value!.id}>
+                                        <ListItem key={"gmeet_" + value!.id}>
                                             <ListItemAvatar>
                                                 <Avatar></Avatar>
                                             </ListItemAvatar>
-                                            <ListItemText><Typography variant={"body2"}>{value!.id}</Typography></ListItemText>
+                                            <ListItemText>
+                                                <Typography variant={"body2"}>{value!.id}</Typography>
+                                            </ListItemText>
                                             { isCreator && value!.id != group.creator.id &&
                                                 <IconButton><RemoveIcon/></IconButton>
                                             }

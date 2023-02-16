@@ -13,6 +13,8 @@ import dev.hilla.Endpoint;
 import org.joda.time.DateTime;
 
 import javax.annotation.security.RolesAllowed;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @Endpoint
@@ -40,15 +42,16 @@ public class MeetingEndpoint {
      * @return la nueva quedada
      * @throws ForbidenAccessException si el usuario no pertenece al grupo que crea la quedada
      */
-    public Meeting createNewMeeting(UserGroup group ) throws ForbidenAccessException {
+    public Meeting createNewMeeting(UserGroup group, PointOfInterest destination ) throws ForbidenAccessException {
 
         SocialUser user = userAuthService.getContextUser();
+        Meeting meeting;
 
         if(!group.getParticipants().contains(user)) {
             throw new ForbidenAccessException("Forbbiden access");
         }
 
-        return meetingService.createNewMeeting(group, DateTime.now());
+        return meetingService.createNewMeeting(group, destination, Date.from(Instant.now()));
     }
 
     /**

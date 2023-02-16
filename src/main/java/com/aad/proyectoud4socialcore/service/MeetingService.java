@@ -16,13 +16,13 @@ public class MeetingService {
 
     @Autowired
     private MeetingRepository meetingRepository;
-    public Meeting createNewMeeting(@NotNull UserGroup group, DateTime dateTime) {
+    public Meeting createNewMeeting(@NotNull UserGroup group, PointOfInterest destination ,Date dateTime) {
 
         Meeting meeting = new Meeting();
 
-        // TODO: temporal -> cambiar attendants por grupo de usuarios
         meeting.setAttendants(group.getParticipants());
         meeting.setPlannedTime(dateTime);
+        meeting.setDestination(destination);
 
         return meetingRepository.save(meeting);
     }
