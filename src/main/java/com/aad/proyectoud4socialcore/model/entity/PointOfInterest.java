@@ -9,10 +9,9 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.OpeningHours;
 import com.google.maps.model.PlaceType;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+
+import lombok.*;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -39,17 +38,30 @@ public class PointOfInterest {
     @NonNull private LatLng coordinates;
     @NonNull private OpeningHours openingHours;
     @NonNull private String businessStatus;
-
-    @ElementCollection
-    @NonNull private Set<SocialPlaceType> types;
-
-    @JsonIgnore
-    private byte @NonNull[] imageData;
+    
+    @Column(columnDefinition = "BLOB")
+    private byte @NonNull [] imageData = new byte[0];
 
     @NonNull private Float rating;
+    @ElementCollection
+
+    @NonNull private Set<SocialPlaceType> types;
+
+    
     @OneToMany(mappedBy = "pointOfInterest")
     @JsonIgnore
     private List<Comment> comments;
+    
+    public PointOfInterest(@NonNull String name, @NonNull String formattedAddress, @NonNull LatLng coordinates, @NonNull OpeningHours openingHours, @NonNull String businessStatus, @NonNull List<String> placeTypes, byte @NonNull [] imageData, @NonNull Float rating) {
+        this.name = name;
+        this.formattedAddress = formattedAddress;
+        this.coordinates = coordinates;
+        this.openingHours = openingHours;
+        this.businessStatus = businessStatus;
+        this.placeTypes = placeTypes;
+        this.imageData = imageData;
+        this.rating = rating;
+    }
 
 
     public PointOfInterest() {

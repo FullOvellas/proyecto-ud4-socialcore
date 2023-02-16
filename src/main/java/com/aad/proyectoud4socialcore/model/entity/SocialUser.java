@@ -56,7 +56,7 @@ public class SocialUser {
     public SocialUser() {
 
         this.roles = new ArrayList<>();
-        this.residence = new Residence();
+        this.residence = new Residence(new LatLng(42.2404590, -8.6932391));
 
         this.residence.setCoordinates(new LatLng(13,12));
 

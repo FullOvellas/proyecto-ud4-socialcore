@@ -10,10 +10,8 @@ import com.google.maps.ImageResult;
 import com.google.maps.NearbySearchRequest;
 import com.google.maps.PhotoRequest;
 import com.google.maps.errors.ApiException;
-import com.google.maps.model.LatLng;
-import com.google.maps.model.PlaceType;
-import com.google.maps.model.PlacesSearchResponse;
-import com.google.maps.model.PlacesSearchResult;
+import com.google.maps.model.*;
+import org.hibernate.service.NullServiceException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,6 +24,7 @@ import java.util.stream.Collectors;
 public class PointOfInterestService {
 
     private final int DEFAULT_RADIUS = 50_000;
+    private final int PHOTO_WIDTH = 400;
     private final GeoApiContext geoContext;
 
     public PointOfInterestService(GeoApiContext geoContext) {
@@ -68,30 +67,28 @@ public class PointOfInterestService {
             if (place.permanentlyClosed)
                 continue;
 
-            byte[] photo = new PhotoRequest(geoContext).photoReference(place.photos[0].photoReference).maxWidth(1920).await().imageData;
+            byte[] photo;
+            try {
+                photo = new PhotoRequest(geoContext)
+                        .photoReference(place.photos[0].photoReference)
+                        .maxWidth(PHOTO_WIDTH)
+                        .await().imageData;
+            } catch (NullPointerException e) {
+                photo = new byte[0];
+            }
 
-            String[] placeTypes = place.types;
+            ArrayList<String> placeTypes = new ArrayList<>();
+            placeTypes.addAll(Arrays.asList(place.types));
 
-            placeTypes = Arrays.stream(placeTypes).filter(p -> {
-
-                for(int i = 0; i < SocialPlaceType.values().length; i++ ){
-
-                    if(SocialPlaceType.values()[i].name().equals(p)) {
-                        return true;
-                    }
-
-                }
-
-                return false;
-            }).toArray(String[]::new);
 
             pointsOfInterest.add(new PointOfInterest(
                     place.name,
-                    place.formattedAddress,
+                    place.formattedAddress == null ? "No address" : place.formattedAddress,
                     place.geometry.location,
-                    place.openingHours,
+                    place.openingHours == null ? new OpeningHours() : place.openingHours,
                     place.businessStatus,
                     Arrays.stream(placeTypes).map(SocialPlaceType::valueOf).collect(Collectors.toSet()),
+                    photo,
                     place.rating
             ));
 

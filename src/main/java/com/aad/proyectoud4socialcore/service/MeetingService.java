@@ -27,30 +27,6 @@ public class MeetingService {
         return meetingRepository.save(meeting);
     }
 
-    public boolean addPointToMeeting(Meeting meeting, PointOfInterest poi) {
-
-        if(meeting == null || poi == null) {
-            return false;
-        }
-
-        meeting.getPointsOfInterest().add(poi);
-        meetingRepository.save(meeting);
-
-        return true;
-    }
-
-    public boolean removePointFromMeeting(Meeting meeting, PointOfInterest poi ) {
-
-        if(meeting == null || poi == null || !meeting.getPointsOfInterest().contains(poi) ) {
-            return false;
-        }
-
-        meeting.getPointsOfInterest().remove(poi);
-        meetingRepository.save(meeting);
-
-        return true;
-    }
-
     public void removeMeeting(Meeting meeting) {
         meetingRepository.delete(meeting);
     }

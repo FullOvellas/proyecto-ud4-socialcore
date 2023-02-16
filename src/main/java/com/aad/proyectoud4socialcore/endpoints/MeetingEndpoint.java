@@ -35,29 +35,6 @@ public class MeetingEndpoint {
     }
 
     /**
-     * Permite a los usuarios que se encuentran en una quedada borrar un punto de interés. Solo se puede realizar si
-     * la quedada aún no se realizó
-     * @param meeting la quedada
-     * @param poi el punto de interés que borrar
-     * @return true si se pudo borrar
-     * @throws ForbidenAccessException si el usuario no pertenece a la quedada
-     */
-    public boolean removePointFromMeeting(Meeting meeting, PointOfInterest poi) throws ForbidenAccessException {
-
-        SocialUser user = userAuthService.getContextUser();
-
-        if(!meeting.getAttendants().contains(user)) {
-            throw new ForbidenAccessException("Forbbiden access");
-        }
-
-        if(meeting.getPlannedTime().isBeforeNow()) {
-            return false;
-        }
-
-        return meetingService.removePointFromMeeting(meeting, poi);
-    }
-
-    /**
      * Permite crear una nueva quedada
      * @param group el grupo que crea la quedada
      * @return la nueva quedada
@@ -72,29 +49,6 @@ public class MeetingEndpoint {
         }
 
         return meetingService.createNewMeeting(group, DateTime.now());
-    }
-
-    /**
-     * Permite a los usuarios que se encuentran en una quedada añadir un punto de interés. Solo se puede realizar si
-     * la quedada aún no se realizó
-     * @param meeting la quedada
-     * @param poi el punto de interés que añadir
-     * @return true si se pudo añadir
-     * @throws ForbidenAccessException si el usuario no pertenece a la quedada
-     */
-    public boolean addPointToMeeting(Meeting meeting, PointOfInterest poi) throws ForbidenAccessException {
-
-        SocialUser user = userAuthService.getContextUser();
-
-        if(!meeting.getAttendants().contains(user)) {
-            throw new ForbidenAccessException("Forbbiden access");
-        }
-
-        if(meeting.getPlannedTime().isBeforeNow()) {
-            return false;
-        }
-
-        return meetingService.addPointToMeeting(meeting, poi);
     }
 
     /**
