@@ -19,9 +19,8 @@ public class Meeting {
     @Id
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @NonNull
-    @JsonIgnore // TODO: TODO TODO borrar
     private PointOfInterest destination;
     private int maxRadiusMeters;
 
@@ -31,23 +30,8 @@ public class Meeting {
     @JsonIgnore
     private DateTime plannedTime;
 
-    @ManyToMany
-    @JoinTable(name = "meetings_points",
-        joinColumns = {
-            @JoinColumn(name = "meeting_id",
-                referencedColumnName = "id"
-            )
-        },
-        inverseJoinColumns = {
-            @JoinColumn(name = "point_id",
-                referencedColumnName = "id"
-            )
-        }
-    )
-    private List<PointOfInterest> pointsOfInterest;
-
     public Meeting() {
-        this.pointsOfInterest = new ArrayList<>();
+        this.destination = new PointOfInterest();
         this.attendants = new ArrayList<>();
     }
 
