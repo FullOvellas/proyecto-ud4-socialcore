@@ -6,9 +6,13 @@ import com.aad.proyectoud4socialcore.model.entity.UserGroup;
 import com.aad.proyectoud4socialcore.model.repository.MeetingRepository;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
@@ -16,13 +20,16 @@ public class MeetingService {
 
     @Autowired
     private MeetingRepository meetingRepository;
-    public Meeting createNewMeeting(@NotNull UserGroup group, DateTime dateTime) {
+    public Meeting createNewMeeting(@NotNull UserGroup group, PointOfInterest destination, String name, LocalDateTime dateTime) {
 
         Meeting meeting = new Meeting();
 
-        // TODO: temporal -> cambiar attendants por grupo de usuarios
+        System.out.println(dateTime);
+
         meeting.setAttendants(group.getParticipants());
-        meeting.setPlannedTime(dateTime);
+        meeting.setPlannedTime(Timestamp.valueOf(dateTime));
+        meeting.setDestination(destination);
+        meeting.setName(name);
 
         return meetingRepository.save(meeting);
     }

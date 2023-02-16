@@ -34,6 +34,21 @@ public class PointOfInterestService {
         this.pointOfInterestRepository = pointOfInterestRepository;
     }
 
+    public LatLng calculateCentroid(SocialUser[] users) {
+
+        double centroidX = 0;
+        double centroidY = 0;
+
+        for(SocialUser user : users) {
+
+            centroidX += user.getResidence().getCoordinates().lat / users.length;
+            centroidY += user.getResidence().getCoordinates().lng / users.length;
+
+        }
+
+        return new LatLng(centroidX, centroidY);
+    }
+
 
     public List<PointOfInterest> getNearbyPointsOfInterestForUser(SocialUser user, SocialPlaceType type) throws IOException, InterruptedException, ApiException {
 

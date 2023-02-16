@@ -59,7 +59,7 @@ public class PointOfInterestEndpoint {
 
     public PointOfInterest[] findClosePointsOfInterest(SocialUser[] users, String placeTypeString) {
 
-        SocialPlaceType placeType = SocialPlaceType.CAFE;
+        SocialPlaceType placeType = SocialPlaceType.valueOf(placeTypeString);
 
         return service.findClosePoiToUsers(users, placeType);
     }

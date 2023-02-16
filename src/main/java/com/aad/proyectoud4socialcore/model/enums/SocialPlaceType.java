@@ -5,7 +5,10 @@ import com.google.maps.model.PlaceType;
 public enum SocialPlaceType {
 
     CAFE(PlaceType.CAFE),
-    SCHOOL(PlaceType.SCHOOL);
+    PARK(PlaceType.PARK),
+    FLORIST(PlaceType.FLORIST),
+    NIGHT_CLUB(PlaceType.NIGHT_CLUB),
+    RESTAURANT(PlaceType.RESTAURANT);
 
     private final PlaceType type;
 
