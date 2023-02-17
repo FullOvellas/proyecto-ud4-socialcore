@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class PointOfInterestService {
 
-    private final int DEFAULT_RADIUS = 50_000;
+    private final int DEFAULT_RADIUS = 5000;
     private final int PHOTO_WIDTH = 400;
     private final GeoApiContext geoContext;
     private final PointOfInterestRepository pointOfInterestRepository;
@@ -130,8 +130,7 @@ public class PointOfInterestService {
 
     public PointOfInterest[] findClosePoiToUsers(SocialUser[] users, SocialPlaceType type) {
 
-        ArrayList<PointOfInterest> commonPointsOfInterest = new ArrayList<>();
-        ArrayList<PointOfInterest> allPoints = new ArrayList<>();
+        ArrayList<PointOfInterest> points = new ArrayList<>();
         ArrayList<PointOfInterest> out = new ArrayList<>();
 
         double centroidX = 0;
@@ -142,41 +141,10 @@ public class PointOfInterestService {
             centroidX += user.getResidence().getCoordinates().lat / users.length;
             centroidY += user.getResidence().getCoordinates().lng / users.length;
 
-            try {
-
-                getNearbyPointsOfInterestForUser(user, type).forEach(el ->  {
-
-                    if(allPoints.contains(el)) {
-
-                        commonPointsOfInterest.add(el);
-
-                    } else {
-
-                        allPoints.add(el);
-
-                    }
-
-                });
-
-            } catch (IOException | InterruptedException | ApiException ex) {
-
-            }
-
         }
 
         LatLng centroid = new LatLng(centroidX, centroidY);
 
-        for(PointOfInterest poi : commonPointsOfInterest) {
-
-            if(poi.calculateDistanceToPoint(centroid) < 50_000 ) {
-
-                out.add(poi);
-
-            }
-
-        }
-
-        // TODO: limpiar código
 
         try {
 
@@ -187,8 +155,6 @@ public class PointOfInterestService {
             ex.printStackTrace();
 
         }
-
-        System.out.println("FOUND: " + out.size());
 
         return out.toArray(PointOfInterest[]::new);
     }

@@ -69,17 +69,21 @@ export default function MeetingView() {
 
     }, []);
 
-    console.log(meeting?.destination.rating);
-
     return (
 
-        <Box>
+        <Box style={{
+            backgroundImage: "url(https://www.eea.europa.eu/highlights/eight-facts-about-europe2019s-forest-ecosystems/image_print)",
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'space',
+            height: "100%"
+        }}>
 
             <SocialAppBar/>
 
             <Container maxWidth="md">
 
-                <Card elevation={3}>
+                <Card elevation={3} sx={{padding: "30px"}}>
 
                     <Grid container spacing="12">
 

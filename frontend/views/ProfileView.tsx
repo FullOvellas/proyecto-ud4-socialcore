@@ -11,7 +11,7 @@ import React from "react";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
-import {AddCard} from "@mui/icons-material";
+import {Add, AddCard} from "@mui/icons-material";
 import TextField from "@mui/material/TextField";
 import {useNavigate} from "react-router-dom";
 
@@ -139,11 +139,11 @@ export default function ProfileView() {
                             <Button onClick={_ => goToNearbyPoiList(user!)} variant="outlined">Find meeting spots</Button>
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} md={12}>
 
                             <Card elevation={3} style={{borderRadius: "15px"}}>
 
-                                <ListItem secondaryAction={<IconButton onClick={_ => setCreateGroupModalShown(true)}><AddCard/></IconButton>}>
+                                <ListItem secondaryAction={<IconButton onClick={_ => setCreateGroupModalShown(true)}><Add/></IconButton>}>
 
                                     <ListItemText><Typography variant={"h5"}>Groups:</Typography></ListItemText>
 
@@ -154,24 +154,6 @@ export default function ProfileView() {
                                 <List sx={{ width: '100%', overflow: "auto", maxWidth: 360, maxHeight: 300, bgcolor: 'background.paper'}}>
 
                                     {groupListItems}
-
-                                </List>
-
-                            </Card>
-
-                        </Grid>
-
-                        <Grid item xs={12} md={6}>
-
-                            <Card elevation={3} style={{borderRadius: "15px"}}>
-
-                                <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
-
-                                    <ListItem>
-
-                                        <ListItemText><Typography variant={"h5"}>Recent meetings:</Typography></ListItemText>
-
-                                    </ListItem>
 
                                 </List>
 

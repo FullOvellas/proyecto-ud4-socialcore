@@ -20,7 +20,7 @@ export default function NearbyPoiView() {
     const navigate = useNavigate();
 
     const [user, setUser] = useState<SocialUser>();
-    const [position, setPosition] = useState<{lat: number, lng: number}>({lat: 43, lng: -8});
+    const [position, setPosition] = useState<LatLng | null>();
     const [centroid, setCentroid] = useState<LatLng | null>();
     const [nearbyPoints, setNearbyPoints] = useState<PointOfInterest[] | null>(null)
     const [selectedPoint, setSelectedPoint] = useState<PointOfInterest | null>(null);
@@ -29,7 +29,9 @@ export default function NearbyPoiView() {
     })
 
     useEffect(() => {
-        UserAuthEndpoint.getUser().then(setUser);
+        UserAuthEndpoint.getUser().then(value => {
+            setUser(value); MeetingEndpoint.calculateCentroid([value]).then(setPosition);
+        });
     }, [])
 
     if (!isLoaded)
@@ -92,7 +94,7 @@ export default function NearbyPoiView() {
 
                             {isLoaded && position != null &&
 
-                                <GoogleMap options={{disableDefaultUI: true, gestureHandling: "none"}} mapContainerClassName="map-container" zoom={12} center={{lat:position!.lat, lng:position!.lng}}>
+                                <GoogleMap options={{disableDefaultUI: true, gestureHandling: "none"}} mapContainerClassName="map-container" zoom={12} center={position}>
 
                                     {nearbyPoints != null && nearbyPoints.filter(p => p != null).map((value, index, array) =>
 
@@ -128,30 +130,24 @@ export default function NearbyPoiView() {
 
         return (
             nearbyPoints.map((poi, index) => {
-                console.log(poi!.name);
                 return (
-                    <Grid key={poi!.id} container>
-                        <Grid item xs={7}>
-                            <Button variant="text" onClick={_ =>{
-                                const poi = nearbyPoints[index];
-                                setPosition({ lat:poi!.coordinates.lat, lng: poi!.coordinates.lng });
-                            }}>
-                                <Grid container>
-                                    <Grid item xs={12} textAlign={"start"}>
-                                        <Typography variant="h5">{poi!.name}</Typography>
-                                    </Grid>
-                                    <Grid item xs={12} textAlign={"start"}>
-                                        {poi!.types[0] + " | Rating:" + poi!.rating}
-                                    </Grid>
-                                </Grid>
-                            </Button>
-                        </Grid>
+
+                    <ListItem>
+
+                        <ListItemButton onClick={_=>{const poi = nearbyPoints[index];
+                            setPosition({ lat:poi!.coordinates.lat, lng: poi!.coordinates.lng });} }>
+
+                            <ListItemText primary={poi.name} secondary={"Rating: " + poi.rating}></ListItemText>
+
+                        </ListItemButton>
+
                         <Grid item xs={2} alignSelf={"center"} style={{height: "100%"}}>
                             <Box style={{height: "100%"}}>
                                 <Button variant="text" onClick={_ => goToPoiView(nearbyPoints[index]!.id!)}><Info height={"100%"} /></Button>
                             </Box>
                         </Grid>
-                    </Grid>
+
+                    </ListItem>
                 )
             })
         )
@@ -171,8 +167,6 @@ export default function NearbyPoiView() {
                 console.log("user null");
                 return;
             }
-
-            MeetingEndpoint.calculateCentroid([user]).then(setCentroid);
 
             const points = await PointOfInterestEndpoint.findClosePointsOfInterest([user!], type);
 
