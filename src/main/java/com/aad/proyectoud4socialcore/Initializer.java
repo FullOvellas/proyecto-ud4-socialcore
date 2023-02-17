@@ -53,7 +53,7 @@ public class Initializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
+        /*
         SocialUser user1 = new SocialUser();
         List<Role> roles2 = new ArrayList<>();
         Meeting meeting1 = new Meeting();
@@ -144,6 +144,8 @@ public class Initializer implements CommandLineRunner {
         commentRepository.save(comment);
         commentRepository.save(comment1);
         commentRepository.save(comment2);
+
+        */
 
     }
 }
