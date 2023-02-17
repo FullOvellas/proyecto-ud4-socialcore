@@ -36,7 +36,6 @@ export const routes: readonly ViewRouteObject[] = [
   { path: '/', element: <EmptyView /> },
   { path: '/login', element: <LoginView /> },
   { path: '/register', element: <RegisterView />},
-  {path: '/profile', element: <ProfileView/>},
   {path: '/group', element: <GroupView/>},
   {path: '/meeting', element: <MeetingView/>},
   {path: '/point', element: <PoiView/>},

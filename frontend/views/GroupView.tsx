@@ -157,6 +157,28 @@ export default function GroupView() {
 
             setIsCreator(await UserGroupEndpoint.isCreator(newGroup))
 
+            if(group!.participants != null) {
+
+                const notNullParticipants: SocialUser[] = []
+
+                group!.participants.forEach(el => {
+
+                    if(el != null) {
+
+                        notNullParticipants.push(el)
+
+                    }
+
+                })
+
+                const loadedMeetings = await MeetingEndpoint.findSocialUsersMeetings(notNullParticipants)
+
+                setGroupMeetings(loadedMeetings)
+
+            }
+
+
+
         } catch (error) {
 
             console.log(error)
@@ -627,7 +649,7 @@ export default function GroupView() {
 
                                         <Paper elevation={3}>
 
-                                            <ListItemButton>
+                                            <ListItemButton onClick={event => {navigate("/meeting?meeting_id")}}>
 
                                                 <ListItem key={"gmeet_" + value!.id} secondaryAction={value!.plannedTime}>
 

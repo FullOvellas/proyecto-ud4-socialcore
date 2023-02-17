@@ -20,7 +20,7 @@ export default function NearbyPoiView() {
     const navigate = useNavigate();
 
     const [user, setUser] = useState<SocialUser>();
-    const [position, setPosition] = useState<{lat: number, lng: number}>({lat: 43, lng: -8});
+    const [position, setPosition] = useState<LatLng | null>();
     const [centroid, setCentroid] = useState<LatLng | null>();
     const [nearbyPoints, setNearbyPoints] = useState<PointOfInterest[] | null>(null)
     const [selectedPoint, setSelectedPoint] = useState<PointOfInterest | null>(null);

@@ -79,7 +79,6 @@ export default function SocialAppBar() {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                <MenuItem onClick={ _ => navigate("/profile")}>Profile</MenuItem>
                                 <MenuItem onClick={ _ =>
                                     fetch("/logout", {
                                         method: "GET",
