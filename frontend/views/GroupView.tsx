@@ -212,7 +212,7 @@ export default function GroupView() {
 
         try {
 
-            const participants: SocialUser[] = []
+            const participants: SocialUser[] = [];
 
             group.participants.forEach(value => {
                 if (value != null) {
@@ -220,11 +220,11 @@ export default function GroupView() {
                 }
             })
 
-            MeetingEndpoint.calculateCentroid(participants).then(setCentroid)
+            MeetingEndpoint.calculateCentroid(participants).then(setCentroid);
 
             const points = await PointOfInterestEndpoint.findClosePointsOfInterest(participants, type);
 
-            setNearbyPoints(points)
+            setNearbyPoints(points);
 
         } catch (_) {
 
