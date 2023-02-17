@@ -6,7 +6,13 @@ Se trata de una aplicación para crear quedadas de amigos en puntos de interés 
 
 ## Diagrama de BBDD y diagrama de clases
 
+### Diagrama de clases
 
+Ver `/classDiagram.mdj` (StarUML) para el diagrama de clases.
+
+### Diagrama entidad-relación
+
+![Diagrama_ER](ER_Diagram.png)
 
 ## Manual técnico para desarrolladores
 
@@ -66,6 +72,12 @@ Los servicios sobre grupos de usuarios, meetings, comentarios y puntos de inter�
 - Incluír un correo de verificación a la hora de registrarse
 - Permitir cambiar contraseña mediante un correo
 - Permitir varias sesiones de usuario para un navegador
+- Panel de administración
 
 ## Conclusiones y opinión del trabajo realizado
 
+Este trabajo ha sido, sobre todo, una experiencia de autoaprendizaje. En él, hemos tenido que vérnoslas con ciertos aspectos de Spring y Spring Boot no tratados en el aula y hemos resuelto en la medida de nuestras posibilidades.
+
+También hemos tratado de acercarnos al mundo del desarrollo web moderno al elegir usar React como frontend de nuestra aplicación. Se nos ha hecho evidente la potencia de esta herramienta, si bien también topamos con una pronunciada curva de aprendizaje a la hora de usarla. Haber tomado este camino también nos ha obligado a aprender, reaprender o desempolvar nuestro JavaScript, lo cual es un punto positivo para nuestro desarrollo como profesionales en un mundo en el que este lenguaje, para mejor o peor, es omnipresente.
+
+En cuanto a puntos negativos, como viene siendo habitual en estos proyectos, el tiempo de entrega se ha hecho corto. Esto ha propiciado un clima de ansiedad general que ha impedido disfrutar plenamente del desarrollo de la aplicación y del aprendizaje paralelo, así como disminuído el rendimiento en general.
