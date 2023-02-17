@@ -11,7 +11,7 @@ import React from "react";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import SocialUser from "Frontend/generated/com/aad/proyectoud4socialcore/model/entity/SocialUser";
-import {AddCard} from "@mui/icons-material";
+import {Add, AddCard} from "@mui/icons-material";
 import TextField from "@mui/material/TextField";
 import {useNavigate} from "react-router-dom";
 
@@ -143,7 +143,7 @@ export default function ProfileView() {
 
                             <Card elevation={3} style={{borderRadius: "15px"}}>
 
-                                <ListItem secondaryAction={<IconButton onClick={_ => setCreateGroupModalShown(true)}><AddCard/></IconButton>}>
+                                <ListItem secondaryAction={<IconButton onClick={_ => setCreateGroupModalShown(true)}><Add/></IconButton>}>
 
                                     <ListItemText><Typography variant={"h5"}>Groups:</Typography></ListItemText>
 
