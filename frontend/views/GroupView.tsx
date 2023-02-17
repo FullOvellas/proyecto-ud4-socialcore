@@ -649,7 +649,7 @@ export default function GroupView() {
 
                                         <Paper elevation={3}>
 
-                                            <ListItemButton onClick={event => {navigate("/meeting?meeting_id")}}>
+                                            <ListItemButton onClick={event => {navigate("/meeting?meeting_id=" + value.id)}}>
 
                                                 <ListItem key={"gmeet_" + value!.id} secondaryAction={value!.plannedTime}>
 

@@ -139,7 +139,7 @@ export default function ProfileView() {
                             <Button onClick={_ => goToNearbyPoiList(user!)} variant="outlined">Find meeting spots</Button>
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} md={12}>
 
                             <Card elevation={3} style={{borderRadius: "15px"}}>
 
@@ -154,24 +154,6 @@ export default function ProfileView() {
                                 <List sx={{ width: '100%', overflow: "auto", maxWidth: 360, maxHeight: 300, bgcolor: 'background.paper'}}>
 
                                     {groupListItems}
-
-                                </List>
-
-                            </Card>
-
-                        </Grid>
-
-                        <Grid item xs={12} md={6}>
-
-                            <Card elevation={3} style={{borderRadius: "15px"}}>
-
-                                <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
-
-                                    <ListItem>
-
-                                        <ListItemText><Typography variant={"h5"}>Recent meetings:</Typography></ListItemText>
-
-                                    </ListItem>
 
                                 </List>
 
