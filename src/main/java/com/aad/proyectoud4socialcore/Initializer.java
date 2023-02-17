@@ -109,7 +109,6 @@ public class Initializer implements CommandLineRunner {
         Set<SocialPlaceType> types= new HashSet<>();
 
         types.add(SocialPlaceType.CAFE);
-        types.add(SocialPlaceType.SCHOOL);
 
         PointOfInterest point1 = new PointOfInterest("IES TEIS", "a ", new LatLng(42.2513809, -8.6900709), new OpeningHours(), "a", 1.0f, types);
         PointOfInterest point2 = new PointOfInterest("a", "a", new LatLng(42.3407844, -8.6048713), new OpeningHours(), "a",  1.0f, types);
