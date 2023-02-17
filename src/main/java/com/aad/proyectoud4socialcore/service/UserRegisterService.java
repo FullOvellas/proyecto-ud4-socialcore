@@ -2,10 +2,12 @@ package com.aad.proyectoud4socialcore.service;
 
 import com.aad.proyectoud4socialcore.exception.UserAlreadyExistsException;
 import com.aad.proyectoud4socialcore.model.dto.UserDTO;
+import com.aad.proyectoud4socialcore.model.entity.Residence;
 import com.aad.proyectoud4socialcore.model.entity.Role;
 import com.aad.proyectoud4socialcore.model.entity.SocialUser;
 import com.aad.proyectoud4socialcore.model.repository.RoleRepository;
 import com.aad.proyectoud4socialcore.model.repository.UserRepository;
+import com.google.maps.model.LatLng;
 import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,6 +44,7 @@ public class UserRegisterService {
 
         SocialUser user = new SocialUser();
         ArrayList<Role> roles = new ArrayList<>();
+        Residence userResidence = new Residence();
 
         // TODO: inlcuír dentro de un enum con los posibles roles de usuario
         roles.add(roleRepository.findByName("ROLE_USER"));
@@ -50,6 +53,10 @@ public class UserRegisterService {
         user.setFullName(userDTO.getFullName());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setRoles(roles);
+
+        userResidence.setCoordinates(new LatLng(userDTO.getLat(), userDTO.getLng()));
+
+        user.setResidence(userResidence);
 
         return userRepository.save(user);
     }

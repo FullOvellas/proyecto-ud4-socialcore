@@ -10,70 +10,116 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
+import {ListItem, Step, StepButton, StepContent, StepLabel, Stepper} from "@mui/material";
+import {GoogleMap, Marker, useLoadScript} from "@react-google-maps/api";
+import Placeholder from "Frontend/components/placeholder/Placeholder";
+import {List} from "@mui/icons-material";
+import LatLng = google.maps.LatLng;
 
-
-export default function RegisterView(){
+export default function RegisterView() {
 
     const theme = createTheme();
 
-    const [error, setError] = useState<String>("")
+    const [email, setEmail] = useState<string>("");
+    const [fullName, setFullName] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [passwordMatch, setPasswordMatch] = useState<string>("");
+    const [latlng, setLatlng] = useState<LatLng | null>(null);
+
+    const [activeStep, setActiveStep] = useState<number>(0);
+    const [error, setError] = useState<string>("")
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const {isLoaded} = useLoadScript({
+        googleMapsApiKey: "AIzaSyDenRxQ8_1INjqF9cvWTejzSrgo7lsHYtQ"
+    })
 
-        const data = new FormData(event.currentTarget);
+    function handleNext() {
 
-        const fullName = data.get('fullName')
-        const email = data.get('email');
-        const password = data.get('password');
-        const passwordRep = data.get('password_rep')
-
-        if(email == "" || fullName == "" || password == "" || passwordRep == "" ) {
-            setError("Los campos no pueden estar vacíos")
-            return
-        }
-
-        if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email!.toString()) ) {
-            setError("El correo no es válido")
+        if(!checkForm()) {
             return;
         }
 
-        if(password != passwordRep) {
-            setError("Las contraseñas no coinciden");
-            return;
-        }
-
-        if(password!.length < 5 ) {
-            setError("La contraseña debe tener como mínimo 5 caracteres");
-            return;
-        }
-
-        setError("");
-
-        fetch("/register", {
-            method: "POST",
-            body: new URLSearchParams([["email", email!.toString()], ["fullName", fullName!.toString()], ["password", password!.toString()]])
-        }).then(v => {
-            if(v.redirected) window.location.replace(v.url);
-        }).catch(e => console.log("Error"))
+        setActiveStep(1);
 
     }
 
-    useEffect( () => {
+    function handlePrevious() {
 
-        if(searchParams.get("error") != null ) {
+        setActiveStep(0);
 
-            setError("Credenciales no válidas")
+    }
+
+    function handleMapselect(event: google.maps.MapMouseEvent) {
+
+        setLatlng(event.latLng)
+
+    }
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+        event.preventDefault()
+
+        if (!checkForm()) {
+            return;
+        }
+
+        const data = new FormData(event.currentTarget);
+
+        fetch("/register", {
+            method: "POST",
+            body: new URLSearchParams([["email", email!.toString()], ["fullName", fullName!.toString()], ["password", password!.toString()], ["lat", latlng!.lat()!.toString()], ["lng", latlng!.lng()!.toString()]])
+        }).then(v => {
+
+            if (v.redirected) window.location.replace(v.url);
+
+        }).catch(e => console.log("Register error"))
+
+    }
+
+    useEffect(() => {
+
+        if (searchParams.get("error") != null) {
+
+            setError("Invalid credentials")
 
         }
 
     });
 
-    return(
+    function checkForm(): boolean {
+
+        if (email == "" || fullName == "" || password == "" || passwordMatch == "") {
+            setError("Fields can't be empty");
+            return false;
+        }
+
+        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email!.toString())) {
+            setError("Email is not valid");
+            return false;
+        }
+
+        if (password != passwordMatch) {
+            setError("Passwords don't match");
+            return false;
+        }
+
+        if (password!.length < 5) {
+            setError("Password must have at least 5 characters");
+            return false;
+        }
+
+        setError("");
+
+        return true;
+    }
+
+    const stepLabels = ["Credentials", "User location"];
+
+    return (
         <ThemeProvider theme={theme}>
             <Container component={"main"} maxWidth={"xs"}>
                 <CssBaseline/>
@@ -85,72 +131,152 @@ export default function RegisterView(){
                         alignItems: 'center',
                     }}
                 >
-                <Typography component="h1" variant="h5">
-                    Registrarse
-                </Typography>
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="fullName"
-                        label="Nombre"
-                        name="fullName"
-                        autoComplete="name"
-                        autoFocus
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="email"
-                        label="Correo electrónico"
-                        name="email"
-                        autoComplete="email"
-                        autoFocus
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Contraseña"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password_rep"
-                        label="Repite la contraseña"
-                        type="password"
-                        id="password_rep"
-                        autoComplete="current-password"
-                    />
-                    <Typography variant={"caption"} color={"rgb(155,155,155)"}>* La contraseña debe tener 5 caracteres como mínimo</Typography>
-                    {error != "" &&
-                        <Typography color={"#FF0000"}>{error}</Typography>
-                    }
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                    >
-                        Registrarse
-                    </Button>
-                    <Grid container>
-                        <Grid item>
-                            <Link href="/login" variant="body2">
-                                {"¿Tienes cuenta? Inicia sesión"}
-                            </Link>
+
+                    <Container component="form" onSubmit={handleSubmit}>
+
+                        <Grid container>
+
+                            <Grid item xs={12} md={12}>
+
+                                <Typography textAlign="center" component="h1" variant="h5">
+                                    Sign up
+                                </Typography>
+
+                            </Grid>
+
+                            <Grid item xs={12} md={12}>
+
+
+                                <Box sx={{ width: "100%", margin: "auto" }}>
+
+                                    <Stepper dir={"ltr"} activeStep={activeStep} orientation={"vertical"}>
+
+                                        <Step>
+
+                                            <StepLabel>{stepLabels[0]}</StepLabel>
+
+                                            <StepContent>
+
+                                                <ul>
+                                                    <TextField
+                                                        required
+                                                        value={fullName}
+                                                        onChange={event => setFullName(event.target.value)}
+                                                        id="fullName"
+                                                        label="Name"
+                                                        margin="normal"
+                                                        name="fullName"
+                                                        autoComplete="name"
+                                                    />
+                                                    <TextField
+                                                        required
+                                                        value={email}
+                                                        onChange={event => setEmail(event.target.value)}
+                                                        id="email"
+                                                        margin="normal"
+                                                        label="Email"
+                                                        name="email"
+                                                        autoComplete="email"
+                                                    />
+                                                    <TextField
+                                                        required
+                                                        value={password}
+                                                        onChange={event => setPassword(event.target.value)}
+                                                        name="password"
+                                                        margin="normal"
+                                                        label="Password"
+                                                        type="password"
+                                                        id="password"
+                                                        autoComplete="current-password"
+                                                    />
+                                                    <TextField
+                                                        margin="normal"
+                                                        required
+                                                        value={passwordMatch}
+                                                        onChange={event => setPasswordMatch(event.target.value)}
+                                                        name="password_rep"
+                                                        label="Repeat password"
+                                                        type="password"
+                                                        id="password_rep"
+                                                        autoComplete="current-password"
+                                                    />
+
+                                                    <Typography variant={"caption"} color={"rgb(155,155,155)"}>* Password must have
+                                                        at least 5 characters
+                                                    </Typography>
+
+                                                    {error != "" &&
+                                                        <Typography color={"#FF0000"}>{error}</Typography>
+                                                    }
+
+                                                    <Button fullWidth={true} onClick={handleNext} variant={"contained"}>Next</Button>
+
+                                                </ul>
+
+                                            </StepContent>
+
+                                        </Step>
+
+                                        <Step>
+
+                                            <StepLabel>{stepLabels[1]}</StepLabel>
+
+                                            <StepContent>
+                                                {!isLoaded &&
+                                                    <Placeholder/>
+                                                }
+
+                                                {isLoaded &&
+                                                    <GoogleMap onClick={handleMapselect} mapContainerClassName="map-container" zoom={7} center={(latlng != null)? latlng : {lat: 42.715756, lng: -7.947729}}>
+
+                                                        {latlng != null &&
+
+                                                            <Marker label={"Home"} position={latlng}></Marker>
+
+                                                        }
+
+                                                    </GoogleMap>
+                                                }
+                                            </StepContent>
+
+                                        </Step>
+
+                                    </Stepper>
+
+                                </Box>
+
+                            </Grid>
+
+                            <Grid item md={12} xs={12}>
+
+                                <Button
+                                    disabled={latlng == null}
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    sx={{mt: 3, mb: 2}}
+                                >
+                                    Sign up
+                                </Button>
+
+                            </Grid>
+
+                            <Grid item md={12} xs={12}>
+
+                                <Link href="/login" variant="body2">
+                                    {"Already have an account? Login"}
+                                </Link>
+
+                            </Grid>
+
                         </Grid>
-                    </Grid>
-                    </Box>
+
+                    </Container>
+
                 </Box>
+
             </Container>
+
         </ThemeProvider>
     );
 }

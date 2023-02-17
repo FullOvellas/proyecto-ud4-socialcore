@@ -1,6 +1,7 @@
 package com.aad.proyectoud4socialcore.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.maps.model.LatLng;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,8 +20,7 @@ public class SocialUser {
     @Id
     private Long id;
     private String fullName;
-    @OneToOne
-    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "residence_id")
     private Residence residence;
     @NonNull
@@ -56,6 +56,9 @@ public class SocialUser {
     public SocialUser() {
 
         this.roles = new ArrayList<>();
+        this.residence = new Residence(new LatLng(42.2404590, -8.6932391));
+
+        this.residence.setCoordinates(new LatLng(13,12));
 
     }
 

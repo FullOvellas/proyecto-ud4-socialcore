@@ -23,11 +23,21 @@ public class UserDTO {
     @NotEmpty
     private String email;
 
-    public UserDTO(String fullName, String email, String password ) {
+    @NotNull
+    @NotEmpty
+    private double lng;
+
+    @NotNull
+    @NotEmpty
+    private double lat;
+
+    public UserDTO(String fullName, String email, String password, double lat, double lng) {
 
         this.fullName = fullName;
         this.email = email;
         this.password = password;
+        this.lat = lat;
+        this.lng = lng;
 
     }
     public UserDTO() {
