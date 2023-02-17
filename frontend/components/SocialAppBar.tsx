@@ -1,4 +1,4 @@
-import {AppBar, IconButton, Toolbar} from "@mui/material";
+import {AppBar, IconButton, ListItemButton, Toolbar} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import AccountCircle from "@mui/icons-material/AccountCircle";
@@ -48,9 +48,11 @@ export default function SocialAppBar() {
 
             <AppBar position="static">
                 <Toolbar>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        SocialCore
-                    </Typography>
+                    <ListItemButton onClick={_=> navigate("/")}>
+                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                            SocialCore
+                        </Typography>
+                    </ListItemButton>
                     {user != "" && (
                         <div>
                             <IconButton

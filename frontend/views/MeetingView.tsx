@@ -69,8 +69,6 @@ export default function MeetingView() {
 
     }, []);
 
-    console.log(meeting?.destination.rating);
-
     return (
 
         <Box>
